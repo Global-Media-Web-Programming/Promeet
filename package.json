@@ -10,7 +10,8 @@
     "stylelint": "stylelint --cache --fix \"**/*.css\"",
     "preview": "vite preview",
     "format": "prettier --cache --write \"**/*.js\"",
-    "prepare": "husky install && chmod ug+x .husky/*"
+    "prepare": "husky install && chmod ug+x .husky/*",
+    "pre-commit": "lint-staged"
   },
   "dependencies": {
     "react": "^19.0.0",
