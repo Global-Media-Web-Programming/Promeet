@@ -1,0 +1,30 @@
+name: Test
+description: "테스트 코드 추가/수정"
+title: '[✅ Test] '
+labels: ['✅ Test']
+body:
+  - type: textarea
+    id: test-description
+    attributes:
+      label: 📍 작업 내용
+      placeholder: 
+        - 어떤 부분을 개발할지 설명해주세요
+    validations:
+      required: true
+  - type: textarea
+    id: test-checklist
+    attributes:
+      label: ✅ To-Do
+      description: |
+        아래 체크리스트를 작성해주세요
+      placeholder: |
+        - [ ] 최대한 세분화 해서 작성
+    validations:
+      required: true
+  - type: textarea
+    id: test-more
+    attributes:
+      label: 🎻 기타
+      description: 더 하고 싶은 말이 있다면 작성해 주세요
+    validations:
+      required: false
