@@ -9,12 +9,17 @@ export default [
   {
     files: ['**/*.{js,jsx}'],
     languageOptions: {
-      ecmaVersion: 2020,
+      ecmaVersion: 'latest',
       globals: globals.browser,
       parserOptions: {
         ecmaVersion: 'latest',
         ecmaFeatures: { jsx: true },
         sourceType: 'module',
+      },
+    },
+    settings: {
+      react: {
+        version: 'detect',
       },
     },
     plugins: {
@@ -33,7 +38,7 @@ export default [
       eqeqeq: 'error',
       'dot-notation': ['error', { allowPattern: '^[a-z]+(_[a-z]+)+$' }],
       'no-var': 'error',
-      'no-unused-vars': 'error',
+      'no-unused-vars': 'off',
     },
   },
 ];

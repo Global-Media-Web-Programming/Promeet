@@ -1,6 +1,7 @@
+import Test from './components/Test';
+
 function App() {
-  var a = 1;
-  console.log(a);
+  return <Test />;
 }
 
-export default App
+export default App;

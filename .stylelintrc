@@ -1,22 +1,25 @@
 {
-  "extends": ["stylelint-config-standard", "stylelint-config-recess-order"],
-  "plugins": ["stylelint-order"],
+  "extends": ["stylelint-config-standard", "stylelint-config-clean-order"],
+  "customSyntax": "postcss-styled-syntax",
   "rules": {
-    "at-rule-empty-line-before": null,
     "alpha-value-notation": "percentage",
     "color-function-notation": "legacy",
     "color-hex-length": "long",
-    "selector-class-pattern": "^[a-z]+([a-zA-Z0-9]*|(-[a-zA-Z0-9]+)*)$",
     "custom-property-empty-line-before": null,
     "function-name-case": [
       "lower",
       {
-        "ignoreFunctions": ["/^[a-z_](|[a-zA-Z0-9]+)$/"]
+        "ignoreFunctions": ["/^[a-z](|[a-zA-Z0-9]+)$/"]
       }
     ],
-    "selector-pseudo-class-no-unknown": [true, {
-      "ignorePseudoClasses": ["global"]
-    }],
-    "keyframes-name-pattern": "^[a-z][a-zA-Z0-9_]+$"
+    "selector-pseudo-class-no-unknown": [
+      true,
+      {
+        "ignorePseudoClasses": ["global"]
+      }
+    ],
+    "keyframes-name-pattern": "^[a-z][a-zA-Z0-9_]+$",
+    "value-keyword-case": null,
+    "property-no-vendor-prefix": null
   }
 }
