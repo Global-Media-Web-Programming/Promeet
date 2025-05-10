@@ -1,5 +1,6 @@
 import js from '@eslint/js';
 import globals from 'globals';
+import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import prettier from 'eslint-plugin-prettier';
@@ -17,19 +18,17 @@ export default [
         sourceType: 'module',
       },
     },
-    settings: {
-      react: {
-        version: 'detect',
-      },
-    },
     plugins: {
+      react,
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
       prettier,
     },
     rules: {
       ...js.configs.recommended.rules,
+      ...react.configs.recommended.rules,
       ...reactHooks.configs.recommended.rules,
+      'react/react-in-jsx-scope': 'off',
       'react-refresh/only-export-components': [
         'warn',
         { allowConstantExport: true },
@@ -38,7 +37,7 @@ export default [
       eqeqeq: 'error',
       'dot-notation': ['error', { allowPattern: '^[a-z]+(_[a-z]+)+$' }],
       'no-var': 'error',
-      'no-unused-vars': 'off',
+      'no-unused-vars': 'error',
     },
   },
 ];
