@@ -19,7 +19,10 @@
       }
     ],
     "keyframes-name-pattern": "^[a-z][a-zA-Z0-9_]+$",
+    "property-no-unknown": [true, {
+      "ignoreProperties": ["-webkit-tap-highlight-color"]
+    }],
     "value-keyword-case": null,
-    "property-no-vendor-prefix": null
+    "media-query-no-invalid": null
   }
 }
