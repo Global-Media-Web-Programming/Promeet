@@ -1,14 +1,50 @@
+import { Suspense, useState } from 'react';
+// 스타일
 import { ThemeProvider } from 'styled-components';
 import { theme } from './styles/theme';
 import GlobalStyles from './styles/GlobalStyles';
 import './styles/fonts.css';
-import Test from './components/Test';
+// 비동기 통신
+import { QueryClientProvider, QueryErrorResetBoundary } from '@tanstack/react-query';
+import queryClient from './lib/tanstack-query/queryClient';
+import { ReactQueryDevtoolsPanel } from '@tanstack/react-query-devtools'; // 디버깅용
+// 에러 처리
+import { ErrorBoundary } from 'react-error-boundary';
+// 라우팅
+import Router from './routes/Router.jsx';
+// 컴포넌트
+import DeferredLoader from './components/ui/DeferredLoader';
+import ErrorFallback from './components/ui/ErrorFallback';
+import Toast from './components/ui/Toast';
+
+// 토스트 디버깅용
+// import toast from './utils/toast';
 
 function App() {
+  const [isOpen, setIsOpen] = useState(false); // ReactQueryDevtoolsPanel 열고닫기
+
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyles />
-      <Test />
+      <QueryClientProvider client={queryClient}>
+        <QueryErrorResetBoundary>
+          {({ reset }) => (
+            <ErrorBoundary onReset={reset} FallbackComponent={ErrorFallback}>
+              <Suspense fallback={<DeferredLoader />}>
+                <Toast />
+                <Router />
+              </Suspense>
+            </ErrorBoundary>
+          )}
+        </QueryErrorResetBoundary>
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+        >{`${isOpen ? 'Close' : 'Open'} the devtools panel`}</button>
+        {isOpen && (
+          <ReactQueryDevtoolsPanel style={{ height: '200px' }} onClose={() => setIsOpen(false)} />
+        )}
+        {/* <button onClick={() => toast('이것은 테스트 토스트입니다!')}>토스트 띄우기</button> */}
+      </QueryClientProvider>
     </ThemeProvider>
   );
 }
