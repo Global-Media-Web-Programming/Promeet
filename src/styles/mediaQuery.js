@@ -23,9 +23,7 @@ const mediaQuery = Object.keys(breakpointsPortrait).reduce((acc, label) => {
   `;
   /* 가로 모드 */
   acc[`${label}Landscape`] = (...args) => css`
-    @media (max-width: ${breakpointsLandscape[
-        label
-      ]}px) and (orientation: landscape) {
+    @media (max-width: ${breakpointsLandscape[label]}px) and (orientation: landscape) {
       ${css(...args)}
     }
   `;
