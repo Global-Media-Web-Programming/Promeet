@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { motion } from 'framer-motion';
 
 export const Toast = styled(motion.div)`
-  position: absolute;
+  position: fixed;
   z-index: 2;
   right: 16px;
   bottom: 16px;
