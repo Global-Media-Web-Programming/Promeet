@@ -1,4 +1,5 @@
 import * as S from './style';
+import { createPortal } from 'react-dom';
 import { AnimatePresence } from 'framer-motion';
 import useToastStore from '@/stores/ui/useToastStore';
 
@@ -7,7 +8,9 @@ const Toast = () => {
 
   if (!isOpen) return null;
 
-  return (
+  const toastRoot = document.getElementById('toast-portal');
+
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <S.Toast
@@ -21,7 +24,8 @@ const Toast = () => {
           {message}
         </S.Toast>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    toastRoot,
   );
 };
 
