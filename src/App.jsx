@@ -16,9 +16,6 @@ import DeferredLoader from './components/ui/DeferredLoader';
 import ErrorFallback from './components/ui/ErrorFallback';
 import Toast from './components/ui/Toast';
 
-// 토스트 디버깅용
-import toast from './utils/toast';
-
 function App() {
   const [isOpen, setIsOpen] = useState(false); // ReactQueryDevtoolsPanel 열고닫기
 
@@ -42,7 +39,6 @@ function App() {
         {isOpen && (
           <ReactQueryDevtoolsPanel style={{ height: '200px' }} onClose={() => setIsOpen(false)} />
         )}
-        <button onClick={() => toast('이것은 테스트 토스트입니다!')}>토스트 띄우기</button>
       </QueryClientProvider>
     </ThemeProvider>
   );
