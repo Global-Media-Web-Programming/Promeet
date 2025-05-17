@@ -26,31 +26,26 @@ const GlobalStyles = createGlobalStyle`
   }
 
   body {
-    /* Typography */
     font-family: Pretendard, sans-serif;
-    font-weight: 500;
+
+    background: #ffffff;
+
+    /* color: ${theme.color.main}; */
+
+    /* 볼드체, 이탤릭체 자동 생성 방지 */
+    font-synthesis: none;
+
+    /* 가독성 높이는 텍스트를 렌더링 */
+    text-rendering: optimizeLegibility;
 
     /* Safari, Chrome에서 폰트 외곽을 부드럽게 표시 */
     -webkit-font-smoothing: antialiased;
 
     /* Firefox에서 폰트를 더 선명하게 표시 */
     -moz-osx-font-smoothing: grayscale;
-    line-height: 1.2;
-
-    /* 가독성 높이는 텍스트를 렌더링 */
-    text-rendering: optimizeLegibility;
-
-    background: #ffffff;
-
-    /* 볼드체, 이탤릭체 자동 생성 방지 */
-    font-synthesis: none;
-    
-    /* Layout & Display */
 
     /* Safari에서 부드러운 자연스러운 스크롤 */
     -webkit-overflow-scrolling: touch;
-    
-    /* color: ${theme.color.main}; */
 
     /* 중간 사이즈 세로 모드 */
     ${mediaQuery.sMobile`

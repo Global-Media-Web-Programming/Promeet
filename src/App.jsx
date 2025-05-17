@@ -1,5 +1,4 @@
 import { Suspense, useState } from 'react';
-// 스타일
 import { ThemeProvider } from 'styled-components';
 import { theme } from './styles/theme';
 import GlobalStyles from './styles/GlobalStyles';

@@ -1,0 +1,34 @@
+name: Git push into another repo to deploy to vercel
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    container: pandoc/latex
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install mustache (to update the date)
+        run: apk add ruby && gem install mustache
+
+      - name: Creates output
+        run: sh ./build.sh
+
+      - name: Pushes to another repository
+        id: push_directory
+        uses: cpina/github-action-push-to-another-repository@main
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.JOY_GH_TOKEN }}
+        with:
+          source-directory: 'output'
+          destination-github-username: duwlsssss
+          destination-repository-name: ${{ github.ref == 'refs/heads/develop' && 'Promeet-develop' || 'Promeet' }}
+          user-email: ${{ secrets.JOY_ACCOUNT_EMAIL }}
+          commit-message: ${{ github.event.commits[0].message }}
+          target-branch: main
