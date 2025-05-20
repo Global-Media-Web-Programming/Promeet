@@ -19,12 +19,9 @@ const MapContainer = ({ children }) => {
   const mapInstance = new Kakao.maps.Map(mapRef.current, options); //지도 생성 및 객체 리턴
 
   setMap(mapInstance);
+  console.log('지도 등장');
 
-  return (
-    <S.MapDiv ref={mapRef} style="width:500px;height:400px;">
-      {children}
-    </S.MapDiv>
-  );
+  return <S.MapDiv ref={mapRef}>{children}</S.MapDiv>;
 };
 
 MapContainer.propTypes = {
