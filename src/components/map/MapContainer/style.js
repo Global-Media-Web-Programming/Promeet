@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 
 export const MapDiv = styled.div`
-  width: 100%;
-  height: 100%;
-  background-color: aqua;
+  width: 200px;
+  height: 200px;
+
+  /* background-color: aqua; */
 `;
