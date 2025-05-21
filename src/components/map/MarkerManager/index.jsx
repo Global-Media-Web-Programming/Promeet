@@ -1,14 +1,14 @@
 import { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import useMapStore from '@/stores/map/mapStore';
+import { Category, CategoryMarkerImages } from '@/constants/place';
 
 const MarkerManager = ({ markers }) => {
-  const { kakao } = window;
   const { map } = useMapStore();
   const markersRef = useRef([]);
   const currentOverlayRef = useRef(null);
 
-  console.log('map 사용시 정보', map);
+  // console.log('map 사용시 정보', map);
 
   // 마커 초기화 함수
   const clearMarkers = () => {
@@ -30,35 +30,20 @@ const MarkerManager = ({ markers }) => {
     markers.forEach((markerData) => {
       // 장소 마커
       if (markerData.place) {
-        let imageSrc = '';
-        switch (markerData.place) {
-          case 'restaurant':
-            imageSrc = '/assets/img/marker/restaurant_marker.svg';
-            break;
-          case 'cafe':
-            imageSrc = '/assets/img/marker/cafe_marker.svg';
-            break;
-          case 'studyCafe':
-            imageSrc = '/assets/img/marker/study_cafe_marker.svg';
-            break;
-          case 'activity':
-            imageSrc = '/assets/img/marker/activity_marker.svg';
-            break;
-          default:
-            return;
-        }
+        const imageSrc = CategoryMarkerImages[markerData.place.type];
+        if (!imageSrc) return;
 
-        const imageSize = new kakao.maps.Size(64, 69);
-        const imageOption = { offset: new kakao.maps.Point(27, 69) };
-        const markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption);
+        const imageSize = new window.kakao.maps.Size(64, 69);
+        const imageOption = { offset: new window.kakao.maps.Point(27, 69) };
+        const markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize, imageOption);
 
-        const marker = new kakao.maps.Marker({
+        const marker = new window.kakao.maps.Marker({
           position: markerData.position,
           image: markerImage,
           map: map,
         });
 
-        kakao.maps.event.addListener(marker, 'click', () => {
+        window.kakao.maps.event.addListener(marker, 'click', () => {
           if (currentOverlayRef.current) {
             currentOverlayRef.current.setMap(null);
           }
@@ -67,20 +52,20 @@ const MarkerManager = ({ markers }) => {
             <div class="wrap">
               <div class="info">
                 <div class="title">
-                  ${markerData.title || '장소 정보'}
+                  ${markerData.name}
                   <div class="close" onclick="this.parentElement.parentElement.parentElement.parentElement.remove()" title="닫기"></div>
                 </div>
                 <div class="body">
                   <div class="desc">
                     <div class="ellipsis">${markerData.address || ''}</div>
-                    ${markerData.link ? `<div><a href="${markerData.link}" target="_blank" class="link">정보 보기</a></div>` : ''}
+                    ${markerData.link ? `<div><a href="${markerData.link}" target="_blank" rel="noopener noreferrer" class="link">정보 보기</a></div>` : ''}
                   </div>
                 </div>
               </div>
             </div>
           `;
 
-          const overlay = new kakao.maps.CustomOverlay({
+          const overlay = new window.kakao.maps.CustomOverlay({
             content: content,
             position: marker.getPosition(),
             yAnchor: 1,
@@ -94,12 +79,12 @@ const MarkerManager = ({ markers }) => {
       }
       // 프로필 마커
       else if (markerData.profile) {
-        const marker = new kakao.maps.Marker({
+        const marker = new window.kakao.maps.Marker({
           position: markerData.position,
           map: map,
         });
 
-        kakao.maps.event.addListener(marker, 'click', () => {
+        window.kakao.maps.event.addListener(marker, 'click', () => {
           if (currentOverlayRef.current) {
             currentOverlayRef.current.setMap(null);
           }
@@ -111,7 +96,7 @@ const MarkerManager = ({ markers }) => {
             </div>
           `;
 
-          const overlay = new kakao.maps.CustomOverlay({
+          const overlay = new window.kakao.maps.CustomOverlay({
             content: content,
             position: marker.getPosition(),
             yAnchor: 1.5,
@@ -119,6 +104,9 @@ const MarkerManager = ({ markers }) => {
 
           overlay.setMap(map);
           currentOverlayRef.current = overlay;
+
+          // 해당 마커로 부드럽게 이동
+          map.panTo(marker.getPosition());
         });
 
         markersRef.current.push(marker);
@@ -126,7 +114,7 @@ const MarkerManager = ({ markers }) => {
     });
 
     // 지도 영역 변경시 마커 표시/숨김 처리
-    const boundsChangedListener = kakao.maps.event.addListener(map, 'bounds_changed', () => {
+    const boundsChangedListener = window.kakao.maps.event.addListener(map, 'bounds_changed', () => {
       const bounds = map.getBounds();
       markersRef.current.forEach((marker) => {
         const position = marker.getPosition();
@@ -136,10 +124,8 @@ const MarkerManager = ({ markers }) => {
 
     return () => {
       clearMarkers();
-      kakao.maps.event.removeListener(boundsChangedListener);
+      window.kakao.maps.event.removeListener(map, 'bounds_changed', boundsChangedListener);
     };
-    // kakao.maps 관련 의존성 필요 메시지 무시
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, markers]); // markers props가 바뀔때 마커 변경
 
   return null;
@@ -153,9 +139,10 @@ MarkerManager.propTypes = {
         lng: PropTypes.number.isRequired,
       }).isRequired,
       place: PropTypes.shape({
-        type: PropTypes.oneOf(['restaurant', 'cafe', 'studyCafe', 'activity']),
-        name: PropTypes.string,
-        address: PropTypes.string,
+        type: PropTypes.oneOf(Object.values(Category)).isRequired,
+        name: PropTypes.string.isRequired,
+        phone: PropTypes.string,
+        address: PropTypes.string.isRequired,
         link: PropTypes.string,
       }),
       profile: PropTypes.shape({

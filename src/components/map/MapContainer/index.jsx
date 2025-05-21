@@ -5,7 +5,7 @@ import useMapStore from '@/stores/map/mapStore';
 
 const MapContainer = ({ children }) => {
   const mapRef = useRef(null);
-  const { setMap } = useMapStore();
+  const { setMap, setIsKakaoLoaded } = useMapStore();
 
   useEffect(() => {
     const loadKakaoMapScript = () => {
@@ -20,43 +20,56 @@ const MapContainer = ({ children }) => {
         const script = document.createElement('script');
         script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${import.meta.env.VITE_KAKAO_JS_KEY}&autoload=false&libraries=services,clusterer,drawing`;
         script.async = true;
-        script.onload = () => resolve(window.kakao);
-        script.onerror = reject;
+        script.onload = () => {
+          console.log('Kakao SDK 스크립트 로드 완료');
+          resolve(window.kakao);
+        };
+        script.onerror = () => {
+          console.error('Kakao SDK 스크립트 로드 실패');
+          reject(new Error('카카오맵 스크립트 로드 실패'));
+        };
         document.head.appendChild(script);
       });
     };
 
     loadKakaoMapScript()
       .then((kakao) => {
+        console.log('Kakao SDK 로드 완료');
         kakao.maps.load(() => {
-          if (!mapRef.current) return;
+          console.log('kakao.maps.load 콜백 실행됨');
+          if (!mapRef.current) {
+            console.warn('mapRef.current가 아직 없음 - 렌더링 대기');
+            return;
+          }
 
           const options = {
-            center: new kakao.maps.LatLng(33.450701, 126.570667),
+            center: new kakao.maps.LatLng(37.494705526855, 126.95994559383),
             level: 3,
           };
 
           const map = new kakao.maps.Map(mapRef.current, options);
           setMap(map);
-          console.log('map 생성시 정보', map);
+          setIsKakaoLoaded(true);
+          console.log('MapContainer: map 초기화 완료');
+          // console.log('map 생성시 정보', map);
 
           // 지도 정보 얻어오기 - 디버깅용
-          const bounds = map.getBounds();
-          const mapInfo = {
-            지도타입: map.getMapTypeId(),
-            중심좌표: map.getCenter(),
-            레벨: map.getLevel(),
-            영역str: bounds.toString(),
-            swLatlng: bounds.getSouthWest(),
-            neLatlng: bounds.getNorthEast(),
-          };
-          console.log(mapInfo);
+          // const bounds = map.getBounds();
+          // const mapInfo = {
+          //   지도타입: map.getMapTypeId(),
+          //   중심좌표: map.getCenter(),
+          //   레벨: map.getLevel(),
+          //   영역str: bounds.toString(),
+          //   swLatlng: bounds.getSouthWest(),
+          //   neLatlng: bounds.getNorthEast(),
+          // };
+          // console.log(mapInfo);
         });
       })
       .catch((_err) => {
         throw new Error(`[카카오 맵 로드 에러]`);
       });
-  }, [setMap]);
+  }, [setMap, setIsKakaoLoaded]);
 
   return (
     <S.MapDiv id="map" ref={mapRef}>
