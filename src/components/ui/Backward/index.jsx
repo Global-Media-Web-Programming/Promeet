@@ -5,9 +5,9 @@ import PropTypes from 'prop-types';
 /**
  * Backward 컴포넌트
  *
- * @property {string} [size='24px'] - 사이즈
- * @property {boolen} [isErrorFallback=false] - 에러 컴포넌트 여부
- * @property {string} [navigateUrl=''] - 클릭시 이동할 경로
+ * @param {string} [size='24px'] - 사이즈
+ * @param {boolean} [isErrorFallback=false] - 에러 컴포넌트 여부
+ * @param {string} [navigateUrl=''] - 클릭시 이동할 경로
  */
 
 const Backward = ({ size = '24px', isErrorFallback = false, navigateUrl = '' }) => {

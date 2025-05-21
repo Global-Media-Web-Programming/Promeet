@@ -4,9 +4,11 @@ import useMapStore from '@/stores/map/mapStore';
 
 const MarkerManager = ({ markers }) => {
   const { kakao } = window;
-  const map = useMapStore((state) => state.map);
+  const { map } = useMapStore();
   const markersRef = useRef([]);
   const currentOverlayRef = useRef(null);
+
+  console.log('map 사용시 정보', map);
 
   // 마커 초기화 함수
   const clearMarkers = () => {
@@ -31,16 +33,16 @@ const MarkerManager = ({ markers }) => {
         let imageSrc = '';
         switch (markerData.place) {
           case 'restaurant':
-            imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_red.png';
+            imageSrc = '/assets/img/marker/restaurant_marker.svg';
             break;
           case 'cafe':
-            imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_red.png';
+            imageSrc = '/assets/img/marker/cafe_marker.svg';
             break;
           case 'studyCafe':
-            imageSrc = '';
+            imageSrc = '/assets/img/marker/study_cafe_marker.svg';
             break;
           case 'activity':
-            imageSrc = '';
+            imageSrc = '/assets/img/marker/activity_marker.svg';
             break;
           default:
             return;
@@ -150,10 +152,12 @@ MarkerManager.propTypes = {
         lat: PropTypes.number.isRequired,
         lng: PropTypes.number.isRequired,
       }).isRequired,
-      place: PropTypes.oneOf(['restaurant', 'cafe', 'studyCafe', 'activity']),
-      title: PropTypes.string,
-      address: PropTypes.string,
-      link: PropTypes.string,
+      place: PropTypes.shape({
+        type: PropTypes.oneOf(['restaurant', 'cafe', 'studyCafe', 'activity']),
+        name: PropTypes.string,
+        address: PropTypes.string,
+        link: PropTypes.string,
+      }),
       profile: PropTypes.shape({
         profile_img: PropTypes.string,
         nickname: PropTypes.string.isRequired,

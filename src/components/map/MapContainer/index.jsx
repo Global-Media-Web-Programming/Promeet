@@ -5,7 +5,7 @@ import useMapStore from '@/stores/map/mapStore';
 
 const MapContainer = ({ children }) => {
   const mapRef = useRef(null);
-  const setMap = useMapStore((state) => state.setMap);
+  const { setMap } = useMapStore();
 
   useEffect(() => {
     const loadKakaoMapScript = () => {

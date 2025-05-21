@@ -9,7 +9,7 @@ import Backward from '@/components/ui/Backward';
 /**
  * ErrorFallback 컴포넌트
  *
- * @property {Error} error - 에러 객체
+ * @param {Error} error - 에러 객체
  */
 const ErrorFallback = ({ error: propsError }) => {
   const routeError = useRouteError(); // 라우터 내부에서만 동작
