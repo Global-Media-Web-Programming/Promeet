@@ -1,9 +1,4 @@
-import {
-  RestaurantIcon,
-  CafeIcon,
-  StudyCafeIcon,
-  ActivityIcon,
-} from '@/components/ui/Tabs/IconStyles';
+import { RestaurantIcon, CafeIcon, StudyCafeIcon, ActivityIcon } from '@/styles/IconStyles';
 
 /**
  * value에 따라 아이콘 컴포넌트를 반환
