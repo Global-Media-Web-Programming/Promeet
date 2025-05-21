@@ -1,33 +1,3 @@
-// import * as S from './style';
-// import PropTypes from 'prop-types';
-// import useMapStore from '@/stores/map/mapStore';
-
-// // 지도 표시하는 컴포넌트
-// const MapContainer = ({ children }) => {
-//   const $mapEl = document.querySelector('#map');
-//   const setMap = useMapStore((state) => state.setMap);
-//   const Kakao = window.kakao;
-
-//   if ($mapEl) return;
-
-//   const options = {
-//     center: new Kakao.maps.LatLng(33.450701, 126.570667), //지도의 중심좌표
-//     level: 3, //지도의 레벨(확대, 축소 정도)
-//   };
-//   const mapInstance = new Kakao.maps.Map($mapEl, options); //지도 생성 및 객체 리턴
-
-//   setMap(mapInstance);
-//   console.log('지도 등장');
-
-//   return <S.MapDiv id="map">{children}</S.MapDiv>;
-// };
-
-// MapContainer.propTypes = {
-//   children: PropTypes.node,
-// };
-
-// export default MapContainer;
-
 import { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import * as S from './style';
@@ -68,6 +38,19 @@ const MapContainer = ({ children }) => {
 
           const map = new kakao.maps.Map(mapRef.current, options);
           setMap(map);
+          console.log('map 생성시 정보', map);
+
+          // 지도 정보 얻어오기 - 디버깅용
+          const bounds = map.getBounds();
+          const mapInfo = {
+            지도타입: map.getMapTypeId(),
+            중심좌표: map.getCenter(),
+            레벨: map.getLevel(),
+            영역str: bounds.toString(),
+            swLatlng: bounds.getSouthWest(),
+            neLatlng: bounds.getNorthEast(),
+          };
+          console.log(mapInfo);
         });
       })
       .catch((_err) => {
