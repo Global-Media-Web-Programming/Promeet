@@ -33,8 +33,8 @@ const MarkerManager = ({ markers }) => {
         const imageSrc = CategoryMarkerImages[markerData.place.type];
         if (!imageSrc) return;
 
-        const imageSize = new window.kakao.maps.Size(64, 69);
-        const imageOption = { offset: new window.kakao.maps.Point(27, 69) };
+        const imageSize = new window.kakao.maps.Size(32, 34);
+        const imageOption = { offset: new window.kakao.maps.Point(15, 45) };
         const markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize, imageOption);
 
         const marker = new window.kakao.maps.Marker({
@@ -52,13 +52,14 @@ const MarkerManager = ({ markers }) => {
             <div class="wrap">
               <div class="info">
                 <div class="title">
-                  ${markerData.name}
+                  ${markerData.place.name}
                   <div class="close" onclick="this.parentElement.parentElement.parentElement.parentElement.remove()" title="닫기"></div>
                 </div>
                 <div class="body">
                   <div class="desc">
-                    <div class="ellipsis">${markerData.address || ''}</div>
-                    ${markerData.link ? `<div><a href="${markerData.link}" target="_blank" rel="noopener noreferrer" class="link">정보 보기</a></div>` : ''}
+                    <div class="ellipsis">${markerData.place.phone || ''}</div>
+                    <div class="ellipsis">${markerData.place.address || ''}</div>
+                    ${markerData.place.link ? `<div><a href="${markerData.place.link}" target="_blank" rel="noopener noreferrer" class="link">정보 보기</a></div>` : ''}
                   </div>
                 </div>
               </div>
