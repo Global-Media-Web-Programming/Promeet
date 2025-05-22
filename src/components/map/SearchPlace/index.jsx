@@ -1,11 +1,13 @@
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import MarkerManager from '../MarkerManager';
-import useMapStore from '@/stores/map/mapStore';
+import useMapStore from '@/stores/map/useMapStore';
+import useMyLocation from '@/stores/map/useMyLocationsStore';
 import { Category, CategoryLabel } from '@/constants/place';
 
 const SearchPlace = ({ category }) => {
   const { isKakaoLoaded } = useMapStore();
+  const { myLocation } = useMyLocation();
   const [places, setPlaces] = useState([]);
 
   // Places 서비스 초기화
@@ -51,7 +53,9 @@ const SearchPlace = ({ category }) => {
     searchPlaces();
   }, [category, ps, searchPlaces]);
 
-  return <MarkerManager markers={places} />;
+  console.log('현재 myLocation', myLocation);
+
+  return <MarkerManager markers={[...places, ...(myLocation ? [myLocation] : [])]} />;
 };
 
 SearchPlace.propTypes = {

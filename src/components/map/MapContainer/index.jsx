@@ -1,9 +1,9 @@
 import { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import * as S from './style';
-import useMapStore from '@/stores/map/mapStore';
+import useMapStore from '@/stores/map/useMapStore';
 
-const MapContainer = ({ children }) => {
+const MapContainer = ({ children, lat, lng }) => {
   const mapRef = useRef(null);
   const { setMap, setIsKakaoLoaded } = useMapStore();
 
@@ -43,7 +43,7 @@ const MapContainer = ({ children }) => {
           }
 
           const options = {
-            center: new kakao.maps.LatLng(37.494705526855, 126.95994559383),
+            center: new kakao.maps.LatLng(lat, lng),
             level: 3,
           };
 
@@ -69,7 +69,7 @@ const MapContainer = ({ children }) => {
       .catch((_err) => {
         throw new Error(`[카카오 맵 로드 에러]`);
       });
-  }, [setMap, setIsKakaoLoaded]);
+  }, [setMap, setIsKakaoLoaded, lat, lng]);
 
   return (
     <S.MapDiv id="map" ref={mapRef}>
@@ -80,6 +80,8 @@ const MapContainer = ({ children }) => {
 
 MapContainer.propTypes = {
   children: PropTypes.node,
+  lat: PropTypes.number,
+  lng: PropTypes.number,
 };
 
 export default MapContainer;

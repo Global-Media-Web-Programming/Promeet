@@ -11,7 +11,7 @@ export const TabsContainer = styled.section`
 export const ListContainer = styled.header`
   scrollbar-width: none; /* Firefox */
 
-  overflow-x: auto;
+  overflow-x: scroll;
   display: flex;
   gap: 16px;
 
@@ -20,8 +20,7 @@ export const ListContainer = styled.header`
 
   /* 전체 너비 채우기 */
   margin-left: calc(0px - var(--outlet-padding));
-  padding-right: var(--outlet-padding);
-  padding-left: var(--outlet-padding);
+  padding: 3px var(--outlet-padding) 5px;
 
   -ms-overflow-style: none; /* IE 10+ */
   &::-webkit-scrollbar {
@@ -41,9 +40,9 @@ export const TriggerBtn = styled.button`
   gap: 6px;
   align-items: center;
 
-  padding: 8px 10px;
+  padding: 6px 8px;
   border: none;
-  border-radius: 18px;
+  border-radius: 16px;
 
   font-size: 18px;
   font-weight: 600;
@@ -51,5 +50,5 @@ export const TriggerBtn = styled.button`
   white-space: nowrap;
 
   background: ${({ $isActive }) => ($isActive ? theme.color.main : theme.color.white)};
-  box-shadow: 2px 4px 8px 0 rgb(0, 0, 0, 15%);
+  box-shadow: 2px 4px 6px 0 rgb(0, 0, 0, 20%);
 `;
