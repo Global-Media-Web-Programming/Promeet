@@ -21,11 +21,9 @@ const MapContainer = ({ children, lat, lng }) => {
         script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${import.meta.env.VITE_KAKAO_JS_KEY}&autoload=false&libraries=services,clusterer,drawing`;
         script.async = true;
         script.onload = () => {
-          console.log('Kakao SDK 스크립트 로드 완료');
           resolve(window.kakao);
         };
         script.onerror = () => {
-          console.error('Kakao SDK 스크립트 로드 실패');
           reject(new Error('카카오맵 스크립트 로드 실패'));
         };
         document.head.appendChild(script);
@@ -34,11 +32,8 @@ const MapContainer = ({ children, lat, lng }) => {
 
     loadKakaoMapScript()
       .then((kakao) => {
-        console.log('Kakao SDK 로드 완료');
         kakao.maps.load(() => {
-          console.log('kakao.maps.load 콜백 실행됨');
           if (!mapRef.current) {
-            console.warn('mapRef.current가 아직 없음 - 렌더링 대기');
             return;
           }
 
@@ -50,7 +45,6 @@ const MapContainer = ({ children, lat, lng }) => {
           const map = new kakao.maps.Map(mapRef.current, options);
           setMap(map);
           setIsKakaoLoaded(true);
-          console.log('MapContainer: map 초기화 완료');
           // console.log('map 생성시 정보', map);
 
           // 지도 정보 얻어오기 - 디버깅용
