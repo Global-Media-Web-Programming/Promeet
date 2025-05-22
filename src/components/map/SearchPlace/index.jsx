@@ -53,8 +53,6 @@ const SearchPlace = ({ category }) => {
     searchPlaces();
   }, [category, ps, searchPlaces]);
 
-  console.log('현재 myLocation', myLocation);
-
   return <MarkerManager markers={[...places, ...(myLocation ? [myLocation] : [])]} />;
 };
 
