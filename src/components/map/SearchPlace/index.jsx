@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import MarkerManager from '../MarkerManager';
+import BottomSheet from '@/components/ui/BottomSheet';
 import useMapStore from '@/stores/map/useMapStore';
 import useMyLocation from '@/stores/map/useMyLocationsStore';
 import { Category, CategoryLabel } from '@/constants/place';
@@ -53,7 +54,12 @@ const SearchPlace = ({ category }) => {
     searchPlaces();
   }, [category, ps, searchPlaces]);
 
-  return <MarkerManager markers={[...places, ...(myLocation ? [myLocation] : [])]} />;
+  return (
+    <>
+      <MarkerManager markers={[...places, ...(myLocation ? [myLocation] : [])]} />;
+      {places.length > 0 && <BottomSheet id={'map_place'} />}
+    </>
+  );
 };
 
 SearchPlace.propTypes = {

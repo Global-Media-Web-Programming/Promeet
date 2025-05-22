@@ -1,4 +1,3 @@
-// PlaceCategoryMap.jsx
 import * as S from './style';
 import Tabs from '@/components/ui/Tabs';
 import MapContainer from '@/components/map/MapContainer';
@@ -10,10 +9,11 @@ import { Category, CategoryLabel } from '@/constants/place';
 const PlaceCategoryMap = () => {
   const { selectedValue } = useTabsStore();
   const { allowMyLocation, setMyLocation } = useMyLocationsStore();
-  const schollLat = 37.494705526855;
+  const schoolLat = 37.494705526855;
   const schoolLng = 126.95994559383;
 
   const handleMyLocationClick = () => {
+    // 위치 동의 모달 띄우기
     if (!allowMyLocation) alert('위치 동의 필요');
     else {
       if (navigator.geolocation) {
@@ -25,7 +25,7 @@ const PlaceCategoryMap = () => {
               isMyLocation: true, // 내 위치 마커 구분용
             });
           },
-          (error) => console.error(error),
+          (error) => new Error('[navigator.geolocation 오류 발생]', error),
         );
       }
     }
@@ -33,7 +33,7 @@ const PlaceCategoryMap = () => {
 
   return (
     <>
-      <MapContainer lat={schollLat} lng={schoolLng}>
+      <MapContainer lat={schoolLat} lng={schoolLng}>
         <SearchPlace category={selectedValue} />
       </MapContainer>
       <S.TabsWrapper>

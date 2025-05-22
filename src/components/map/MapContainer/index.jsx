@@ -24,7 +24,7 @@ const MapContainer = ({ children, lat, lng }) => {
           resolve(window.kakao);
         };
         script.onerror = () => {
-          reject(new Error('카카오맵 스크립트 로드 실패'));
+          reject(new Error('[카카오맵 스크립트 로드 실패]'));
         };
         document.head.appendChild(script);
       });
