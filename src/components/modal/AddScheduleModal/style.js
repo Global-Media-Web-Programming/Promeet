@@ -49,50 +49,66 @@ export const CloseButton = styled.button`
   background: none;
 `;
 
+export const TableSetting = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+
+  margin: 24px 0;
+`;
+
 export const DaySelectButton = styled.button`
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
+
+  width: 60px;
+  margin-right: 20px;
+  padding: 0;
+  border: none;
+
+  font-family: Pretendard, sans-serif;
+  font-weight: 700;
+  font-style: normal;
+
+  background: none;
 `;
 
 export const TimeRow = styled.div`
   display: flex;
-  gap: 12px;
   align-items: center;
-  margin-top: 20px;
-`;
-
-export const TimeLabel = styled.span`
-  min-width: 70px;
-  font-size: 1rem;
-  color: #555555;
 `;
 
 export const TimeButton = styled.button`
+  cursor: pointer;
+
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: center;
 
+  width: 70px;
+  padding: 0;
+  border: none;
+
+  font-family: Pretendard, sans-serif;
+  font-weight: 700;
+  font-style: normal;
+
+  background: none;
+`;
+
+export const AddButton = styled.button`
   cursor: pointer;
 
-  padding: 10px 10px 10px 16px;
-  border: 1px solid #e0e0e0;
-  border-radius: 6px;
+  padding: 0;
+  border: none;
 
-  font-size: 1rem;
-  color: #222222;
+  font-family: Pretendard, sans-serif;
+  font-weight: 700;
+  font-style: normal;
+  color: #848a94;
 
-  background: #f5f6fa;
-
-  transition:
-    background 0.2s,
-    border 0.2s;
-
-  &:hover,
-  &:focus {
-    border-color: #4f8cff;
-    background: #e6f0ff;
-    outline: none;
-  }
+  background: none;
 `;
