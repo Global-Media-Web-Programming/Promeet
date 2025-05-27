@@ -7,7 +7,7 @@ const designTokens = css`
   --nav-height: 82px;
   --outlet-padding: 30px;
   --place-category-tab-height: 60px;
-  --bs-header-height: 40px;
+  --bs-header-height: 50px;
 `;
 
 export default designTokens;

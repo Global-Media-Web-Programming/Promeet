@@ -6,9 +6,18 @@ import { Category } from '@/constants/place';
 const PlaceCardList = ({ places }) => {
   return (
     <S.Container>
-      {places.map((placeData, i) => (
-        <PlaceCard key={i} name={placeData.place.name} address={placeData.place.address} />
-      ))}
+      {places.length > 0 ? (
+        places.map((placeData, i) => (
+          <PlaceCard
+            key={i}
+            type={placeData.place.type}
+            name={placeData.place.name}
+            address={placeData.place.address}
+          />
+        ))
+      ) : (
+        <S.EmptyText>주변 장소가 없어요</S.EmptyText>
+      )}
     </S.Container>
   );
 };

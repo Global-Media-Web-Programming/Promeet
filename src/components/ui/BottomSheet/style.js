@@ -4,16 +4,15 @@ import { theme } from '@/styles/theme';
 import LineSVG from '@/assets/img/horizontal_line.svg?react';
 
 export const BottomSheet = styled(motion.div)`
-  position: fixed;
+  position: absolute;
   z-index: 3;
-  bottom: 0;
-  left: 0;
 
   display: flex;
   flex-direction: column;
   align-items: center;
 
   width: 100%;
+  height: 100%;
   border-radius: 10px 10px 0 0;
 
   background: ${theme.color.white};
@@ -29,15 +28,15 @@ export const BottomSheetHeader = styled.div`
 
   width: 100%;
   height: var(--bs-header-height);
-  padding: 15px 0 18px;
 `;
 
 export const lineIcon = styled(LineSVG)`
   width: 32px;
+  margin-top: -10px;
 `;
 
 export const BottomSheetContent = styled.div`
-  overflow: auto;
+  overflow-y: scroll;
   width: 100%;
   height: 100%;
 `;

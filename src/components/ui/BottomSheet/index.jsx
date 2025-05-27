@@ -5,7 +5,7 @@ import useBottomSheetStore from '@/stores/ui/useBottomSheetStore';
 
 const bottomSheetVariants = {
   opened: { top: 'var(--place-category-tab-height)' },
-  closed: { top: `calc(100dvh - var(--bs-header-height))` },
+  closed: { top: `calc(100% - var(--bs-header-height))` },
 };
 
 const offsetThreshold = 100;
