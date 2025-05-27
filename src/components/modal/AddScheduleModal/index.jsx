@@ -3,6 +3,7 @@ import { useState } from 'react';
 import DaySelectModal from '@/components/modal/DaySelectModal';
 import TimeSelectModal from '@/components/modal/TimeSelectModal';
 import selectIcon from '@/assets/img/icon/dropdown.svg';
+import deleteIcon from '@/assets/img/icon/delete.svg';
 import * as S from './style';
 
 const defaultSchedule = () => ({
@@ -70,22 +71,30 @@ const AddScheduleModal = ({ isOpen, onClose }) => {
             <h2>일정명</h2>
             {schedules.map((item, idx) => (
               <S.TableSetting key={idx} style={{ marginBottom: 24 }}>
-                <S.DaySelectButton onClick={() => openModal(idx, 'day')}>
-                  {item.day}
-                  <img src={selectIcon} alt="Select Day" />
-                </S.DaySelectButton>
-                <S.TimeRow>
-                  <S.TimeButton onClick={() => openModal(idx, 'start')}>
-                    {item.startTime.hour}:{item.startTime.minute}
-                    <img src={selectIcon} alt="Select Time" />
-                  </S.TimeButton>
-                </S.TimeRow>
-                <S.TimeRow>
-                  <S.TimeButton onClick={() => openModal(idx, 'end')}>
-                    {item.endTime.hour}:{item.endTime.minute}
-                    <img src={selectIcon} alt="Select Time" />
-                  </S.TimeButton>
-                </S.TimeRow>
+                <S.DayTimeSelect>
+                  <S.DaySelectButton onClick={() => openModal(idx, 'day')}>
+                    {item.day}
+                    <img src={selectIcon} alt="Select Day" />
+                  </S.DaySelectButton>
+                  <S.TimeRow>
+                    <S.TimeButton onClick={() => openModal(idx, 'start')}>
+                      {item.startTime.hour}:{item.startTime.minute}
+                      <img src={selectIcon} alt="Select Time" />
+                    </S.TimeButton>
+                  </S.TimeRow>
+                  <S.TimeRow>
+                    <S.TimeButton onClick={() => openModal(idx, 'end')}>
+                      {item.endTime.hour}:{item.endTime.minute}
+                      <img src={selectIcon} alt="Select Time" />
+                    </S.TimeButton>
+                  </S.TimeRow>
+                </S.DayTimeSelect>
+                <S.DeleteButton
+                  type="button"
+                  onClick={() => setSchedules(schedules.filter((_, i) => i !== idx))}
+                >
+                  <img src={deleteIcon} alt="Delete Schedule" />
+                </S.DeleteButton>
               </S.TableSetting>
             ))}
             <S.AddButton type="button" onClick={handleAddSchedule}>
