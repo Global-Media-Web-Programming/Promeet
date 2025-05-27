@@ -57,6 +57,7 @@ export const HeaderCell = styled(Cell)`
   font-family: Pretendard, sans-serif;
   font-style: normal;
   font-weight: 600;
+  font-size: 10px;
 
   ${({ $noTop }) =>
     $noTop &&
