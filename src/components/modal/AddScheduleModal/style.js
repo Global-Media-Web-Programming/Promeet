@@ -70,9 +70,13 @@ export const TimeLabel = styled.span`
 `;
 
 export const TimeButton = styled.button`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
   cursor: pointer;
 
-  padding: 10px 16px;
+  padding: 10px 10px 10px 16px;
   border: 1px solid #e0e0e0;
   border-radius: 6px;
 
