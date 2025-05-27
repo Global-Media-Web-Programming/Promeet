@@ -4,6 +4,8 @@ import EmptyHeartSvg from '@/assets/img/icon/empty_heart.svg?react';
 import FilledHeartSvg from '@/assets/img/icon/filled_heart.svg?react';
 
 export const PlaceCard = styled.div`
+  cursor: pointer;
+
   display: flex;
   align-items: center;
   justify-content: space-between;

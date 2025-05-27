@@ -21,6 +21,7 @@ const PlaceCardList = ({ places, isLoading }) => {
           <PlaceCard
             key={i}
             id={place.id}
+            position={place.position}
             type={place.type}
             name={place.name}
             address={place.address}
