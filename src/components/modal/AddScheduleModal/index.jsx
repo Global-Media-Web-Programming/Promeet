@@ -48,12 +48,14 @@ const AddScheduleModal = ({ isOpen, onClose }) => {
               <S.TimeLabel>시작 시간</S.TimeLabel>
               <S.TimeButton onClick={() => setIsStartTimeModalOpen(true)}>
                 {startTime.hour}:{startTime.minute}
+                <img src={selectIcon} alt="Select Time" />
               </S.TimeButton>
             </S.TimeRow>
             <S.TimeRow>
               <S.TimeLabel>종료 시간</S.TimeLabel>
               <S.TimeButton onClick={() => setIsEndTimeModalOpen(true)}>
                 {endTime.hour}:{endTime.minute}
+                <img src={selectIcon} alt="Select Time" />
               </S.TimeButton>
             </S.TimeRow>
           </div>
@@ -68,13 +70,15 @@ const AddScheduleModal = ({ isOpen, onClose }) => {
         isOpen={isStartTimeModalOpen}
         onClose={() => setIsStartTimeModalOpen(false)}
         onSelect={handleStartTimeSelect}
-        title="시작 시간 선택"
+        initialHour={startTime.hour}
+        initialMinute={startTime.minute}
       />
       <TimeSelectModal
         isOpen={isEndTimeModalOpen}
         onClose={() => setIsEndTimeModalOpen(false)}
         onSelect={handleEndTimeSelect}
-        title="종료 시간 선택"
+        initialHour={endTime.hour}
+        initialMinute={endTime.minute}
       />
     </>
   );

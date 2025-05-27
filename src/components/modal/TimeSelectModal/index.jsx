@@ -12,13 +12,7 @@ function getPrevNext(arr, current) {
   return { prev, next };
 }
 
-const TimeSelectModal = ({
-  isOpen,
-  onClose,
-  onSelect,
-  initialHour = '09',
-  initialMinute = '00',
-}) => {
+const TimeSelectModal = ({ isOpen, onClose, onSelect, initialHour, initialMinute }) => {
   const [selectedHour, setSelectedHour] = useState(initialHour);
   const [selectedMinute, setSelectedMinute] = useState(initialMinute);
 
