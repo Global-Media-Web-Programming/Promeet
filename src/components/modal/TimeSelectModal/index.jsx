@@ -75,8 +75,8 @@ const TimeSelectModal = ({
   // 00:00을 24:00으로 표시
   const displayHour =
     isEnd && selectedHour === '00' && selectedMinute === '00' ? '24' : selectedHour;
-  const displayPrevHour = isEnd && prevHour === '00' && selectedMinute === '00' ? '24' : prevHour;
-  const displayNextHour = isEnd && nextHour === '00' && selectedMinute === '00' ? '24' : nextHour;
+  const displayPrevHour = prevHour;
+  const displayNextHour = isEnd && nextHour === '00' ? '24' : nextHour;
 
   if (!isOpen) return null;
 
