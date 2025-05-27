@@ -39,10 +39,21 @@ const TimeSelectModal = ({ isOpen, onClose, onSelect, initialHour, initialMinute
 
   const handleMinuteWheel = (e) => {
     e.preventDefault();
+    const currentIdx = MINUTES.indexOf(selectedMinute);
     if (e.deltaY < 0) {
-      setSelectedMinute(getPrevNext(MINUTES, selectedMinute).prev);
+      if (currentIdx === 0) {
+        setSelectedMinute(MINUTES[MINUTES.length - 1]);
+        setSelectedHour(getPrevNext(HOURS, selectedHour).prev);
+      } else {
+        setSelectedMinute(MINUTES[currentIdx - 1]);
+      }
     } else if (e.deltaY > 0) {
-      setSelectedMinute(getPrevNext(MINUTES, selectedMinute).next);
+      if (currentIdx === MINUTES.length - 1) {
+        setSelectedMinute(MINUTES[0]);
+        setSelectedHour(getPrevNext(HOURS, selectedHour).next);
+      } else {
+        setSelectedMinute(MINUTES[currentIdx + 1]);
+      }
     }
   };
 
