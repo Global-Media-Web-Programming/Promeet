@@ -24,6 +24,7 @@ export const Cell = styled.div`
   cursor: pointer;
 
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 
@@ -35,13 +36,25 @@ export const Cell = styled.div`
 
   font-size: 0.95rem;
 
-  background: ${({ selected }) => (selected ? '#C3E9E0' : '#fff')};
+  background: #ffffff;
 
   transition: background 0.15s;
 
   &:last-child {
     border-right: none;
   }
+`;
+
+export const Quarter = styled.div`
+  cursor: pointer;
+
+  flex: 1 1 0;
+
+  width: 100%;
+
+  background: ${({ selected }) => (selected ? '#C3E9E0' : '#fff')};
+
+  transition: background 0.15s;
 
   &:active {
     background: #c3e9e0;
@@ -58,7 +71,6 @@ export const HeaderCell = styled(Cell)`
   font-style: normal;
   font-weight: 600;
   font-size: 10px;
-
   ${({ $noTop }) =>
     $noTop &&
     css`

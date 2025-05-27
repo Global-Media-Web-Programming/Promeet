@@ -5,26 +5,38 @@ import TimeIcon from '../../assets/img/icon/time.svg';
 const DAYS = ['월', '화', '수', '목', '금', '토', '일'];
 const HOURS = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'));
 
+// [hour][day][quarter] 구조로 상태 관리
 const TimeTable = () => {
-  const [selected, setSelected] = useState(Array.from({ length: 24 }, () => Array(7).fill(false)));
+  const [selected, setSelected] = useState(
+    Array.from({ length: 24 }, () => Array.from({ length: 7 }, () => Array(4).fill(false))),
+  );
   const isDragging = useRef(false);
   const dragValue = useRef(true);
 
-  const handleCellMouseDown = (hourIdx, dayIdx) => {
+  // quarter: 0~3 (위에서부터 0,1,2,3)
+  const handleQuarterMouseDown = (hourIdx, dayIdx, quarterIdx) => {
     isDragging.current = true;
-    dragValue.current = !selected[hourIdx][dayIdx];
+    dragValue.current = !selected[hourIdx][dayIdx][quarterIdx];
     setSelected((prev) =>
       prev.map((row, h) =>
-        row.map((cell, d) => (h === hourIdx && d === dayIdx ? dragValue.current : cell)),
+        row.map((cell, d) =>
+          cell.map((val, q) =>
+            h === hourIdx && d === dayIdx && q === quarterIdx ? dragValue.current : val,
+          ),
+        ),
       ),
     );
   };
 
-  const handleCellMouseEnter = (hourIdx, dayIdx) => {
+  const handleQuarterMouseEnter = (hourIdx, dayIdx, quarterIdx) => {
     if (!isDragging.current) return;
     setSelected((prev) =>
       prev.map((row, h) =>
-        row.map((cell, d) => (h === hourIdx && d === dayIdx ? dragValue.current : cell)),
+        row.map((cell, d) =>
+          cell.map((val, q) =>
+            h === hourIdx && d === dayIdx && q === quarterIdx ? dragValue.current : val,
+          ),
+        ),
       ),
     );
   };
@@ -49,12 +61,16 @@ const TimeTable = () => {
         <S.Row key={hour}>
           <S.HeaderCell $noLeft>{hour}</S.HeaderCell>
           {DAYS.map((_, dayIdx) => (
-            <S.Cell
-              key={dayIdx}
-              selected={selected[hourIdx][dayIdx]}
-              onMouseDown={() => handleCellMouseDown(hourIdx, dayIdx)}
-              onMouseEnter={() => handleCellMouseEnter(hourIdx, dayIdx)}
-            />
+            <S.Cell key={dayIdx}>
+              {Array.from({ length: 4 }).map((_, quarterIdx) => (
+                <S.Quarter
+                  key={quarterIdx}
+                  selected={selected[hourIdx][dayIdx][quarterIdx]}
+                  onMouseDown={() => handleQuarterMouseDown(hourIdx, dayIdx, quarterIdx)}
+                  onMouseEnter={() => handleQuarterMouseEnter(hourIdx, dayIdx, quarterIdx)}
+                />
+              ))}
+            </S.Cell>
           ))}
         </S.Row>
       ))}
