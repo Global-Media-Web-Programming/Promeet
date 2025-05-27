@@ -16,7 +16,7 @@ export const Modal = styled.div`
   width: 100%;
   max-width: 400px;
   padding: 32px 24px 24px;
-  border-radius: 16px 16px 0 0;
+  border-radius: 16px;
 
   background: #ffffff;
   box-shadow: 0 2px 16px rgb(0, 0, 0, 12%);
@@ -24,6 +24,8 @@ export const Modal = styled.div`
 
 export const Title = styled.h2`
   margin: 0 0 24px;
+
+  font-family: Pretendard, sans-serif;
   font-size: 1.2rem;
   font-weight: 600;
   text-align: center;
