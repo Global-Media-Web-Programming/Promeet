@@ -34,7 +34,7 @@ export const List = styled.ul`
 `;
 
 export const Item = styled.li`
-  width: 100%;
+  width: auto;
 `;
 
 export const Button = styled.button`
