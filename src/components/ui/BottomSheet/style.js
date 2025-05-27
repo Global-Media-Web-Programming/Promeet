@@ -3,20 +3,9 @@ import { motion } from 'framer-motion';
 import { theme } from '@/styles/theme';
 import LineSVG from '@/assets/img/horizontal_line.svg?react';
 
-export const Overlay = styled(motion.div)`
-  position: fixed;
-  z-index: 3;
-  top: 0;
-  left: 0;
-
-  width: 100%;
-  height: 100%;
-
-  background-color: rgb(0, 0, 0, 25%);
-`;
-
 export const BottomSheet = styled(motion.div)`
   position: fixed;
+  z-index: 3;
   bottom: 0;
   left: 0;
 
@@ -25,15 +14,10 @@ export const BottomSheet = styled(motion.div)`
   align-items: center;
 
   width: 100%;
-  height: auto;
   border-radius: 10px 10px 0 0;
 
   background: ${theme.color.white};
   filter: drop-shadow(0 0 30px rgb(0, 0, 0, 30%));
-
-  & > * {
-    width: 100%;
-  } /* 자식요소가 width를 100%로 채우게 */
 `;
 
 export const BottomSheetHeader = styled.div`
@@ -43,6 +27,8 @@ export const BottomSheetHeader = styled.div`
   align-items: center;
   justify-content: center;
 
+  width: 100%;
+  height: var(--bs-header-height);
   padding: 15px 0 18px;
 `;
 

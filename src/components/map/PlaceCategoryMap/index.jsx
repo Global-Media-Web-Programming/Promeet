@@ -9,6 +9,8 @@ import { Category, CategoryLabel } from '@/constants/place';
 const PlaceCategoryMap = () => {
   const { selectedValue } = useTabsStore();
   const { allowMyLocation, setMyLocation } = useMyLocationsStore();
+
+  // 임시 사용자 좌표
   const schoolLat = 37.494705526855;
   const schoolLng = 126.95994559383;
 

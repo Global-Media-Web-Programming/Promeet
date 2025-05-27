@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import MarkerManager from '../MarkerManager';
+import PlaceCardList from '../PlaceCardList';
 import BottomSheet from '@/components/ui/BottomSheet';
 import useMapStore from '@/stores/map/useMapStore';
 import useMyLocation from '@/stores/map/useMyLocationsStore';
@@ -44,7 +45,7 @@ const SearchPlace = ({ category }) => {
   // 장소 검색 함수
   const searchPlaces = useCallback(() => {
     if (!ps) return;
-    const centerStation = '숭실대입구역 ';
+    const centerStation = '숭실대입구역 '; // 임시 역
     const keyword = centerStation + CategoryLabel[category];
     ps.keywordSearch(keyword, placesSearchCB);
   }, [category, ps, placesSearchCB]);
@@ -57,7 +58,9 @@ const SearchPlace = ({ category }) => {
   return (
     <>
       <MarkerManager markers={[...places, ...(myLocation ? [myLocation] : [])]} />;
-      {places.length > 0 && <BottomSheet id={'map_place'} />}
+      <BottomSheet id={'map_place'}>
+        <PlaceCardList places={places} />
+      </BottomSheet>
     </>
   );
 };

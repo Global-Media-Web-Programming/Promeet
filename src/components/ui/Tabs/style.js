@@ -3,6 +3,15 @@ import styled from 'styled-components';
 import { theme } from '@/styles/theme';
 
 export const TabsContainer = styled.section`
+  user-select: none;
+
+  height: var(--place-category-tab-height);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
   ${mediaQuery.sMobile`
     gap: 10px;
   `}

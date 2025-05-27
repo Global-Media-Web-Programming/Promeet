@@ -1,23 +1,15 @@
 import * as S from './style';
 import PropTypes from 'prop-types';
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence, useDragControls, useMotionValue } from 'framer-motion';
 import useBottomSheetStore from '@/stores/ui/useBottomSheetStore';
 
-const overlayVariants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { duration: 0.2 } },
-  exit: { opacity: 0, transition: { duration: 0.2 } },
+const bottomSheetVariants = {
+  opened: { top: 'var(--place-category-tab-height)' },
+  closed: { top: `calc(100dvh - var(--bs-header-height))` },
 };
 
-const bottomSheetVariants = {
-  hidden: { y: '100%', opacity: 0 },
-  visible: { y: 0, opacity: 1, transition: { duration: 0.3 } },
-  exit: {
-    y: '100%',
-    opacity: 0,
-    transition: { duration: 0.3 },
-  },
-};
+const offsetThreshold = 100;
+const deltaThreshold = 5;
 
 /**
  * BottomSheet 컴포넌트
@@ -27,32 +19,44 @@ const bottomSheetVariants = {
  */
 const BottomSheet = ({ id, children }) => {
   const { activeBottomSheet, setActiveBottomSheet } = useBottomSheetStore();
-  const isOpen = activeBottomSheet === id;
+
+  // 드래그 상태 관리
+  const dragY = useMotionValue(0);
+  const animateState = activeBottomSheet === id ? 'opened' : 'closed';
+
+  const dragControls = useDragControls();
+
+  const handleDragEnd = (_, info) => {
+    const isOverOffsetThreshold = Math.abs(info.offset.y) > offsetThreshold;
+    const isOverDeltaThreshold = Math.abs(info.delta.y) > deltaThreshold;
+
+    const isOverThreshold = isOverOffsetThreshold || isOverDeltaThreshold;
+    if (!isOverThreshold) return;
+
+    setActiveBottomSheet(info.offset.y < 0 ? id : null);
+  };
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <S.Overlay
-          initial="hidden"
-          animate="visible"
-          exit="exit"
-          variants={overlayVariants}
-          onClick={() => setActiveBottomSheet(null)}
-        >
-          <S.BottomSheet
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            variants={bottomSheetVariants}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <S.BottomSheetHeader>
-              <S.lineIcon />
-            </S.BottomSheetHeader>
-            <S.BottomSheetContent>{children}</S.BottomSheetContent>
-          </S.BottomSheet>
-        </S.Overlay>
-      )}
+    <AnimatePresence initial={false}>
+      <S.BottomSheet
+        drag="y"
+        dragConstraints={{
+          top: 0,
+          bottom: 0,
+        }}
+        dragElastic={{ top: 0, bottom: 0.5 }}
+        style={{ y: dragY }}
+        animate={animateState}
+        variants={bottomSheetVariants}
+        onDragEnd={handleDragEnd}
+        dragControls={dragControls}
+        dragListener={false}
+      >
+        <S.BottomSheetHeader onPointerDown={(e) => dragControls.start(e)}>
+          <S.lineIcon />
+        </S.BottomSheetHeader>
+        <S.BottomSheetContent>{children}</S.BottomSheetContent>
+      </S.BottomSheet>
     </AnimatePresence>
   );
 };
