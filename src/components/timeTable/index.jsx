@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import * as S from './style';
+import TimeIcon from '../../assets/img/icon/time.svg';
 
 const DAYS = ['월', '화', '수', '목', '금', '토', '일'];
 const HOURS = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'));
@@ -35,7 +36,9 @@ const TimeTable = () => {
   return (
     <S.TableWrapper onMouseLeave={handleMouseUp} onMouseUp={handleMouseUp}>
       <S.Row>
-        <S.HeaderCell $noTop $noLeft />
+        <S.HeaderCell $noTop $noLeft>
+          <img src={TimeIcon} alt="시간표" width={24} height={24} />
+        </S.HeaderCell>
         {DAYS.map((day) => (
           <S.HeaderCell key={day} $noTop>
             {day}
