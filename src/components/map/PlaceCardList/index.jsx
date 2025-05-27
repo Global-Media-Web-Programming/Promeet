@@ -7,12 +7,15 @@ const PlaceCardList = ({ places }) => {
   return (
     <S.Container>
       {places.length > 0 ? (
-        places.map((placeData, i) => (
+        places.map((place, i) => (
           <PlaceCard
             key={i}
-            type={placeData.place.type}
-            name={placeData.place.name}
-            address={placeData.place.address}
+            id={place.id}
+            type={place.type}
+            name={place.name}
+            address={place.address}
+            isLiked={place.isLiked}
+            likesCount={place.likesCount}
           />
         ))
       ) : (
@@ -25,17 +28,16 @@ const PlaceCardList = ({ places }) => {
 PlaceCardList.propTypes = {
   places: PropTypes.arrayOf(
     PropTypes.shape({
+      id: PropTypes.string.isRequired,
       position: PropTypes.shape({
         La: PropTypes.string.isRequired,
         Ma: PropTypes.string.isRequired,
       }).isRequired,
-      place: PropTypes.shape({
-        type: PropTypes.oneOf(Object.values(Category)).isRequired,
-        name: PropTypes.string.isRequired,
-        address: PropTypes.string.isRequired,
-        phone: PropTypes.string.isRequired,
-        link: PropTypes.string.isRequired,
-      }),
+      type: PropTypes.oneOf(Object.values(Category)).isRequired,
+      name: PropTypes.string.isRequired,
+      address: PropTypes.string.isRequired,
+      isLiked: PropTypes.bool.isRequired,
+      likesCount: PropTypes.number.isRequired,
     }),
   ).isRequired,
 };

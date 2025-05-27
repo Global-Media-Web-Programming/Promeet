@@ -1,10 +1,12 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { theme } from '@/styles/theme';
+import EmptyHeartSvg from '@/assets/img/icon/empty_heart.svg?react';
+import FilledHeartSvg from '@/assets/img/icon/filled_heart.svg?react';
 
 export const PlaceCard = styled.div`
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
 
   width: 100%;
   padding: 15px;
@@ -14,6 +16,12 @@ export const PlaceCard = styled.div`
   box-shadow: 0 3px 8px 0 rgb(0, 0, 0, 25%);
 `;
 
+export const CardLeft = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
+
 export const CardHeaderWrapper = styled.header`
   display: flex;
   gap: 8px;
@@ -21,10 +29,32 @@ export const CardHeaderWrapper = styled.header`
 `;
 
 export const PlaceName = styled.h3`
-  font-size: 18px;
   font-weight: 700;
 `;
 
 export const PlaceAddress = styled.p`
+  font-size: 12px;
+  color: ${theme.color.text.grey};
+`;
+
+export const CardRight = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+`;
+
+const IconStyle = css`
+  cursor: pointer;
+`;
+export const EmptyHeartIcon = styled(EmptyHeartSvg)`
+  ${IconStyle}
+`;
+export const FilledHeartIcon = styled(FilledHeartSvg)`
+  ${IconStyle}
+`;
+
+export const heartCnt = styled.p`
+  font-weight: 700;
   color: ${theme.color.text.grey};
 `;

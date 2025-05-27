@@ -80,8 +80,8 @@ const MarkerManager = ({ markers }) => {
     // 새로운 마커 생성
     placeAndProfileMarkers.forEach((markerData) => {
       // 장소 마커
-      if (markerData.place) {
-        const imageSrc = CategoryMarkerImages[markerData.place.type];
+      if (markerData) {
+        const imageSrc = CategoryMarkerImages[markerData.type];
         if (!imageSrc) return;
 
         const imageSize = new window.kakao.maps.Size(32, 34);
@@ -103,14 +103,14 @@ const MarkerManager = ({ markers }) => {
             <div class="wrap">
               <div class="info">
                 <div class="title">
-                  ${markerData.place.name}
+                  ${markerData.name}
                   <div class="close" onclick="this.parentElement.parentElement.parentElement.parentElement.remove()" title="닫기"></div>
                 </div>
                 <div class="body">
                   <div class="desc">
-                    <div class="ellipsis">${markerData.place.phone || ''}</div>
-                    <div class="ellipsis">${markerData.place.address || ''}</div>
-                    ${markerData.place.link ? `<div><a href="${markerData.place.link}" target="_blank" rel="noopener noreferrer" class="link">정보 보기</a></div>` : ''}
+                    <div class="ellipsis">${markerData.phone || ''}</div>
+                    <div class="ellipsis">${markerData.address || ''}</div>
+                    ${markerData.link ? `<div><a href="${markerData.link}" target="_blank" rel="noopener noreferrer" class="link">정보 보기</a></div>` : ''}
                   </div>
                 </div>
               </div>
@@ -169,21 +169,23 @@ const MarkerManager = ({ markers }) => {
 MarkerManager.propTypes = {
   markers: PropTypes.arrayOf(
     PropTypes.shape({
+      isMyLocation: PropTypes.bool, // 내 위치 마커 구분용
       position: PropTypes.shape({
         lat: PropTypes.number.isRequired,
         lng: PropTypes.number.isRequired,
       }).isRequired,
-      isMyLocation: PropTypes.bool,
-      place: PropTypes.shape({
-        type: PropTypes.oneOf(Object.values(Category)).isRequired,
-        name: PropTypes.string.isRequired,
-        phone: PropTypes.string,
-        address: PropTypes.string.isRequired,
-        link: PropTypes.string,
-      }),
+      id: PropTypes.string,
+      type: PropTypes.oneOf(Object.values(Category)),
+      name: PropTypes.string,
+      phone: PropTypes.string,
+      address: PropTypes.string,
+      link: PropTypes.string,
+      isLiked: PropTypes.bool,
+      likesCount: PropTypes.number,
+      // 내 프로필 마커
       profile: PropTypes.shape({
         profile_img: PropTypes.string,
-        nickname: PropTypes.string.isRequired,
+        nickname: PropTypes.string,
       }),
     }),
   ).isRequired,
