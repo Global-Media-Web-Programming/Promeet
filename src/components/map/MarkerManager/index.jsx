@@ -1,8 +1,9 @@
+import './style.css';
 import { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import useMapStore from '@/stores/map/useMapStore';
 import { Category, CategoryMarkerImages } from '@/constants/place';
-import { MY_LOC_MARKER_IMG } from '@/constants/map';
+import { MY_LOC_MARKER_IMG, MY_LOC_MARKER_ID } from '@/constants/map';
 
 const MarkerManager = ({ markers }) => {
   const { map } = useMapStore();
@@ -14,7 +15,7 @@ const MarkerManager = ({ markers }) => {
   useEffect(() => {
     if (!map) return;
 
-    const myLocationMarker = markers.find((marker) => marker.isMyLocation);
+    const myLocationMarker = markers.find((marker) => marker.id === MY_LOC_MARKER_ID);
     if (!myLocationMarker) {
       if (myLocationMarkerRef.current) {
         myLocationMarkerRef.current.setMap(null);
@@ -79,6 +80,23 @@ const MarkerManager = ({ markers }) => {
 
     // 새로운 마커 생성
     placeAndProfileMarkers.forEach((markerData) => {
+      // 프로필 마커
+      if (markerData.profile) {
+        const content = `
+          <div class="profile-overlay">
+            ${markerData.profile.profile_img ? `<img src="${markerData.profile.profile_img}" alt="profile" />` : ''}
+            <p>${markerData.profile.nickname}</p>
+          </div>
+        `;
+
+        const overlay = new window.kakao.maps.CustomOverlay({
+          content: content,
+          position: markerData.position,
+        });
+
+        overlay.setMap(map);
+        markersRef.current.push(overlay);
+      }
       // 장소 마커
       if (markerData) {
         const imageSrc = CategoryMarkerImages[markerData.type];
@@ -100,19 +118,15 @@ const MarkerManager = ({ markers }) => {
           }
 
           const content = `
-            <div class="wrap">
-              <div class="info">
-                <div class="title">
-                  ${markerData.name}
-                  <div class="close" onclick="this.parentElement.parentElement.parentElement.parentElement.remove()" title="닫기"></div>
-                </div>
-                <div class="body">
-                  <div class="desc">
-                    <div class="ellipsis">${markerData.phone || ''}</div>
-                    <div class="ellipsis">${markerData.address || ''}</div>
-                    ${markerData.link ? `<div><a href="${markerData.link}" target="_blank" rel="noopener noreferrer" class="link">정보 보기</a></div>` : ''}
-                  </div>
-                </div>
+            <div class="infoContainer">
+              <div class="title">
+                ${markerData.name}
+                <div class="close" onclick="this.parentElement.parentElement.remove()" title="닫기">닫기</div>
+              </div>
+              <div class="body">
+                <div class="ellipsis">${markerData.phone || ''}</div>
+                <div class="ellipsis">${markerData.address || ''}</div>
+                ${markerData.link ? `<div><a href="${markerData.link}" target="_blank" rel="noopener noreferrer" class="link">정보 보기</a></div>` : ''}
               </div>
             </div>
           `;
@@ -120,7 +134,7 @@ const MarkerManager = ({ markers }) => {
           const overlay = new window.kakao.maps.CustomOverlay({
             content: content,
             position: marker.getPosition(),
-            yAnchor: 1,
+            yAnchor: 1.5,
           });
 
           overlay.setMap(map);
@@ -129,23 +143,6 @@ const MarkerManager = ({ markers }) => {
 
         marker.setMap(map);
         markersRef.current.push(marker);
-      }
-      // 프로필 마커
-      else if (markerData.profile) {
-        const content = `
-          <div class="profile-overlay">
-            ${markerData.profile.profile_img ? `<img src="${markerData.profile.profile_img}" alt="profile" />` : ''}
-            <p>${markerData.profile.nickname}</p>
-          </div>
-        `;
-
-        const overlay = new window.kakao.maps.CustomOverlay({
-          content: content,
-          position: markerData.position,
-        });
-
-        overlay.setMap(map);
-        markersRef.current.push(overlay);
       }
     });
 
@@ -169,7 +166,6 @@ const MarkerManager = ({ markers }) => {
 MarkerManager.propTypes = {
   markers: PropTypes.arrayOf(
     PropTypes.shape({
-      isMyLocation: PropTypes.bool, // 내 위치 마커 구분용
       position: PropTypes.shape({
         lat: PropTypes.number.isRequired,
         lng: PropTypes.number.isRequired,

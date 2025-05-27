@@ -5,6 +5,7 @@ import SearchPlace from '@/components/map/SearchPlace';
 import useTabsStore from '@/stores/ui/useTabsStore';
 import useMyLocationsStore from '@/stores/map/useMyLocationsStore';
 import { Category, CategoryLabel } from '@/constants/place';
+import { MY_LOC_MARKER_ID } from '@/constants/map';
 
 const PlaceCategoryMap = () => {
   const { selectedValue } = useTabsStore();
@@ -24,7 +25,7 @@ const PlaceCategoryMap = () => {
             const { latitude, longitude } = position.coords;
             setMyLocation({
               position: { lat: latitude, lng: longitude },
-              isMyLocation: true, // 내 위치 마커 구분용
+              id: MY_LOC_MARKER_ID, // 내 위치 마커 구분용
             });
           },
           (error) => new Error('[navigator.geolocation 오류 발생]', error),

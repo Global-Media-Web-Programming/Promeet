@@ -18,6 +18,12 @@ export const PlaceCard = styled.div`
   box-shadow: 0 3px 8px 0 rgb(0, 0, 0, 25%);
 `;
 
+const ellipseStyle = css`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
 export const CardLeft = styled.div`
   display: flex;
   flex-direction: column;
@@ -32,11 +38,15 @@ export const CardHeaderWrapper = styled.header`
 
 export const PlaceName = styled.h3`
   font-weight: 700;
+  max-width: 200px;
+  ${ellipseStyle}
 `;
 
 export const PlaceAddress = styled.p`
   font-size: 12px;
   color: ${theme.color.text.grey};
+  max-width: 200px;
+  ${ellipseStyle}
 `;
 
 export const CardRight = styled.div`
