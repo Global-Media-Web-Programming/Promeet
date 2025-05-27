@@ -16,8 +16,8 @@ export const Slide = styled.div`
   position: relative;
 
   width: 100%;
-  height: 420px;
   max-width: 480px;
+  height: 420px;
   padding: 32px 24px 24px;
   border-radius: 16px 16px 0 0;
 
@@ -48,6 +48,13 @@ export const CloseButton = styled.button`
   font-size: 2rem;
 
   background: none;
+`;
+
+export const Divider = styled.div`
+  width: 100%;
+  height: 1px;
+  margin: 16px 0;
+  background: #f5f6f7;
 `;
 
 export const TableSetting = styled.div`
@@ -111,13 +118,15 @@ export const TimeButton = styled.button`
 
 export const DeleteButton = styled.button`
   cursor: pointer;
+
   display: flex;
   align-items: center;
   justify-self: end;
 
-  background: none;
-  border: none;
   padding: 0;
+  border: none;
+
+  background: none;
 `;
 
 export const AddButton = styled.button`

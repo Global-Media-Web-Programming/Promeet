@@ -121,6 +121,7 @@ const AddScheduleModal = ({ isOpen, onClose }) => {
           </S.CloseButton>
           <div>
             <h2>일정명</h2>
+            <S.Divider />
             {schedules.map((item, idx) => (
               <S.TableSetting key={idx} style={{ marginBottom: 24 }}>
                 <S.DayTimeSelect>
