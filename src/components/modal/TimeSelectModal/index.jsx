@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import * as S from './style';
 
 const HOURS = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'));
@@ -15,6 +15,14 @@ function getPrevNext(arr, current) {
 const TimeSelectModal = ({ isOpen, onClose, onSelect, initialHour, initialMinute }) => {
   const [selectedHour, setSelectedHour] = useState(initialHour);
   const [selectedMinute, setSelectedMinute] = useState(initialMinute);
+
+  // 모달이 열릴 때마다 초기값 동기화
+  useEffect(() => {
+    if (isOpen) {
+      setSelectedHour(initialHour);
+      setSelectedMinute(initialMinute);
+    }
+  }, [isOpen, initialHour, initialMinute]);
 
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) onClose();
@@ -77,8 +85,8 @@ TimeSelectModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   onSelect: PropTypes.func.isRequired,
-  initialHour: PropTypes.string,
-  initialMinute: PropTypes.string,
+  initialHour: PropTypes.string.isRequired,
+  initialMinute: PropTypes.string.isRequired,
 };
 
 export default TimeSelectModal;

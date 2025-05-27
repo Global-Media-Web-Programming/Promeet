@@ -8,11 +8,6 @@ const DaySelectModal = ({ isOpen, onClose, onSelect }) => {
     if (e.target === e.currentTarget) onClose();
   };
 
-  const handleSelect = (day) => {
-    onSelect(day);
-    onClose();
-  };
-
   if (!isOpen) return null;
 
   return (
@@ -21,7 +16,13 @@ const DaySelectModal = ({ isOpen, onClose, onSelect }) => {
         <S.List>
           {DAYS.map((day) => (
             <S.Item key={day}>
-              <S.Button type="button" onClick={() => handleSelect(day)}>
+              <S.Button
+                type="button"
+                onClick={() => {
+                  onSelect(day);
+                  onClose();
+                }}
+              >
                 {day}
               </S.Button>
             </S.Item>

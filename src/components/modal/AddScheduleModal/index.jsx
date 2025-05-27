@@ -5,28 +5,56 @@ import TimeSelectModal from '@/components/modal/TimeSelectModal';
 import selectIcon from '@/assets/img/icon/dropdown.svg';
 import * as S from './style';
 
+const defaultSchedule = () => ({
+  day: '월요일',
+  startTime: { hour: '09', minute: '00' },
+  endTime: { hour: '18', minute: '00' },
+});
+
 const AddScheduleModal = ({ isOpen, onClose }) => {
-  const [isDayModalOpen, setIsDayModalOpen] = useState(false);
-  const [selectedDay, setSelectedDay] = useState('월요일'); // 초기값
+  const [schedules, setSchedules] = useState([defaultSchedule()]);
+  const [activeIdx, setActiveIdx] = useState(null); // 어떤 묶음의 모달이 열렸는지
+  const [modalType, setModalType] = useState(null); // 'day' | 'start' | 'end'
 
-  const [isStartTimeModalOpen, setIsStartTimeModalOpen] = useState(false);
-  const [isEndTimeModalOpen, setIsEndTimeModalOpen] = useState(false);
-  const [startTime, setStartTime] = useState({ hour: '09', minute: '00' });
-  const [endTime, setEndTime] = useState({ hour: '18', minute: '00' });
+  // 모달 열기
+  const openModal = (idx, type) => {
+    setActiveIdx(idx);
+    setModalType(type);
+  };
 
+  // 모달 닫기
+  const closeModal = () => {
+    setActiveIdx(null);
+    setModalType(null);
+  };
+
+  // 요일 선택
   const handleDaySelect = (day) => {
-    setSelectedDay(day);
-    setIsDayModalOpen(false);
+    setSchedules((schedules) =>
+      schedules.map((item, idx) => (idx === activeIdx ? { ...item, day } : item)),
+    );
+    closeModal();
   };
 
+  // 시작 시간 선택
   const handleStartTimeSelect = (time) => {
-    setStartTime(time);
-    setIsStartTimeModalOpen(false);
+    setSchedules((schedules) =>
+      schedules.map((item, idx) => (idx === activeIdx ? { ...item, startTime: time } : item)),
+    );
+    closeModal();
   };
 
+  // 종료 시간 선택
   const handleEndTimeSelect = (time) => {
-    setEndTime(time);
-    setIsEndTimeModalOpen(false);
+    setSchedules((schedules) =>
+      schedules.map((item, idx) => (idx === activeIdx ? { ...item, endTime: time } : item)),
+    );
+    closeModal();
+  };
+
+  // 입력 묶음 추가
+  const handleAddSchedule = () => {
+    setSchedules([...schedules, defaultSchedule()]);
   };
 
   if (!isOpen) return null;
@@ -40,45 +68,50 @@ const AddScheduleModal = ({ isOpen, onClose }) => {
           </S.CloseButton>
           <div>
             <h2>일정명</h2>
-            <S.DaySelectButton onClick={() => setIsDayModalOpen(true)}>
-              {selectedDay}
-              <img src={selectIcon} alt="Select Day" />
-            </S.DaySelectButton>
-            <S.TimeRow>
-              <S.TimeLabel>시작 시간</S.TimeLabel>
-              <S.TimeButton onClick={() => setIsStartTimeModalOpen(true)}>
-                {startTime.hour}:{startTime.minute}
-                <img src={selectIcon} alt="Select Time" />
-              </S.TimeButton>
-            </S.TimeRow>
-            <S.TimeRow>
-              <S.TimeLabel>종료 시간</S.TimeLabel>
-              <S.TimeButton onClick={() => setIsEndTimeModalOpen(true)}>
-                {endTime.hour}:{endTime.minute}
-                <img src={selectIcon} alt="Select Time" />
-              </S.TimeButton>
-            </S.TimeRow>
+            {schedules.map((item, idx) => (
+              <S.TableSetting key={idx} style={{ marginBottom: 24 }}>
+                <S.DaySelectButton onClick={() => openModal(idx, 'day')}>
+                  {item.day}
+                  <img src={selectIcon} alt="Select Day" />
+                </S.DaySelectButton>
+                <S.TimeRow>
+                  <S.TimeButton onClick={() => openModal(idx, 'start')}>
+                    {item.startTime.hour}:{item.startTime.minute}
+                    <img src={selectIcon} alt="Select Time" />
+                  </S.TimeButton>
+                </S.TimeRow>
+                <S.TimeRow>
+                  <S.TimeButton onClick={() => openModal(idx, 'end')}>
+                    {item.endTime.hour}:{item.endTime.minute}
+                    <img src={selectIcon} alt="Select Time" />
+                  </S.TimeButton>
+                </S.TimeRow>
+              </S.TableSetting>
+            ))}
+            <S.AddButton type="button" onClick={handleAddSchedule}>
+              시간 추가
+            </S.AddButton>
           </div>
         </S.Slide>
       </S.Overlay>
       <DaySelectModal
-        isOpen={isDayModalOpen}
-        onClose={() => setIsDayModalOpen(false)}
+        isOpen={modalType === 'day'}
+        onClose={closeModal}
         onSelect={handleDaySelect}
       />
       <TimeSelectModal
-        isOpen={isStartTimeModalOpen}
-        onClose={() => setIsStartTimeModalOpen(false)}
+        isOpen={modalType === 'start'}
+        onClose={closeModal}
         onSelect={handleStartTimeSelect}
-        initialHour={startTime.hour}
-        initialMinute={startTime.minute}
+        initialHour={activeIdx !== null ? schedules[activeIdx].startTime.hour : '09'}
+        initialMinute={activeIdx !== null ? schedules[activeIdx].startTime.minute : '00'}
       />
       <TimeSelectModal
-        isOpen={isEndTimeModalOpen}
-        onClose={() => setIsEndTimeModalOpen(false)}
+        isOpen={modalType === 'end'}
+        onClose={closeModal}
         onSelect={handleEndTimeSelect}
-        initialHour={endTime.hour}
-        initialMinute={endTime.minute}
+        initialHour={activeIdx !== null ? schedules[activeIdx].endTime.hour : '18'}
+        initialMinute={activeIdx !== null ? schedules[activeIdx].endTime.minute : '00'}
       />
     </>
   );
