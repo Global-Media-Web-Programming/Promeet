@@ -37,18 +37,70 @@ const AddScheduleModal = ({ isOpen, onClose }) => {
     closeModal();
   };
 
-  // 시작 시간 선택
-  const handleStartTimeSelect = (time) => {
-    setSchedules((schedules) =>
-      schedules.map((item, idx) => (idx === activeIdx ? { ...item, startTime: time } : item)),
-    );
-    closeModal();
+  // 시간 비교 함수 (시:분 → 분 단위로 변환)
+  const timeToMinutes = (time) => Number(time.hour) * 60 + Number(time.minute);
+  const addMinutes = (time, mins) => {
+    let total = timeToMinutes(time) + mins;
+    if (total < 0) total += 24 * 60;
+    total = total % (24 * 60);
+    return {
+      hour: String(Math.floor(total / 60)).padStart(2, '0'),
+      minute: String(total % 60).padStart(2, '0'),
+    };
   };
 
   // 종료 시간 선택
   const handleEndTimeSelect = (time) => {
     setSchedules((schedules) =>
-      schedules.map((item, idx) => (idx === activeIdx ? { ...item, endTime: time } : item)),
+      schedules.map((item, idx) => {
+        if (idx !== activeIdx) return item;
+        const endMins = timeToMinutes(time);
+        const startMins = timeToMinutes(item.startTime);
+        if (endMins <= startMins) {
+          // 끝 시간이 01:00 이전이면 시작 시간을 00:00으로 설정
+          if (endMins < 60) {
+            return {
+              ...item,
+              endTime: time,
+              startTime: { hour: '00', minute: '00' },
+            };
+          }
+          return {
+            ...item,
+            endTime: time,
+            startTime: addMinutes(time, -60),
+          };
+        }
+        return { ...item, endTime: time };
+      }),
+    );
+    closeModal();
+  };
+
+  // 시작 시간 선택
+  const handleStartTimeSelect = (time) => {
+    setSchedules((schedules) =>
+      schedules.map((item, idx) => {
+        if (idx !== activeIdx) return item;
+        const startMins = timeToMinutes(time);
+        const endMins = timeToMinutes(item.endTime);
+        if (startMins >= endMins) {
+          // 시작 시간이 23:00 이후면 끝 시간을 00:00으로 설정
+          if (startMins >= 1380) {
+            return {
+              ...item,
+              startTime: time,
+              endTime: { hour: '00', minute: '00' },
+            };
+          }
+          return {
+            ...item,
+            startTime: time,
+            endTime: addMinutes(time, 60),
+          };
+        }
+        return { ...item, startTime: time };
+      }),
     );
     closeModal();
   };
