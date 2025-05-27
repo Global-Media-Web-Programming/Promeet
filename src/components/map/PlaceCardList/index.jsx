@@ -1,9 +1,19 @@
 import * as S from './style';
 import PropTypes from 'prop-types';
 import PlaceCard from '@/components/map/PlaceCard';
+import PlaceCardSkeleton from '@/components/map/PlaceCard/PlaceCardSkeleton';
 import { Category } from '@/constants/place';
 
-const PlaceCardList = ({ places }) => {
+const PlaceCardList = ({ places, isLoading }) => {
+  if (isLoading) {
+    return (
+      <S.Container>
+        {[...Array(5)].map((_, i) => (
+          <PlaceCardSkeleton key={i} />
+        ))}
+      </S.Container>
+    );
+  }
   return (
     <S.Container>
       {places.length > 0 ? (
@@ -40,6 +50,7 @@ PlaceCardList.propTypes = {
       likesCount: PropTypes.number.isRequired,
     }),
   ).isRequired,
+  isLoading: PropTypes.bool.isRequired,
 };
 
 export default PlaceCardList;

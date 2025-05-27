@@ -58,3 +58,18 @@ export const heartCnt = styled.p`
   font-weight: 700;
   color: ${theme.color.text.grey};
 `;
+
+/* 스켈레톤 */
+export const SkeletonName = styled.div`
+  width: 125px;
+  height: 20px;
+  border-radius: 5px;
+  background: #e0e0e0;
+`;
+
+export const SkeletonAddress = styled.div`
+  width: 200px;
+  height: 14px;
+  border-radius: 5px;
+  background: #e0e0e0;
+`;

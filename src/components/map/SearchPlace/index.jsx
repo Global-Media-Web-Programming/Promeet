@@ -14,6 +14,8 @@ const SearchPlace = ({ category }) => {
   const [places, setPlaces] = useState([]);
   // 좋아요 정보 가져오기 위해 id들 저장
   const [placeIds, setPlaceIds] = useState([]);
+  // 지도 검색 로딩용
+  const [isLoading, setIsLoading] = useState(false);
 
   // Places 서비스 초기화
   const ps = useMemo(() => {
@@ -24,6 +26,7 @@ const SearchPlace = ({ category }) => {
   // 검색 콜백
   const placesSearchCB = useCallback(
     (data, status) => {
+      setIsLoading(false); // 검색 완료되면 로딩 종료
       if (status === window.kakao.maps.services.Status.OK) {
         const places = data.map((place) => ({
           id: place.id,
@@ -62,6 +65,7 @@ const SearchPlace = ({ category }) => {
   // 장소 검색 함수
   const searchPlaces = useCallback(() => {
     if (!ps) return;
+    setIsLoading(true); // 검색 시작시 로딩 시작
     const centerStation = '숭실대입구역 '; // 임시 역
     const keyword = centerStation + CategoryLabel[category];
     ps.keywordSearch(keyword, placesSearchCB);
@@ -76,7 +80,7 @@ const SearchPlace = ({ category }) => {
     <>
       <MarkerManager markers={[...mergedPlaces, ...(myLocation ? [myLocation] : [])]} />;
       <BottomSheet id={'map_place'}>
-        <PlaceCardList places={mergedPlaces} />
+        <PlaceCardList places={mergedPlaces} isLoading={isLoading} />
       </BottomSheet>
     </>
   );
