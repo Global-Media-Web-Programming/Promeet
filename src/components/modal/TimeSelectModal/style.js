@@ -6,7 +6,7 @@ export const Overlay = styled.div`
   inset: 0;
 
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
 
   background: rgb(0, 0, 0, 30%);
@@ -20,18 +20,6 @@ export const Modal = styled.div`
 
   background: #ffffff;
   box-shadow: 0 2px 16px rgb(0, 0, 0, 12%);
-
-  animation: slideUp 0.3s ease;
-
-  @keyframes slideUp {
-    from {
-      transform: translateY(100%);
-    }
-
-    to {
-      transform: translateY(0);
-    }
-  }
 `;
 
 export const Title = styled.h2`
@@ -55,23 +43,6 @@ export const PickerCol = styled.div`
   flex-direction: column;
   align-items: center;
   min-width: 60px;
-`;
-
-export const PickerButton = styled.button`
-  cursor: pointer;
-
-  margin: 0;
-  padding: 0;
-  border: none;
-
-  font-size: 1.2rem;
-  color: #4f8cff;
-
-  background: none;
-
-  &:active {
-    color: #2563eb;
-  }
 `;
 
 export const PrevNext = styled.div`
@@ -118,13 +89,13 @@ export const ConfirmButton = styled.button`
   font-weight: 600;
   color: #ffffff;
 
-  background: #4f8cff;
+  background: #40b59f;
 
   transition: background 0.2s;
 
   &:hover,
   &:focus {
-    background: #2563eb;
+    background: #497e64;
     outline: none;
   }
 `;

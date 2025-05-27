@@ -13,7 +13,7 @@ export const Overlay = styled.div`
 `;
 
 export const Modal = styled.div`
-  min-width: 260px;
+  min-width: 228px;
   min-height: 120px;
   padding: 24px 0;
   border-radius: 8px;
@@ -28,7 +28,9 @@ export const List = styled.ul`
   gap: 12px;
   align-items: center;
 
+  width: 100%;
   margin: 0;
+  padding: 0;
 
   list-style: none;
 `;
@@ -45,7 +47,10 @@ export const Button = styled.button`
   border: none;
   border-radius: 6px;
 
+  font-family: Pretendard, sans-serif;
   font-size: 1.1rem;
+  font-weight: 600;
+  font-style: normal;
   color: #222222;
 
   background: #f5f6fa;
@@ -57,7 +62,7 @@ export const Button = styled.button`
   &:hover,
   &:focus {
     color: #ffffff;
-    background: #4f8cff;
+    background: #40b59f;
     outline: none;
   }
 `;
