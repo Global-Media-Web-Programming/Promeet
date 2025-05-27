@@ -16,6 +16,7 @@ export const Slide = styled.div`
   position: relative;
 
   width: 100%;
+  height: 420px;
   max-width: 480px;
   padding: 32px 24px 24px;
   border-radius: 16px 16px 0 0;
@@ -52,10 +53,19 @@ export const CloseButton = styled.button`
 export const TableSetting = styled.div`
   display: flex;
   flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+
+  margin: 24px 0;
+`;
+
+export const DayTimeSelect = styled.div`
+  display: flex;
+  flex-direction: row;
   gap: 10px;
   align-items: center;
 
-  margin: 24px 0;
+  margin: 0;
 `;
 
 export const DaySelectButton = styled.button`
@@ -97,6 +107,17 @@ export const TimeButton = styled.button`
   font-style: normal;
 
   background: none;
+`;
+
+export const DeleteButton = styled.button`
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-self: end;
+
+  background: none;
+  border: none;
+  padding: 0;
 `;
 
 export const AddButton = styled.button`
