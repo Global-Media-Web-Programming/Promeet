@@ -37,7 +37,7 @@ const AddScheduleModal = ({ isOpen, onClose }) => {
     closeModal();
   };
 
-  // 시간 비교 함수 (시:분 → 분 단위로 변환)
+  // 시간 비교 함수
   const timeToMinutes = (time) => Number(time.hour) * 60 + Number(time.minute);
   const addMinutes = (time, mins) => {
     let total = timeToMinutes(time) + mins;
@@ -54,8 +54,14 @@ const AddScheduleModal = ({ isOpen, onClose }) => {
     setSchedules((schedules) =>
       schedules.map((item, idx) => {
         if (idx !== activeIdx) return item;
-        const endMins = timeToMinutes(time);
+        let endMins = timeToMinutes(time);
         const startMins = timeToMinutes(item.startTime);
+
+        // 00:00(24:00)일 때는 1440분으로 간주
+        if (time.hour === '00' && time.minute === '00') {
+          endMins = 1440;
+        }
+
         if (endMins <= startMins) {
           // 끝 시간이 01:00 이전이면 시작 시간을 00:00으로 설정
           if (endMins < 60) {
@@ -83,9 +89,14 @@ const AddScheduleModal = ({ isOpen, onClose }) => {
       schedules.map((item, idx) => {
         if (idx !== activeIdx) return item;
         const startMins = timeToMinutes(time);
-        const endMins = timeToMinutes(item.endTime);
+        let endMins = timeToMinutes(item.endTime);
+
+        // 끝 시간이 24:00(00:00)이면 1440분으로 간주
+        const isEndTimeMidnight = item.endTime.hour === '00' && item.endTime.minute === '00';
+        if (isEndTimeMidnight) endMins = 1440;
+
         if (startMins >= endMins) {
-          // 시작 시간이 23:00 이후면 끝 시간을 00:00으로 설정
+          // 시작 시간이 23:00 이후면 끝 시간을 00:00(24:00)으로
           if (startMins >= 1380) {
             return {
               ...item,
@@ -93,6 +104,15 @@ const AddScheduleModal = ({ isOpen, onClose }) => {
               endTime: { hour: '00', minute: '00' },
             };
           }
+          // 끝 시간이 24:00(00:00)이면 끝 시간을 그대로 두고 시작 시간만 변경
+          if (isEndTimeMidnight) {
+            return {
+              ...item,
+              startTime: time,
+              endTime: { hour: '00', minute: '00' },
+            };
+          }
+          // 그 외에는 기존대로 1시간 뒤로 조정
           return {
             ...item,
             startTime: time,
@@ -137,7 +157,9 @@ const AddScheduleModal = ({ isOpen, onClose }) => {
                   </S.TimeRow>
                   <S.TimeRow>
                     <S.TimeButton onClick={() => openModal(idx, 'end')}>
-                      {item.endTime.hour}:{item.endTime.minute}
+                      {item.endTime.hour === '00' && item.endTime.minute === '00'
+                        ? '24:00'
+                        : `${item.endTime.hour}:${item.endTime.minute}`}
                       <img src={selectIcon} alt="Select Time" />
                     </S.TimeButton>
                   </S.TimeRow>
@@ -174,6 +196,7 @@ const AddScheduleModal = ({ isOpen, onClose }) => {
         onSelect={handleEndTimeSelect}
         initialHour={activeIdx !== null ? schedules[activeIdx].endTime.hour : '18'}
         initialMinute={activeIdx !== null ? schedules[activeIdx].endTime.minute : '00'}
+        isEnd
       />
     </>
   );

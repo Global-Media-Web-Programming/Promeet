@@ -12,7 +12,14 @@ function getPrevNext(arr, current) {
   return { prev, next };
 }
 
-const TimeSelectModal = ({ isOpen, onClose, onSelect, initialHour, initialMinute }) => {
+const TimeSelectModal = ({
+  isOpen,
+  onClose,
+  onSelect,
+  initialHour,
+  initialMinute,
+  isEnd = false,
+}) => {
   const [selectedHour, setSelectedHour] = useState(initialHour);
   const [selectedMinute, setSelectedMinute] = useState(initialMinute);
 
@@ -65,6 +72,12 @@ const TimeSelectModal = ({ isOpen, onClose, onSelect, initialHour, initialMinute
   const { prev: prevHour, next: nextHour } = getPrevNext(HOURS, selectedHour);
   const { prev: prevMinute, next: nextMinute } = getPrevNext(MINUTES, selectedMinute);
 
+  // 00:00을 24:00으로 표시
+  const displayHour =
+    isEnd && selectedHour === '00' && selectedMinute === '00' ? '24' : selectedHour;
+  const displayPrevHour = isEnd && prevHour === '00' && selectedMinute === '00' ? '24' : prevHour;
+  const displayNextHour = isEnd && nextHour === '00' && selectedMinute === '00' ? '24' : nextHour;
+
   if (!isOpen) return null;
 
   return (
@@ -73,9 +86,9 @@ const TimeSelectModal = ({ isOpen, onClose, onSelect, initialHour, initialMinute
         <S.Title>시간 선택</S.Title>
         <S.ScrollPickerWrapper>
           <S.PickerCol onWheel={handleHourWheel} tabIndex={0}>
-            <S.PrevNext>{prevHour}</S.PrevNext>
-            <S.Selected>{selectedHour}</S.Selected>
-            <S.PrevNext>{nextHour}</S.PrevNext>
+            <S.PrevNext>{displayPrevHour}</S.PrevNext>
+            <S.Selected>{displayHour}</S.Selected>
+            <S.PrevNext>{displayNextHour}</S.PrevNext>
           </S.PickerCol>
           <S.Colon>:</S.Colon>
           <S.PickerCol onWheel={handleMinuteWheel} tabIndex={0}>
@@ -98,6 +111,7 @@ TimeSelectModal.propTypes = {
   onSelect: PropTypes.func.isRequired,
   initialHour: PropTypes.string.isRequired,
   initialMinute: PropTypes.string.isRequired,
+  isEnd: PropTypes.bool,
 };
 
 export default TimeSelectModal;
