@@ -1,6 +1,10 @@
-import TimeTable from '@/components/timeTable';
+import AbleTimeTable from '@/components/timeTable/AbleTimeTable';
 
 const ResultPage = () => {
-  return <TimeTable />;
+  return (
+    <>
+      <AbleTimeTable />
+    </>
+  );
 };
 export default ResultPage;
