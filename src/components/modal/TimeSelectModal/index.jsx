@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import * as S from './style';
 
 const HOURS = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'));
-const MINUTES = ['00', '10', '20', '30', '40', '50'];
+const MINUTES = ['00', '15', '30', '45'];
 
 function getPrevNext(arr, current) {
   const idx = arr.indexOf(current);
