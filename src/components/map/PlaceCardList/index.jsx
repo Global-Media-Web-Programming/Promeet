@@ -2,7 +2,7 @@ import * as S from './style';
 import PropTypes from 'prop-types';
 import PlaceCard from '@/components/map/PlaceCard';
 import PlaceCardSkeleton from '@/components/map/PlaceCard/PlaceCardSkeleton';
-import { Category } from '@/constants/place';
+import { CATEGORY } from '@/constants/place';
 
 const PlaceCardList = ({ places, isLoading }) => {
   if (isLoading) {
@@ -44,7 +44,7 @@ PlaceCardList.propTypes = {
         Ma: PropTypes.string.isRequired,
         La: PropTypes.string.isRequired,
       }).isRequired,
-      type: PropTypes.oneOf(Object.values(Category)).isRequired,
+      type: PropTypes.oneOf(Object.values(CATEGORY)).isRequired,
       name: PropTypes.string.isRequired,
       address: PropTypes.string.isRequired,
       isLiked: PropTypes.bool.isRequired,

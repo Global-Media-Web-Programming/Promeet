@@ -6,7 +6,7 @@ import BottomSheet from '@/components/ui/BottomSheet';
 import useMapStore from '@/stores/map/useMapStore';
 import useMyLocation from '@/stores/map/useMyLocationsStore';
 import useGetLikePlaces from '@/hooks/queries/useGetLikePlaces';
-import { Category, CategoryLabel } from '@/constants/place';
+import { CATEGORY, CATEGORY_LABEL } from '@/constants/place';
 
 const SearchPlace = ({ category }) => {
   const { isKakaoLoaded } = useMapStore();
@@ -67,7 +67,7 @@ const SearchPlace = ({ category }) => {
     if (!ps) return;
     setIsLoading(true); // 검색 시작시 로딩 시작
     const centerStation = '숭실대입구역 '; // 임시 역
-    const keyword = centerStation + CategoryLabel[category];
+    const keyword = centerStation + CATEGORY_LABEL[category];
     ps.keywordSearch(keyword, placesSearchCB);
   }, [category, ps, placesSearchCB]);
 
@@ -87,7 +87,7 @@ const SearchPlace = ({ category }) => {
 };
 
 SearchPlace.propTypes = {
-  category: PropTypes.oneOf(Object.values(Category)).isRequired,
+  category: PropTypes.oneOf(Object.values(CATEGORY)).isRequired,
 };
 
 export default SearchPlace;

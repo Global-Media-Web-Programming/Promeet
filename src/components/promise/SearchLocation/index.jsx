@@ -1,21 +1,19 @@
 import * as S from './style';
 import PropTypes from 'prop-types';
 import Backward from '@/components/ui/Backward';
-import { BACKWARD_ICON } from '@/constants/ui';
 
 /**
  * Promise 관련 Header 컴포넌트
  *
  * @param {string} text - 제목 텍스트
  * @param {boolean} [backward=true] - 뒤로가기 버튼 유무
- * @param {'back' | 'arrow'} [backwardType='back'] - 뒤로가기 버튼 종류
  * @param {string} [navigateUrl=''] - 뒤로가기시 이동할 경로
  */
 
-const Header = ({ text, backward = true, backwardType = 'back', navigateUrl }) => {
+const Header = ({ text, backward = true, navigateUrl }) => {
   return (
     <S.Header>
-      {backward ? <Backward type={backwardType} size={'42px'} navigateUrl={navigateUrl} /> : null}
+      {backward ? <Backward size={'42px'} navigateUrl={navigateUrl} /> : null}
       <S.Text>{text}</S.Text>
       {backward && <S.DummySpace />}
     </S.Header>
@@ -25,7 +23,6 @@ const Header = ({ text, backward = true, backwardType = 'back', navigateUrl }) =
 Header.propTypes = {
   text: PropTypes.string.isRequired,
   backward: PropTypes.bool,
-  backwardType: PropTypes.oneOf(Object.values(BACKWARD_ICON)),
   navigateUrl: PropTypes.string,
 };
 

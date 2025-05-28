@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import MapContainer from '../MapContainer';
 import MarkerManager from '../MarkerManager';
-import { Category } from '@/constants/place';
+import { CATEGORY } from '@/constants/place';
 
 const FinalPlaceMap = ({ place }) => {
   console.log(place);
@@ -19,7 +19,7 @@ FinalPlaceMap.propTypes = {
       La: PropTypes.number.isRequired,
     }).isRequired,
     id: PropTypes.string,
-    type: PropTypes.oneOf(Object.values(Category)),
+    type: PropTypes.oneOf(Object.values(CATEGORY)),
     name: PropTypes.string,
     phone: PropTypes.string,
     address: PropTypes.string,

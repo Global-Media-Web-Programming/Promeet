@@ -2,7 +2,7 @@ import './style.css';
 import { useEffect, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import useMapStore from '@/stores/map/useMapStore';
-import { Category, CategoryMarkerImages } from '@/constants/place';
+import { CATEGORY, CATEGORY_MARKER_IMAGE } from '@/constants/place';
 import { MY_LOC_MARKER_IMG, MY_LOC_MARKER_ID } from '@/constants/map';
 import { EMPTY_HEART_SVG, FILLED_HEART_SVG } from '@/constants/svg';
 import useToggleLikePlace from '@/hooks/mutations/useToggleLikePlace';
@@ -220,7 +220,7 @@ const MarkerManager = ({ markers }) => {
       }
       // 장소 마커
       if (markerData) {
-        const imageSrc = CategoryMarkerImages[markerData.type];
+        const imageSrc = CATEGORY_MARKER_IMAGE[markerData.type];
         if (!imageSrc) return;
 
         const imageSize = new window.kakao.maps.Size(32, 34);
@@ -273,7 +273,7 @@ MarkerManager.propTypes = {
         La: PropTypes.number.isRequired,
       }).isRequired,
       id: PropTypes.string,
-      type: PropTypes.oneOf(Object.values(Category)),
+      type: PropTypes.oneOf(Object.values(CATEGORY)),
       name: PropTypes.string,
       phone: PropTypes.string,
       address: PropTypes.string,

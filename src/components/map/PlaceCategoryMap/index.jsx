@@ -4,7 +4,7 @@ import MapContainer from '@/components/map/MapContainer';
 import SearchPlace from '@/components/map/SearchPlace';
 import useTabsStore from '@/stores/ui/useTabsStore';
 import useMyLocationsStore from '@/stores/map/useMyLocationsStore';
-import { Category, CategoryLabel } from '@/constants/place';
+import { CATEGORY, CATEGORY_LABEL } from '@/constants/place';
 import { MY_LOC_MARKER_ID } from '@/constants/map';
 
 const PlaceCategoryMap = () => {
@@ -40,9 +40,9 @@ const PlaceCategoryMap = () => {
         <SearchPlace category={selectedValue} />
       </MapContainer>
       <S.TabsWrapper>
-        <Tabs defaultValue={Category.RESTAURANT} option="장소 카테고리 탭">
+        <Tabs defaultValue={CATEGORY.RESTAURANT} option="장소 카테고리 탭">
           <Tabs.List>
-            {Object.entries(CategoryLabel).map(([value, label]) => (
+            {Object.entries(CATEGORY_LABEL).map(([value, label]) => (
               <Tabs.Trigger key={value} value={value} label={label} />
             ))}
           </Tabs.List>

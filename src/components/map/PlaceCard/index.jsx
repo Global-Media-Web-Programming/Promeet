@@ -4,7 +4,7 @@ import matchIcon from '@/utils/matchIcon.jsx';
 import useMapStore from '@/stores/map/useMapStore';
 import useBottomSheetStore from '@/stores/ui/useBottomSheetStore';
 import useMarkerStore from '@/stores/map/useMarkerStore';
-import { Category } from '@/constants/place';
+import { CATEGORY } from '@/constants/place';
 import useToggleLikePlace from '@/hooks/mutations/useToggleLikePlace';
 
 const PlaceCard = ({ id: placeId, position, type, name, address, isLiked, likesCount }) => {
@@ -55,7 +55,7 @@ PlaceCard.propTypes = {
     Ma: PropTypes.string.isRequired,
     La: PropTypes.string.isRequired,
   }).isRequired,
-  type: PropTypes.oneOf(Object.values(Category)).isRequired,
+  type: PropTypes.oneOf(Object.values(CATEGORY)).isRequired,
   name: PropTypes.string.isRequired,
   address: PropTypes.string.isRequired,
   isLiked: PropTypes.bool.isRequired,
