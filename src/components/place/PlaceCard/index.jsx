@@ -55,11 +55,11 @@ PlaceCard.propTypes = {
     Ma: PropTypes.string.isRequired,
     La: PropTypes.string.isRequired,
   }).isRequired,
-  type: PropTypes.oneOf(Object.values(CATEGORY)).isRequired,
+  type: PropTypes.oneOf(Object.values(CATEGORY)),
   name: PropTypes.string.isRequired,
   address: PropTypes.string.isRequired,
-  isLiked: PropTypes.bool.isRequired,
-  likesCount: PropTypes.number.isRequired,
+  isLiked: PropTypes.bool,
+  likesCount: PropTypes.number,
 };
 
 export default PlaceCard;

@@ -5,65 +5,24 @@ import useMapStore from '@/stores/map/useMapStore';
 
 const MapContainer = ({ children, lat, lng }) => {
   const mapRef = useRef(null);
-  const { setMap, setIsKakaoLoaded } = useMapStore();
+  const { setMap, isKakaoLoaded } = useMapStore();
 
+  // 지도 생성
   useEffect(() => {
-    const loadKakaoMapScript = () => {
-      return new Promise((resolve, reject) => {
-        // 이미 kakao 객체가 로드된 경우
-        if (window.kakao && window.kakao.maps) {
-          resolve(window.kakao);
-          return;
-        }
+    if (!isKakaoLoaded || !mapRef.current) return;
 
-        // Kakao Maps SDK가 아직 로드되지 않았다면
-        const script = document.createElement('script');
-        script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${import.meta.env.VITE_KAKAO_JS_KEY}&autoload=false&libraries=services,clusterer,drawing`;
-        script.async = true;
-        script.onload = () => {
-          resolve(window.kakao);
-        };
-        script.onerror = () => {
-          reject(new Error('[카카오맵 스크립트 로드 실패]'));
-        };
-        document.head.appendChild(script);
-      });
+    const options = {
+      center: new window.kakao.maps.LatLng(lat, lng),
+      level: 3,
     };
 
-    loadKakaoMapScript()
-      .then((kakao) => {
-        kakao.maps.load(() => {
-          if (!mapRef.current) {
-            return;
-          }
+    const map = new window.kakao.maps.Map(mapRef.current, options);
+    setMap(map);
 
-          const options = {
-            center: new kakao.maps.LatLng(lat, lng),
-            level: 3,
-          };
-
-          const map = new kakao.maps.Map(mapRef.current, options);
-          setMap(map);
-          setIsKakaoLoaded(true);
-          // console.log('map 생성시 정보', map);
-
-          // 지도 정보 얻어오기 - 디버깅용
-          // const bounds = map.getBounds();
-          // const mapInfo = {
-          //   지도타입: map.getMapTypeId(),
-          //   중심좌표: map.getCenter(),
-          //   레벨: map.getLevel(),
-          //   영역str: bounds.toString(),
-          //   swLatlng: bounds.getSouthWest(),
-          //   neLatlng: bounds.getNorthEast(),
-          // };
-          // console.log(mapInfo);
-        });
-      })
-      .catch((_err) => {
-        throw new Error(`[카카오 맵 로드 에러]`);
-      });
-  }, [setMap, setIsKakaoLoaded, lat, lng]);
+    return () => {
+      map.setMap(null);
+    };
+  }, [isKakaoLoaded, lat, lng, setMap]);
 
   return (
     <S.MapDiv id="map" ref={mapRef}>

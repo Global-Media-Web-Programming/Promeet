@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import MarkerManager from '../MarkerManager';
-import PlaceCardList from '../PlaceCardList';
+import PlaceCardList from '@/components/place/PlaceCardList';
 import BottomSheet from '@/components/ui/BottomSheet';
 import useMapStore from '@/stores/map/useMapStore';
 import useMyLocation from '@/stores/map/useMyLocationsStore';
@@ -80,7 +80,11 @@ const SearchPlace = ({ category }) => {
     <>
       <MarkerManager markers={[...mergedPlaces, ...(myLocation ? [myLocation] : [])]} />;
       <BottomSheet id="map_place">
-        <PlaceCardList places={mergedPlaces} isLoading={isLoading} />
+        <PlaceCardList
+          places={mergedPlaces}
+          isLoading={isLoading}
+          emptyText="주변 장소가 없어요."
+        />
       </BottomSheet>
     </>
   );

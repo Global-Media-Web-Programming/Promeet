@@ -1,10 +1,10 @@
 import * as S from './style';
 import PropTypes from 'prop-types';
-import PlaceCard from '@/components/map/PlaceCard';
-import PlaceCardSkeleton from '@/components/map/PlaceCard/PlaceCardSkeleton';
+import PlaceCard from '../PlaceCard';
+import PlaceCardSkeleton from '../PlaceCard/PlaceCardSkeleton';
 import { CATEGORY } from '@/constants/place';
 
-const PlaceCardList = ({ places, isLoading }) => {
+const PlaceCardList = ({ places, isLoading, emptyText }) => {
   if (isLoading) {
     return (
       <S.Container>
@@ -30,7 +30,7 @@ const PlaceCardList = ({ places, isLoading }) => {
           />
         ))
       ) : (
-        <S.EmptyText>주변 장소가 없어요</S.EmptyText>
+        <S.EmptyText>{emptyText}</S.EmptyText>
       )}
     </S.Container>
   );
@@ -44,14 +44,15 @@ PlaceCardList.propTypes = {
         Ma: PropTypes.string.isRequired,
         La: PropTypes.string.isRequired,
       }).isRequired,
-      type: PropTypes.oneOf(Object.values(CATEGORY)).isRequired,
+      type: PropTypes.oneOf(Object.values(CATEGORY)),
       name: PropTypes.string.isRequired,
       address: PropTypes.string.isRequired,
-      isLiked: PropTypes.bool.isRequired,
-      likesCount: PropTypes.number.isRequired,
+      isLiked: PropTypes.bool,
+      likesCount: PropTypes.number,
     }),
   ).isRequired,
   isLoading: PropTypes.bool.isRequired,
+  emptyText: PropTypes.string.isRequired,
 };
 
 export default PlaceCardList;
