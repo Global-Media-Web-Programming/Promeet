@@ -1,29 +1,28 @@
 import * as S from './style';
 import PropTypes from 'prop-types';
-import Backward from '@/components/ui/Backward';
+import Header from '../Header';
+import { PROMISE_LOCATION_HEADER_TEXT } from '@/constants/promise';
 
-/**
- * Promise 관련 Header 컴포넌트
- *
- * @param {string} text - 제목 텍스트
- * @param {boolean} [backward=true] - 뒤로가기 버튼 유무
- * @param {string} [navigateUrl=''] - 뒤로가기시 이동할 경로
- */
-
-const Header = ({ text, backward = true, navigateUrl }) => {
+const SearchLocation = ({ onBack }) => {
   return (
-    <S.Header>
-      {backward ? <Backward size={'42px'} navigateUrl={navigateUrl} /> : null}
-      <S.Text>{text}</S.Text>
-      {backward && <S.DummySpace />}
-    </S.Header>
+    <S.Container>
+      <Header
+        text={PROMISE_LOCATION_HEADER_TEXT}
+        backwardSize="22px"
+        backwardType="arrow"
+        onBackwardClick={onBack}
+      />
+      <input placeholder="주소를 입력해주세요" />
+      <S.CurrLocationButton>
+        <S.LocationIcon />
+        <span>현위치 불러오기</span>
+      </S.CurrLocationButton>
+    </S.Container>
   );
 };
 
-Header.propTypes = {
-  text: PropTypes.string.isRequired,
-  backward: PropTypes.bool,
-  navigateUrl: PropTypes.string,
+SearchLocation.propTypes = {
+  onBack: PropTypes.func.isRequired,
 };
 
-export default Header;
+export default SearchLocation;

@@ -97,8 +97,11 @@ const MarkerManager = ({ markers }) => {
     const container = document.createElement('div');
     container.className = 'infoContainer';
 
-    const title = document.createElement('div');
-    title.className = 'title';
+    const header = document.createElement('header');
+    header.className = 'header';
+
+    const title = document.createElement('h2');
+    title.className = 'title ellipsis';
     title.textContent = markerData.name;
 
     const closeBtn = document.createElement('div');
@@ -110,8 +113,9 @@ const MarkerManager = ({ markers }) => {
       container.remove();
     };
 
-    title.appendChild(closeBtn);
-    container.appendChild(title);
+    header.appendChild(title);
+    header.appendChild(closeBtn);
+    container.appendChild(header);
 
     const body = document.createElement('div');
     body.className = 'body';
@@ -147,7 +151,9 @@ const MarkerManager = ({ markers }) => {
 
     body.appendChild(infoSection);
 
-    if (markerData.isLiked && markerData.likesCount) {
+    console.log(markerData);
+
+    if (markerData.isLiked !== undefined && markerData.likesCount !== undefined) {
       const heartSection = document.createElement('div');
       heartSection.className = 'heartSection';
 

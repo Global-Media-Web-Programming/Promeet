@@ -10,22 +10,35 @@ import PropTypes from 'prop-types';
  * @param {string} [size='24px'] - 사이즈
  * @param {boolean} [isErrorFallback=false] - 에러 컴포넌트 여부
  * @param {string} [navigateUrl=''] - 클릭시 이동할 경로
+ * @param {function} [onClick] - 클릭시 실행할 함수
  */
+const Backward = ({
+  type = 'back',
+  size = '24px',
+  isErrorFallback = false,
+  navigateUrl = '',
+  onClick,
+}) => {
+  const BACKWARD_ICON_MAP = {
+    [BACKWARD_ICON.BACK]: S.BackIcon,
+    [BACKWARD_ICON.ARROW]: S.BackIconArrow,
+  };
 
-const ICON_MAP = {
-  back: S.BackIcon,
-  arrow: S.BackIconArrow,
-};
-
-const Backward = ({ type = 'back', size = '24px', isErrorFallback = false, navigateUrl = '' }) => {
   const navigate = useNavigate();
 
   const handleBackClick = () => {
+    // 전달된 핸들러가 있으면 실행
+    if (onClick) {
+      onClick();
+      return;
+    }
+
     // 에러 컴포넌트에서는 window.history로 전으로 이동
     if (isErrorFallback) {
       window.history.back();
       return;
     }
+
     // 이동 경로 받았으면
     if (navigateUrl) {
       navigate(navigateUrl);
@@ -35,7 +48,7 @@ const Backward = ({ type = 'back', size = '24px', isErrorFallback = false, navig
     }
   };
 
-  const Icon = ICON_MAP[type] ?? S.BackIcon1;
+  const Icon = BACKWARD_ICON_MAP[type] ?? S.BackIcon;
 
   return <Icon $size={size} onClick={handleBackClick} />;
 };
@@ -45,6 +58,7 @@ Backward.propTypes = {
   size: PropTypes.string,
   isErrorFallback: PropTypes.bool,
   navigateUrl: PropTypes.string,
+  onClick: PropTypes.func,
 };
 
 export default Backward;

@@ -1,5 +1,5 @@
 import * as S from './style';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 
 const skeletonVariants = {
   pulse: {
@@ -15,17 +15,12 @@ const skeletonVariants = {
 const PlaceCardSkeleton = () => {
   return (
     <AnimatePresence mode="wait">
-      <S.PlaceCard
-        as={motion.div}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-      >
+      <S.PlaceCard initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
         <S.CardLeft>
           <S.CardHeaderWrapper>
-            <S.SkeletonName as={motion.div} variants={skeletonVariants} animate="pulse" />
+            <S.SkeletonName variants={skeletonVariants} animate="pulse" />
           </S.CardHeaderWrapper>
-          <S.SkeletonAddress as={motion.div} variants={skeletonVariants} animate="pulse" />
+          <S.SkeletonAddress variants={skeletonVariants} animate="pulse" />
         </S.CardLeft>
       </S.PlaceCard>
     </AnimatePresence>

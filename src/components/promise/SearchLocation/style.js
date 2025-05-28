@@ -1,22 +1,32 @@
 import styled from 'styled-components';
 import { theme } from '@/styles/theme';
+import LocationIconSVG from '@/assets/img/icon/location.svg?react';
 
-export const Header = styled.header`
+export const Container = styled.section`
   display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0 var(--outlet-padding);
+`;
+
+export const CurrLocationButton = styled.button`
+  display: flex;
+  gap: 10px;
   align-items: center;
+  justify-content: center;
+
   width: 100%;
-  padding: 20px 0;
-`;
+  padding: 10px;
+  border: 1px solid ${theme.color.text.grey};
+  border-radius: 16px;
 
-export const Text = styled.h1`
-  flex: 1;
-
-  font-size: 18px;
+  font-size: 13px;
   font-weight: 500;
-  color: ${theme.color.text.blue};
-  text-align: center;
+  color: ${theme.color.text.grey};
+
+  background-color: ${theme.color.white};
 `;
 
-export const DummySpace = styled.div`
-  width: 42px;
+export const LocationIcon = styled(LocationIconSVG)`
+  flex-shrink: 0;
 `;

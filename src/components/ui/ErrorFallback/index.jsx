@@ -44,7 +44,7 @@ const ErrorFallback = ({ error: propsError }) => {
   return (
     <>
       <S.BackwardWrapper>
-        <Backward size={'28px'} isErrorFallback={true} />
+        <Backward size="28px" isErrorFallback={true} />
       </S.BackwardWrapper>
       <S.ErrorContainer role="alert" aria-live="assertive" aria-atomic="true">
         <S.ErrorInfo>

@@ -79,7 +79,7 @@ const SearchPlace = ({ category }) => {
   return (
     <>
       <MarkerManager markers={[...mergedPlaces, ...(myLocation ? [myLocation] : [])]} />;
-      <BottomSheet id={'map_place'}>
+      <BottomSheet id="map_place">
         <PlaceCardList places={mergedPlaces} isLoading={isLoading} />
       </BottomSheet>
     </>

@@ -8,14 +8,30 @@ import { BACKWARD_ICON } from '@/constants/ui';
  *
  * @param {string} text - 제목 텍스트
  * @param {boolean} [backward=true] - 뒤로가기 버튼 유무
+ * @param {string} [backwardSize='42px'] - 뒤로가기 버튼 크기
  * @param {'back' | 'arrow'} [backwardType='back'] - 뒤로가기 버튼 종류
  * @param {string} [navigateUrl=''] - 뒤로가기시 이동할 경로
+ * @param {function} [onBackwardClick] - 뒤로가기시 실행할 함수
  */
 
-const Header = ({ text, backward = true, backwardType = 'back', navigateUrl }) => {
+const Header = ({
+  text,
+  backward = true,
+  backwardSize = '42px',
+  backwardType = 'back',
+  navigateUrl,
+  onBackwardClick,
+}) => {
   return (
     <S.Header>
-      {backward ? <Backward type={backwardType} size={'42px'} navigateUrl={navigateUrl} /> : null}
+      {backward ? (
+        <Backward
+          type={backwardType}
+          size={backwardSize}
+          navigateUrl={navigateUrl}
+          onClick={onBackwardClick}
+        />
+      ) : null}
       <S.Text>{text}</S.Text>
       {backward && <S.DummySpace />}
     </S.Header>
@@ -25,8 +41,10 @@ const Header = ({ text, backward = true, backwardType = 'back', navigateUrl }) =
 Header.propTypes = {
   text: PropTypes.string.isRequired,
   backward: PropTypes.bool,
+  backwardSize: PropTypes.number,
   backwardType: PropTypes.oneOf(Object.values(BACKWARD_ICON)),
   navigateUrl: PropTypes.string,
+  onBackwardClick: PropTypes.func,
 };
 
 export default Header;
