@@ -4,6 +4,7 @@ import MapContainer from '@/components/map/MapContainer';
 import SearchPlace from '@/components/map/SearchPlace';
 import useTabsStore from '@/stores/ui/useTabsStore';
 import useMyLocationsStore from '@/stores/map/useMyLocationsStore';
+import useHandleError from '@/hooks/useHandleError';
 import { CATEGORY, CATEGORY_LABEL } from '@/constants/place';
 import { MY_LOC_MARKER_ID } from '@/constants/map';
 
@@ -14,6 +15,8 @@ const PlaceCategoryMap = () => {
   // 임시 사용자 좌표
   const schoolLat = 37.494705526855;
   const schoolLng = 126.95994559383;
+
+  const handleError = useHandleError();
 
   const handleMyLocationClick = () => {
     // 위치 동의 모달 띄우기
@@ -28,7 +31,7 @@ const PlaceCategoryMap = () => {
               id: MY_LOC_MARKER_ID, // 내 위치 마커 구분용
             });
           },
-          (error) => new Error('[navigator.geolocation 오류 발생]', error),
+          (error) => handleError(error),
         );
       }
     }

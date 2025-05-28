@@ -4,7 +4,6 @@ import MarkerManager from '../MarkerManager';
 import { CATEGORY } from '@/constants/place';
 
 const FinalPlaceMap = ({ place }) => {
-  console.log(place);
   return (
     <MapContainer lat={place.position.Ma} lng={place.position.La}>
       <MarkerManager markers={[place]} />
@@ -15,8 +14,8 @@ const FinalPlaceMap = ({ place }) => {
 FinalPlaceMap.propTypes = {
   place: PropTypes.shape({
     position: PropTypes.shape({
-      Ma: PropTypes.number.isRequired,
       La: PropTypes.number.isRequired,
+      Ma: PropTypes.number.isRequired,
     }).isRequired,
     id: PropTypes.string,
     type: PropTypes.oneOf(Object.values(CATEGORY)),

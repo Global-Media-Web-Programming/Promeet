@@ -151,8 +151,6 @@ const MarkerManager = ({ markers }) => {
 
     body.appendChild(infoSection);
 
-    console.log(markerData);
-
     if (markerData.isLiked !== undefined && markerData.likesCount !== undefined) {
       const heartSection = document.createElement('div');
       heartSection.className = 'heartSection';
@@ -275,8 +273,8 @@ MarkerManager.propTypes = {
   markers: PropTypes.arrayOf(
     PropTypes.shape({
       position: PropTypes.shape({
-        Ma: PropTypes.number.isRequired,
         La: PropTypes.number.isRequired,
+        Ma: PropTypes.number.isRequired,
       }).isRequired,
       id: PropTypes.string,
       type: PropTypes.oneOf(Object.values(CATEGORY)),

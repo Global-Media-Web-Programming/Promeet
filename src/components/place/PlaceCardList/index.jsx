@@ -4,7 +4,7 @@ import PlaceCard from '../PlaceCard';
 import PlaceCardSkeleton from '../PlaceCard/PlaceCardSkeleton';
 import { CATEGORY } from '@/constants/place';
 
-const PlaceCardList = ({ places, isLoading, emptyText }) => {
+const PlaceCardList = ({ places, isLoading, emptyText, onCardClick }) => {
   if (isLoading) {
     return (
       <S.Container>
@@ -27,6 +27,7 @@ const PlaceCardList = ({ places, isLoading, emptyText }) => {
             address={place.address}
             isLiked={place.isLiked}
             likesCount={place.likesCount}
+            onClick={() => onCardClick(place)}
           />
         ))
       ) : (
@@ -41,8 +42,8 @@ PlaceCardList.propTypes = {
     PropTypes.shape({
       id: PropTypes.string.isRequired,
       position: PropTypes.shape({
-        Ma: PropTypes.string.isRequired,
         La: PropTypes.string.isRequired,
+        Ma: PropTypes.string.isRequired,
       }).isRequired,
       type: PropTypes.oneOf(Object.values(CATEGORY)),
       name: PropTypes.string.isRequired,
@@ -53,6 +54,7 @@ PlaceCardList.propTypes = {
   ).isRequired,
   isLoading: PropTypes.bool.isRequired,
   emptyText: PropTypes.string.isRequired,
+  onCardClick: PropTypes.func,
 };
 
 export default PlaceCardList;

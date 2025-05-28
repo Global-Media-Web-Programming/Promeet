@@ -10,7 +10,7 @@ const SummaryPage = () => {
     link: 'http://place.map.kakao.com/2017883339',
     name: '상도국수',
     phone: '02-886-7089',
-    position: { Ma: 37.49735872568539, La: 126.9533182498855 },
+    position: { La: 37.49735872568539, Ma: 126.9533182498855 },
     type: 'restaurant',
   };
 

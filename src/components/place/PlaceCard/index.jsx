@@ -7,13 +7,28 @@ import useMarkerStore from '@/stores/map/useMarkerStore';
 import { CATEGORY } from '@/constants/place';
 import useToggleLikePlace from '@/hooks/mutations/useToggleLikePlace';
 
-const PlaceCard = ({ id: placeId, position, type, name, address, isLiked, likesCount }) => {
+const PlaceCard = ({
+  id: placeId,
+  position,
+  type,
+  name,
+  address,
+  isLiked,
+  likesCount,
+  onClick,
+}) => {
   const { map } = useMapStore();
   const { setActiveBottomSheet } = useBottomSheetStore();
   const { setActiveMarkerId } = useMarkerStore();
 
-  // 카드 클릭시 지도 위치 부드럽게 이동, 지도 영역 밖이면 그냥 이동
   const handleCardClick = () => {
+    if (onClick) {
+      onClick();
+      return;
+    }
+
+    // 기본 동작
+    // 카드 클릭시 지도 위치 부드럽게 이동, 지도 영역 밖이면 그냥 이동
     // 바텀 시트 닫기
     setActiveBottomSheet(null);
     // 지도 중심 이동 (부드럽게)
@@ -41,7 +56,7 @@ const PlaceCard = ({ id: placeId, position, type, name, address, isLiked, likesC
 
       <S.CardRight>
         <S.HeartWrapper onClick={handleLikeToggle}>
-          {isLiked ? <S.FilledHeartIcon /> : <S.EmptyHeartIcon />}
+          {isLiked === undefined ? null : isLiked ? <S.FilledHeartIcon /> : <S.EmptyHeartIcon />}
         </S.HeartWrapper>
         <S.heartCnt>{likesCount}</S.heartCnt>
       </S.CardRight>
@@ -52,14 +67,15 @@ const PlaceCard = ({ id: placeId, position, type, name, address, isLiked, likesC
 PlaceCard.propTypes = {
   id: PropTypes.string.isRequired,
   position: PropTypes.shape({
-    Ma: PropTypes.string.isRequired,
     La: PropTypes.string.isRequired,
+    Ma: PropTypes.string.isRequired,
   }).isRequired,
   type: PropTypes.oneOf(Object.values(CATEGORY)),
   name: PropTypes.string.isRequired,
   address: PropTypes.string.isRequired,
   isLiked: PropTypes.bool,
   likesCount: PropTypes.number,
+  onClick: PropTypes.func,
 };
 
 export default PlaceCard;
