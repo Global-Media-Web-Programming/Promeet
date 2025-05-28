@@ -52,12 +52,12 @@ export const Quarter = styled.div`
 
   width: 100%;
 
-  background: ${({ selected }) => (selected ? '#C3E9E0' : '#fff')};
+  background: ${({ selected }) => (selected ? 'rgba(195, 233, 224, 0.80)' : '#fff')};
 
   transition: background 0.15s;
 
   &:active {
-    background: #c3e9e0;
+    background: rgb(195, 233, 224, 80%);
   }
 `;
 

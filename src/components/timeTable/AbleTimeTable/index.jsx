@@ -1,12 +1,12 @@
 import { useState, useRef } from 'react';
 import * as S from './style';
-import TimeIcon from '../../assets/img/icon/time.svg';
+import TimeIcon from '../../../assets/img/icon/time.svg';
 
 const DAYS = ['월', '화', '수', '목', '금', '토', '일'];
 const HOURS = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'));
 
 // [hour][day][quarter] 구조로 상태 관리
-const TimeTable = () => {
+const AbleTimeTable = () => {
   const [selected, setSelected] = useState(
     Array.from({ length: 24 }, () => Array.from({ length: 7 }, () => Array(4).fill(false))),
   );
@@ -78,4 +78,4 @@ const TimeTable = () => {
   );
 };
 
-export default TimeTable;
+export default AbleTimeTable;
