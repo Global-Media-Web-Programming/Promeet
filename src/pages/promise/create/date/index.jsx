@@ -1,6 +1,12 @@
 import * as S from './style';
+import CalendarRange from '@/components/calendar';
 
 const SummaryPage = () => {
-  return <S.Container>약속 날짜 입력 페이지</S.Container>;
+  return (
+    <S.Container>
+      <CalendarRange />
+    </S.Container>
+  );
 };
+
 export default SummaryPage;
