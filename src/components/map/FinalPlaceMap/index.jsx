@@ -3,19 +3,20 @@ import MapContainer from '../MapContainer';
 import MarkerManager from '../MarkerManager';
 import { Category } from '@/constants/place';
 
-const FinalPlaceMap = ({ placeData }) => {
+const FinalPlaceMap = ({ place }) => {
+  console.log(place);
   return (
-    <MapContainer lat={placeData.position.La} lng={placeData.position.Ma}>
-      <MarkerManager markers={placeData} />
+    <MapContainer lat={place.position.Ma} lng={place.position.La}>
+      <MarkerManager markers={[place]} />
     </MapContainer>
   );
 };
 
 FinalPlaceMap.propTypes = {
-  placeData: PropTypes.shape({
+  place: PropTypes.shape({
     position: PropTypes.shape({
-      La: PropTypes.number.isRequired,
       Ma: PropTypes.number.isRequired,
+      La: PropTypes.number.isRequired,
     }).isRequired,
     id: PropTypes.string,
     type: PropTypes.oneOf(Object.values(Category)),
@@ -23,8 +24,6 @@ FinalPlaceMap.propTypes = {
     phone: PropTypes.string,
     address: PropTypes.string,
     link: PropTypes.string,
-    isLiked: PropTypes.bool,
-    likesCount: PropTypes.number,
   }).isRequired,
 };
 

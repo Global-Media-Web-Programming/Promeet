@@ -147,25 +147,25 @@ const MarkerManager = ({ markers }) => {
 
     body.appendChild(infoSection);
 
-    const heartSection = document.createElement('div');
-    heartSection.className = 'heartSection';
+    if (markerData.isLiked && markerData.likesCount) {
+      const heartSection = document.createElement('div');
+      heartSection.className = 'heartSection';
 
-    const heartWrapper = document.createElement('div');
-    heartWrapper.className = 'heartWrapper';
-    heartWrapper.innerHTML = markerData.isLiked ? FILLED_HEART_SVG : EMPTY_HEART_SVG;
-    heartWrapper.onclick = () => handleLikeToggle(markerData.id, markerData.isLiked);
+      const heartWrapper = document.createElement('div');
+      heartWrapper.className = 'heartWrapper';
+      heartWrapper.innerHTML = markerData.isLiked ? FILLED_HEART_SVG : EMPTY_HEART_SVG;
+      heartWrapper.onclick = () => handleLikeToggle(markerData.id, markerData.isLiked);
 
-    const heartCnt = document.createElement('div');
-    heartCnt.className = 'heartCnt';
-    heartCnt.textContent = markerData.likesCount;
+      const heartCnt = document.createElement('div');
+      heartCnt.className = 'heartCnt';
+      heartCnt.textContent = markerData.likesCount;
 
-    heartSection.appendChild(heartWrapper);
-    heartSection.appendChild(heartCnt);
+      heartSection.appendChild(heartWrapper);
+      heartSection.appendChild(heartCnt);
+      body.appendChild(heartSection);
+    }
 
-    body.appendChild(heartSection);
     container.appendChild(body);
-
-    console.log('container', container);
 
     const overlay = new window.kakao.maps.CustomOverlay({
       content: container,
@@ -199,6 +199,8 @@ const MarkerManager = ({ markers }) => {
 
     // 새로운 마커 생성
     placeAndProfileMarkers.forEach((markerData) => {
+      const position = new window.kakao.maps.LatLng(markerData.position.Ma, markerData.position.La);
+
       // 프로필 마커
       if (markerData.profile) {
         const content = `
@@ -209,8 +211,8 @@ const MarkerManager = ({ markers }) => {
         `;
 
         const overlay = new window.kakao.maps.CustomOverlay({
-          content: content,
-          position: markerData.position,
+          content,
+          position,
         });
 
         overlay.setMap(map);
@@ -226,7 +228,7 @@ const MarkerManager = ({ markers }) => {
         const markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize, imageOption);
 
         const marker = new window.kakao.maps.Marker({
-          position: markerData.position,
+          position,
           image: markerImage,
           map,
         });
