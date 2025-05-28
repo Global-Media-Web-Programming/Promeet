@@ -8,7 +8,7 @@ const PlaceCardList = ({ places, isLoading }) => {
   if (isLoading) {
     return (
       <S.Container>
-        {[...Array(5)].map((_, i) => (
+        {[...Array(4)].map((_, i) => (
           <PlaceCardSkeleton key={i} />
         ))}
       </S.Container>
@@ -41,8 +41,8 @@ PlaceCardList.propTypes = {
     PropTypes.shape({
       id: PropTypes.string.isRequired,
       position: PropTypes.shape({
-        La: PropTypes.string.isRequired,
         Ma: PropTypes.string.isRequired,
+        La: PropTypes.string.isRequired,
       }).isRequired,
       type: PropTypes.oneOf(Object.values(Category)).isRequired,
       name: PropTypes.string.isRequired,

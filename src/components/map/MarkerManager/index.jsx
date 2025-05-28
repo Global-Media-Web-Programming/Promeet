@@ -1,15 +1,29 @@
 import './style.css';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import useMapStore from '@/stores/map/useMapStore';
 import { Category, CategoryMarkerImages } from '@/constants/place';
 import { MY_LOC_MARKER_IMG, MY_LOC_MARKER_ID } from '@/constants/map';
+import { EMPTY_HEART_SVG, FILLED_HEART_SVG } from '@/constants/svg';
+import useToggleLikePlace from '@/hooks/mutations/useToggleLikePlace';
+import useMarkerStore from '@/stores/map/useMarkerStore';
 
 const MarkerManager = ({ markers }) => {
   const { map } = useMapStore();
+  const { activeMarkerId, setActiveMarkerId, clearActiveMarkerId } = useMarkerStore();
   const markersRef = useRef([]);
+  const markerMapRef = useRef(new Map()); // 마커 ID와 마커 객체를 매핑
   const currentOverlayRef = useRef(null);
   const myLocationMarkerRef = useRef(null);
+
+  const { mutate: toggleLike } = useToggleLikePlace();
+
+  const handleLikeToggle = useCallback(
+    (placeId, isLiked) => {
+      toggleLike({ placeId, isLiked });
+    },
+    [toggleLike],
+  );
 
   // 내 위치 마커 관리
   useEffect(() => {
@@ -27,8 +41,8 @@ const MarkerManager = ({ markers }) => {
     if (myLocationMarkerRef.current) {
       const currentPos = myLocationMarkerRef.current.getPosition();
       const newPos = new window.kakao.maps.LatLng(
-        myLocationMarker.position.lat,
-        myLocationMarker.position.lng,
+        myLocationMarker.position.Ma,
+        myLocationMarker.position.La,
       );
 
       if (currentPos.getLat() !== newPos.getLat() || currentPos.getLng() !== newPos.getLng()) {
@@ -46,8 +60,8 @@ const MarkerManager = ({ markers }) => {
     );
 
     const position = new window.kakao.maps.LatLng(
-      myLocationMarker.position.lat,
-      myLocationMarker.position.lng,
+      myLocationMarker.position.Ma,
+      myLocationMarker.position.La,
     );
 
     const myLocMarker = new window.kakao.maps.Marker({
@@ -59,11 +73,116 @@ const MarkerManager = ({ markers }) => {
     myLocationMarkerRef.current = myLocMarker;
   }, [map, markers]);
 
+  // activeMarkerId 변경 감지해 오버레이 표시
+  useEffect(() => {
+    if (!map || !activeMarkerId) {
+      if (currentOverlayRef.current) {
+        currentOverlayRef.current.setMap(null);
+        currentOverlayRef.current = null;
+      }
+      return;
+    }
+
+    const marker = markerMapRef.current.get(activeMarkerId);
+    if (!marker) return;
+
+    const markerData = markers.find((m) => m.id === activeMarkerId);
+    if (!markerData) return;
+
+    // 이전 오버레이 닫고
+    if (currentOverlayRef.current) {
+      currentOverlayRef.current.setMap(null);
+    }
+
+    const container = document.createElement('div');
+    container.className = 'infoContainer';
+
+    const title = document.createElement('div');
+    title.className = 'title';
+    title.textContent = markerData.name;
+
+    const closeBtn = document.createElement('div');
+    closeBtn.className = 'close';
+    closeBtn.title = '닫기';
+    closeBtn.textContent = '닫기';
+    closeBtn.onclick = () => {
+      clearActiveMarkerId();
+      container.remove();
+    };
+
+    title.appendChild(closeBtn);
+    container.appendChild(title);
+
+    const body = document.createElement('div');
+    body.className = 'body';
+
+    const infoSection = document.createElement('div');
+    infoSection.className = 'infoSection';
+
+    if (markerData.phone) {
+      const phone = document.createElement('div');
+      phone.className = 'ellipsis';
+      phone.textContent = markerData.phone;
+      infoSection.appendChild(phone);
+    }
+
+    if (markerData.address) {
+      const address = document.createElement('div');
+      address.className = 'ellipsis';
+      address.textContent = markerData.address;
+      infoSection.appendChild(address);
+    }
+
+    if (markerData.link) {
+      const linkWrapper = document.createElement('div');
+      const link = document.createElement('a');
+      link.href = markerData.link;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.className = 'link';
+      link.textContent = '정보 보기';
+      linkWrapper.appendChild(link);
+      infoSection.appendChild(linkWrapper);
+    }
+
+    body.appendChild(infoSection);
+
+    const heartSection = document.createElement('div');
+    heartSection.className = 'heartSection';
+
+    const heartWrapper = document.createElement('div');
+    heartWrapper.className = 'heartWrapper';
+    heartWrapper.innerHTML = markerData.isLiked ? FILLED_HEART_SVG : EMPTY_HEART_SVG;
+    heartWrapper.onclick = () => handleLikeToggle(markerData.id, markerData.isLiked);
+
+    const heartCnt = document.createElement('div');
+    heartCnt.className = 'heartCnt';
+    heartCnt.textContent = markerData.likesCount;
+
+    heartSection.appendChild(heartWrapper);
+    heartSection.appendChild(heartCnt);
+
+    body.appendChild(heartSection);
+    container.appendChild(body);
+
+    console.log('container', container);
+
+    const overlay = new window.kakao.maps.CustomOverlay({
+      content: container,
+      position: marker.getPosition(),
+      yAnchor: 1.5,
+    });
+
+    overlay.setMap(map);
+    currentOverlayRef.current = overlay;
+  }, [map, activeMarkerId, markers, handleLikeToggle, clearActiveMarkerId]);
+
   // 장소/프로필 마커 관리
   useEffect(() => {
     if (!map || !markers) return;
 
     const placeAndProfileMarkers = markers.filter((marker) => !marker.isMyLocation);
+    markerMapRef.current.clear();
 
     // 기존 마커 제거 (내 위치 마커 제외)
     markersRef.current.forEach((marker) => {
@@ -112,33 +231,14 @@ const MarkerManager = ({ markers }) => {
           map,
         });
 
+        if (markerData.id) {
+          markerMapRef.current.set(markerData.id, marker);
+        }
+
         window.kakao.maps.event.addListener(marker, 'click', () => {
-          if (currentOverlayRef.current) {
-            currentOverlayRef.current.setMap(null);
+          if (markerData.id) {
+            setActiveMarkerId(markerData.id);
           }
-
-          const content = `
-            <div class="infoContainer">
-              <div class="title">
-                ${markerData.name}
-                <div class="close" onclick="this.parentElement.parentElement.remove()" title="닫기">닫기</div>
-              </div>
-              <div class="body">
-                <div class="ellipsis">${markerData.phone || ''}</div>
-                <div class="ellipsis">${markerData.address || ''}</div>
-                ${markerData.link ? `<div><a href="${markerData.link}" target="_blank" rel="noopener noreferrer" class="link">정보 보기</a></div>` : ''}
-              </div>
-            </div>
-          `;
-
-          const overlay = new window.kakao.maps.CustomOverlay({
-            content: content,
-            position: marker.getPosition(),
-            yAnchor: 1.5,
-          });
-
-          overlay.setMap(map);
-          currentOverlayRef.current = overlay;
         });
 
         marker.setMap(map);
@@ -158,7 +258,7 @@ const MarkerManager = ({ markers }) => {
     return () => {
       window.kakao.maps.event.removeListener(map, 'bounds_changed', boundsChangedListener);
     };
-  }, [map, markers]);
+  }, [map, markers, handleLikeToggle, setActiveMarkerId]);
 
   return null;
 };
@@ -167,8 +267,8 @@ MarkerManager.propTypes = {
   markers: PropTypes.arrayOf(
     PropTypes.shape({
       position: PropTypes.shape({
-        lat: PropTypes.number.isRequired,
-        lng: PropTypes.number.isRequired,
+        Ma: PropTypes.number.isRequired,
+        La: PropTypes.number.isRequired,
       }).isRequired,
       id: PropTypes.string,
       type: PropTypes.oneOf(Object.values(Category)),

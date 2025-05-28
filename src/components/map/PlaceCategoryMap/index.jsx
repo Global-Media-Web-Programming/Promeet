@@ -24,7 +24,7 @@ const PlaceCategoryMap = () => {
           (position) => {
             const { latitude, longitude } = position.coords;
             setMyLocation({
-              position: { lat: latitude, lng: longitude },
+              position: { La: latitude, Ma: longitude },
               id: MY_LOC_MARKER_ID, // 내 위치 마커 구분용
             });
           },

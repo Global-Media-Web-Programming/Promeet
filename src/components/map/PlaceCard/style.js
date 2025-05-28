@@ -56,8 +56,13 @@ export const CardRight = styled.div`
   align-items: center;
 `;
 
-const IconStyle = css`
+export const HeartWrapper = styled.div`
   cursor: pointer;
+  width: 100%;
+`;
+
+const IconStyle = css`
+  flex-shrink: 0;
 `;
 export const EmptyHeartIcon = styled(EmptyHeartSvg)`
   ${IconStyle}

@@ -10,7 +10,7 @@ import useToggleLikePlace from '@/hooks/mutations/useToggleLikePlace';
 const PlaceCard = ({ id: placeId, position, type, name, address, isLiked, likesCount }) => {
   const { map } = useMapStore();
   const { setActiveBottomSheet } = useBottomSheetStore();
-  const { markerMap } = useMarkerStore();
+  const { setActiveMarkerId } = useMarkerStore();
 
   // 카드 클릭시 지도 위치 부드럽게 이동, 지도 영역 밖이면 그냥 이동
   const handleCardClick = () => {
@@ -19,13 +19,8 @@ const PlaceCard = ({ id: placeId, position, type, name, address, isLiked, likesC
     // 지도 중심 이동 (부드럽게)
     const moveLatLng = new window.kakao.maps.LatLng(position.Ma, position.La);
     map.panTo(moveLatLng);
-
-    // 마커 찾아서 클릭 이벤트 트리거 - 오버레이 띄우기
-    const marker = markerMap.get(placeId);
-
-    if (marker) {
-      window.kakao.maps.event.trigger(marker, 'click');
-    }
+    // 해당 마커의 오버레이 열기
+    setActiveMarkerId(placeId);
   };
 
   const { mutate: toggleLike } = useToggleLikePlace();
@@ -44,8 +39,10 @@ const PlaceCard = ({ id: placeId, position, type, name, address, isLiked, likesC
         <S.PlaceAddress>{address}</S.PlaceAddress>
       </S.CardLeft>
 
-      <S.CardRight onClick={handleLikeToggle}>
-        {isLiked ? <S.FilledHeartIcon /> : <S.EmptyHeartIcon />}
+      <S.CardRight>
+        <S.HeartWrapper onClick={handleLikeToggle}>
+          {isLiked ? <S.FilledHeartIcon /> : <S.EmptyHeartIcon />}
+        </S.HeartWrapper>
         <S.heartCnt>{likesCount}</S.heartCnt>
       </S.CardRight>
     </S.PlaceCard>
@@ -55,8 +52,8 @@ const PlaceCard = ({ id: placeId, position, type, name, address, isLiked, likesC
 PlaceCard.propTypes = {
   id: PropTypes.string.isRequired,
   position: PropTypes.shape({
-    La: PropTypes.string.isRequired,
     Ma: PropTypes.string.isRequired,
+    La: PropTypes.string.isRequired,
   }).isRequired,
   type: PropTypes.oneOf(Object.values(Category)).isRequired,
   name: PropTypes.string.isRequired,
