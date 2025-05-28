@@ -5,12 +5,15 @@ import PlaceCardList from '@/components/place/PlaceCardList';
 import BottomSheet from '@/components/ui/BottomSheet';
 import useMapStore from '@/stores/map/useMapStore';
 import useMyLocation from '@/stores/map/useMyLocationsStore';
+import useLocationStore from '@/stores/promise/useLocationsStore';
 import useGetLikePlaces from '@/hooks/queries/useGetLikePlaces';
 import { CATEGORY, CATEGORY_LABEL } from '@/constants/place';
+import { DEFAULT_SUBWAY_STATION } from '@/constants/promise';
 
 const SearchPlace = ({ category }) => {
   const { isKakaoLoaded } = useMapStore();
   const { myLocation } = useMyLocation();
+  const { nearestSubwayStation } = useLocationStore();
   const [places, setPlaces] = useState([]);
   // 좋아요 정보 가져오기 위해 id들 저장
   const [placeIds, setPlaceIds] = useState([]);
@@ -66,10 +69,9 @@ const SearchPlace = ({ category }) => {
   const searchPlaces = useCallback(() => {
     if (!ps) return;
     setIsLoading(true); // 검색 시작시 로딩 시작
-    const centerStation = '숭실대입구역 '; // 임시 역
-    const keyword = centerStation + CATEGORY_LABEL[category];
+    const keyword = (nearestSubwayStation ?? DEFAULT_SUBWAY_STATION) + CATEGORY_LABEL[category];
     ps.keywordSearch(keyword, placesSearchCB);
-  }, [category, ps, placesSearchCB]);
+  }, [category, ps, placesSearchCB, nearestSubwayStation]);
 
   useEffect(() => {
     if (!ps) return;

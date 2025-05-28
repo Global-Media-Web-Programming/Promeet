@@ -1,10 +1,15 @@
 import { create } from 'zustand';
 
 const useLocationStore = create((set) => ({
-  location: '', // 임시
+  location: null,
   setLocation: (value) =>
     set({
       location: value,
+    }),
+  nearestSubwayStation: null,
+  setNearestSubwayStation: (value) =>
+    set({
+      nearestSubwayStation: value,
     }),
 }));
 
