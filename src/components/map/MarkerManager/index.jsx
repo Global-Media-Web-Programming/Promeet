@@ -95,7 +95,7 @@ const MarkerManager = ({ markers }) => {
     }
 
     const container = document.createElement('div');
-    container.className = 'infoContainer';
+    container.className = 'info___Container';
 
     const header = document.createElement('header');
     header.className = 'header';
