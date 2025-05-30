@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
-import useLocationStore from '@/stores/promise/useLocationStore';
+import { useLocationActions } from '@/hooks/stores/promise/useLocationStore';
 
 const SubwayCategoryCode = 'SW8';
 
 const useNearestSubwayStation = (lat, lng) => {
-  const { setNearestSubwayStation } = useLocationStore();
+  const { setNearestSubwayStation } = useLocationActions();
 
   useEffect(() => {
     if (!window.kakao || !window.kakao.maps || !lat || !lng) return;

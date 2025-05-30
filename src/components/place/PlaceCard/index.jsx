@@ -1,9 +1,9 @@
 import * as S from './style';
 import PropTypes from 'prop-types';
 import matchIcon from '@/utils/matchIcon.jsx';
-import { useMapInfo } from '@/stores/map/useMapStore';
-import useBottomSheetStore from '@/stores/ui/useBottomSheetStore';
-import useMarkerStore from '@/stores/map/useMarkerStore';
+import { useMapInfo } from '@/hooks/stores/map/useMapStore';
+import { useBottomSheetActions } from '@/hooks/stores/ui/useBottomSheetStore';
+import { useMarkerActions } from '@/hooks/stores/map/useMarkerStore';
 import { CATEGORY } from '@/constants/place';
 import useToggleLikePlace from '@/hooks/mutations/useToggleLikePlace';
 
@@ -18,8 +18,8 @@ const PlaceCard = ({
   onClick,
 }) => {
   const { map } = useMapInfo();
-  const { setActiveBottomSheet } = useBottomSheetStore();
-  const { setActiveMarkerId } = useMarkerStore();
+  const { setActiveBottomSheet } = useBottomSheetActions();
+  const { setActiveMarkerId } = useMarkerActions();
 
   const handleCardClick = () => {
     if (onClick) {
