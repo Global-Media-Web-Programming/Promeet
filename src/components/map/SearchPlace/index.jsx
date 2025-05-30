@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import MarkerManager from '../MarkerManager';
 import PlaceCardList from '@/components/place/PlaceCardList';
 import BottomSheet from '@/components/ui/BottomSheet';
-import { useIsKakaoLoaded } from '@/stores/map/useMapStore';
+import { useMapInfo } from '@/stores/map/useMapStore';
 import useMyLocation from '@/stores/map/useMyLocationsStore';
 import useLocationStore from '@/stores/promise/useLocationStore';
 import useGetLikePlaces from '@/hooks/queries/useGetLikePlaces';
@@ -11,7 +11,7 @@ import { CATEGORY, CATEGORY_LABEL } from '@/constants/place';
 import { DEFAULT_SUBWAY_STATION } from '@/constants/promise';
 
 const SearchPlace = ({ category }) => {
-  const isKakaoLoaded = useIsKakaoLoaded();
+  const { isKakaoLoaded } = useMapInfo();
   const { myLocation } = useMyLocation();
   const { nearestSubwayStation } = useLocationStore();
   const [places, setPlaces] = useState([]);

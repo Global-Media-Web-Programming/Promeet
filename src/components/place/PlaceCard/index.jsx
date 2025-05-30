@@ -1,7 +1,7 @@
 import * as S from './style';
 import PropTypes from 'prop-types';
 import matchIcon from '@/utils/matchIcon.jsx';
-import { useMap } from '@/stores/map/useMapStore';
+import { useMapInfo } from '@/stores/map/useMapStore';
 import useBottomSheetStore from '@/stores/ui/useBottomSheetStore';
 import useMarkerStore from '@/stores/map/useMarkerStore';
 import { CATEGORY } from '@/constants/place';
@@ -17,7 +17,7 @@ const PlaceCard = ({
   likesCount,
   onClick,
 }) => {
-  const map = useMap();
+  const { map } = useMapInfo();
   const { setActiveBottomSheet } = useBottomSheetStore();
   const { setActiveMarkerId } = useMarkerStore();
 

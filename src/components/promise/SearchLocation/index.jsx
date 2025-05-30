@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import Header from '../Header';
 import PlaceCardList from '@/components/place/PlaceCardList';
-import { useIsKakaoLoaded } from '@/stores/map/useMapStore';
+import { useMapInfo } from '@/stores/map/useMapStore';
 import useMyLocationsStore from '@/stores/map/useMyLocationsStore';
 import useLocationStore from '@/stores/promise/useLocationStore';
 import { ROUTES } from '@/constants/routes';
@@ -21,7 +21,7 @@ const SearchLocation = ({ onBack }) => {
 
   const { setLocation } = useLocationStore(); // 최종 선택 위치
 
-  const isKakaoLoaded = useIsKakaoLoaded();
+  const { isKakaoLoaded } = useMapInfo();
   const { allowMyLocation, setMyLocation } = useMyLocationsStore();
   const handleError = useHandleError();
 
