@@ -1,7 +1,7 @@
 import './style.css';
 import { useEffect, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import useMapStore from '@/stores/map/useMapStore';
+import { useMap } from '@/stores/map/useMapStore';
 import { CATEGORY, CATEGORY_MARKER_IMAGE } from '@/constants/place';
 import { MY_LOC_MARKER_IMG, MY_LOC_MARKER_ID } from '@/constants/map';
 import { EMPTY_HEART_SVG, FILLED_HEART_SVG } from '@/constants/svg';
@@ -9,7 +9,7 @@ import useToggleLikePlace from '@/hooks/mutations/useToggleLikePlace';
 import useMarkerStore from '@/stores/map/useMarkerStore';
 
 const MarkerManager = ({ markers }) => {
-  const { map } = useMapStore();
+  const map = useMap();
   const { activeMarkerId, setActiveMarkerId, clearActiveMarkerId } = useMarkerStore();
   const markersRef = useRef([]);
   const markerMapRef = useRef(new Map()); // 마커 ID와 마커 객체를 매핑

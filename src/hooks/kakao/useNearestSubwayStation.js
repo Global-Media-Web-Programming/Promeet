@@ -19,12 +19,13 @@ const useNearestSubwayStation = (lat, lng) => {
           // 가장 가까운 역
           const nearestStation = data[0];
           setNearestSubwayStation({
+            id: nearestStation.id,
             name: nearestStation.place_name,
             position: {
               lat: nearestStation.y,
               lng: nearestStation.x,
             },
-            id: nearestStation.id,
+            address: nearestStation.address,
             distance: nearestStation.distance,
           });
         }

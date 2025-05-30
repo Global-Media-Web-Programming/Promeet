@@ -1,11 +1,12 @@
 import { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import * as S from './style';
-import useMapStore from '@/stores/map/useMapStore';
+import { useIsKakaoLoaded, useMapActions } from '@/stores/map/useMapStore';
 
 const MapContainer = ({ children, lat, lng }) => {
   const mapRef = useRef(null);
-  const { setMap, isKakaoLoaded } = useMapStore();
+  const isKakaoLoaded = useIsKakaoLoaded();
+  const { setMap } = useMapActions();
 
   // 지도 생성
   useEffect(() => {
@@ -20,7 +21,7 @@ const MapContainer = ({ children, lat, lng }) => {
     setMap(map);
 
     return () => {
-      map.setMap(null);
+      setMap(null);
     };
   }, [isKakaoLoaded, lat, lng, setMap]);
 

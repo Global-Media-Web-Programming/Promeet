@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import Header from '../Header';
 import PlaceCardList from '@/components/place/PlaceCardList';
-import useMapStore from '@/stores/map/useMapStore';
+import { useIsKakaoLoaded } from '@/stores/map/useMapStore';
 import useMyLocationsStore from '@/stores/map/useMyLocationsStore';
 import useLocationStore from '@/stores/promise/useLocationStore';
 import { ROUTES } from '@/constants/routes';
@@ -21,7 +21,7 @@ const SearchLocation = ({ onBack }) => {
 
   const { setLocation } = useLocationStore(); // 최종 선택 위치
 
-  const { isKakaoLoaded } = useMapStore();
+  const isKakaoLoaded = useIsKakaoLoaded();
   const { allowMyLocation, setMyLocation } = useMyLocationsStore();
   const handleError = useHandleError();
 
@@ -84,6 +84,7 @@ const SearchLocation = ({ onBack }) => {
         position: new window.kakao.maps.LatLng(place.y, place.x),
       }));
       setPlaces(places);
+      console.log('places', places);
     } else if (status === window.kakao.maps.services.Status.ZERO_RESULT) {
       setPlaces([]);
     } else if (status === window.kakao.maps.services.Status.ERROR) {
