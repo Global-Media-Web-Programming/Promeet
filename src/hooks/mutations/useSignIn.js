@@ -11,13 +11,7 @@ const useSignIn = (setError) => {
   const { setUserId } = useUserActions();
 
   return useMutation({
-    mutationFn: async ({ name, password, promiseId }) => {
-      const data = await postSignIn(name, password, promiseId);
-      if (!data.success) {
-        throw data.error;
-      }
-      return data;
-    },
+    mutationFn: ({ name, password, promiseId }) => postSignIn(name, password, promiseId),
     onSuccess: (data) => {
       setUserId(data.data.userId);
       navigate(ROUTES.HOME, { replace: true });
