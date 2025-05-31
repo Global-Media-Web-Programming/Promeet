@@ -1,4 +1,30 @@
+import React from 'react';
+import { Home, User } from 'lucide-react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { BottomBar, AddButton, NavButton } from './style';
+
 const Navbar = () => {
-  return <div>nav</div>;
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // signin 화면일 때는 null 리턴해서 안보이게
+  if (location.pathname === '/sign-in') {
+    return null;
+  }
+
+  return (
+    <BottomBar>
+      <NavButton active={location.pathname === '/'} onClick={() => navigate('/')}>
+        <Home />
+      </NavButton>
+
+      <AddButton onClick={() => navigate('/promise/create-info')}>+</AddButton>
+
+      <NavButton active={location.pathname === '/user'} onClick={() => navigate('/user')}>
+        <User />
+      </NavButton>
+    </BottomBar>
+  );
 };
+
 export default Navbar;
