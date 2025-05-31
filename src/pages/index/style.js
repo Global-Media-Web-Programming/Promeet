@@ -38,11 +38,13 @@ export const EnterText = styled.h2`
 export const Container = styled.section`
   display: flex;
   flex-direction: column;
-  background-color: #c6ebe5;
+
+  /* nav에 내용 가려지지 않게 아래 padding 줌 */
+  padding-bottom: var(--nav-height);
 `;
 
 export const Header = styled.h1`
-  margin: 20px 0;
   font-size: 24px;
   font-weight: 700;
+  white-space: pre-line;
 `;

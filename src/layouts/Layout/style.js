@@ -19,8 +19,6 @@ export const MainContainer = styled.main`
   padding: 0 var(--outlet-padding);
 
   & > * {
-    display: flex;
     flex: 1;
-    flex-direction: column;
   }
 `;

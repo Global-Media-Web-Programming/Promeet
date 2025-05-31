@@ -5,6 +5,9 @@ export const useUserInfo = () =>
   userStore(
     useShallow((state) => ({
       userId: state.userId,
+      userName: state.userName,
+      fixedSchedules: state.fixedSchedules,
+      promises: state.promises,
     })),
   );
 

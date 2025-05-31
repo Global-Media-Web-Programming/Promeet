@@ -10,7 +10,7 @@ const SignInForm = () => {
     handleSubmit,
     formState: { isSubmitting, errors, touchedFields },
     setError,
-    watch, // 디버깅용
+    // watch, // 디버깅용
   } = useForm({
     resolver: zodResolver(signInSchema),
     mode: 'onChange',
@@ -23,15 +23,15 @@ const SignInForm = () => {
   const { mutate: signIn, isPending: isSignInPending } = useSignIn(setError);
 
   // 폼 제출 핸들러
-  const onSubmit = async (formData) => {
-    await signIn(formData);
+  const onSubmit = (formData) => {
+    signIn(formData);
   };
 
-  // 디버깅용
-  console.log('현재 signIn form', {
-    errors,
-    data: watch(),
-  });
+  // // 디버깅용
+  // console.log('현재 signIn form', {
+  //   errors,
+  //   data: watch(),
+  // });
 
   return (
     <S.SignInForm onSubmit={handleSubmit(onSubmit)}>
@@ -44,7 +44,7 @@ const SignInForm = () => {
         placeholder="이름을 입력해주세요"
       />
       {/* 커스텀 컴포넌트에 prop으로 넣어서 사용 필요 */}
-      {touchedFields.name && errors.name && errors.name?.message && <p>{errors.name.message}</p>}
+      {touchedFields.name && errors.name && errors.name.message && <p>{errors.name.message}</p>}
       <input
         type="password"
         id="password"
@@ -52,7 +52,7 @@ const SignInForm = () => {
         {...register('password')}
         placeholder="비밀번호를 입력해주세요(4자 이상)"
       />
-      {touchedFields.password && errors.password && errors.password?.message && (
+      {touchedFields.password && errors.password && errors.name.message && (
         <p>{errors.password.message}</p>
       )}
       {/* 커스텀 컴포넌트로 변경 필요 */}
