@@ -13,22 +13,29 @@ const userStore = create()(
         join: [],
       },
       actions: {
-        setUserId: (userId) => set(() => ({ userId }), false, 'setUserId'),
-        setUserName: (name) => set(() => ({ userName: name }), false, 'setUserName'),
+        setUserId: (userId) =>
+          set((state) => {
+            state.userId = userId;
+          }),
+        setUserName: (name) =>
+          set((state) => {
+            state.userName = name;
+          }),
         setFixedSchedules: (schedules) =>
-          set(() => ({ fixedSchedules: schedules }), false, 'setFixedSchedules'),
-        setPromises: (promises) => set(() => ({ promises }), false, 'setPromises'),
-        resetUser: () =>
-          set(
-            () => ({
-              userId: null,
-              userName: null,
-              fixedSchedules: [],
-              promises: { create: [], join: [] },
-            }),
-            false,
-            'resetUser',
-          ),
+          set((state) => {
+            state.fixedSchedules = schedules;
+          }),
+        setPromises: (promises) =>
+          set((state) => {
+            state.promises = promises;
+          }),
+        clearUser: () =>
+          set((state) => {
+            state.userId = null;
+            state.userName = null;
+            state.fixedSchedules = [];
+            state.promises = { create: [], join: [] };
+          }),
       },
     })),
   ),
