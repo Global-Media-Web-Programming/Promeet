@@ -1,7 +1,7 @@
 import * as S from './style';
 import Tabs from '@/components/ui/Tabs';
-import MapContainer from '@/components/map/MapContainer';
-import SearchPlace from '@/components/map/SearchPlace';
+import MapContainer from '@/components/promise/map/MapContainer';
+import SearchPlace from '@/components/promise/map/SearchPlace';
 import { useTabsInfo } from '@/hooks/stores/ui/useTabsStore';
 import { useLocationInfo, useLocationActions } from '@/hooks/stores/promise/useLocationStore';
 import useHandleError from '@/hooks/useHandleError';

@@ -1,9 +1,9 @@
 import * as S from './style';
 import PropTypes from 'prop-types';
 import matchIcon from '@/utils/matchIcon.jsx';
-import { useMapInfo } from '@/hooks/stores/map/useMapStore';
+import { useMapInfo } from '@/hooks/stores/promise/map/useMapStore';
 import { useBottomSheetActions } from '@/hooks/stores/ui/useBottomSheetStore';
-import { useMarkerActions } from '@/hooks/stores/map/useMarkerStore';
+import { useMarkerActions } from '@/hooks/stores/promise/map/useMarkerStore';
 import { useUserInfo } from '@/hooks/stores/auth/useUserStore';
 import { CATEGORY } from '@/constants/place';
 import useToggleLikePlace from '@/hooks/mutations/useToggleLikePlace';

@@ -1,7 +1,7 @@
 import * as S from './style';
 import { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { useMapInfo, useMapActions } from '@/hooks/stores/map/useMapStore';
+import { useMapInfo, useMapActions } from '@/hooks/stores/promise/map/useMapStore';
 
 const MapContainer = ({ children, lat, lng }) => {
   const mapRef = useRef(null);

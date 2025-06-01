@@ -1,9 +1,9 @@
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import MarkerManager from '../MarkerManager';
-import PlaceCardList from '@/components/place/PlaceCardList';
+import PlaceCardList from '@/components/promise/place/PlaceCardList';
 import BottomSheet from '@/components/ui/BottomSheet';
-import { useMapInfo } from '@/hooks/stores/map/useMapStore';
+import { useMapInfo } from '@/hooks/stores/promise/map/useMapStore';
 import { useLocationInfo } from '@/hooks/stores/promise/useLocationStore';
 import useGetLikePlaces from '@/hooks/queries/useGetLikePlaces';
 import { CATEGORY, CATEGORY_LABEL } from '@/constants/place';

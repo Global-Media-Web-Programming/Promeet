@@ -1,4 +1,4 @@
-import markerStore from '@/stores/map/markerStore';
+import markerStore from '@/stores/promise/map/markerStore';
 import { useShallow } from 'zustand/shallow';
 
 export const useMarkerInfo = () =>

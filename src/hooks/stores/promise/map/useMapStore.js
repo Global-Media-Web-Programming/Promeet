@@ -1,4 +1,4 @@
-import mapStore from '@/stores/map/mapStore';
+import mapStore from '@/stores/promise/map/mapStore';
 import { useShallow } from 'zustand/shallow';
 
 export const useMapInfo = () =>
