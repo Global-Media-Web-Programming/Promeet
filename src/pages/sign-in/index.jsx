@@ -9,12 +9,6 @@ const SignInPage = () => {
 
   return (
     <S.Container>
-      {/* 상단 상태바 */}
-      {/*<S.StatusBar>
-        <S.TimeText>9:41</S.TimeText>
-        <S.StatusDot />
-      </S.StatusBar>*/}
-
       {/* 로그인 타이틀 */}
       <S.Title>로그인</S.Title>
 

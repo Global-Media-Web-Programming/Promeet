@@ -61,7 +61,7 @@ export const StatusDot = styled.div`
 export const Title = styled.div`
   position: absolute;
   top: 212px;
-  left: 42%;
+  left: 50%;
   transform: translateX(-50%);
 
   font-family: 'Pretendard Variable', sans-serif;
@@ -78,12 +78,12 @@ export const InputWrapper = styled.div`
   left: 50%;
   transform: translateX(-50%);
 
-  width: 327px; /* 너비 고정 */
+  width: 327px;
 `;
 
 export const ButtonWrapper = styled.div`
   position: absolute;
-  top: 457px;
+  top: 490px;
   left: 50%;
   transform: translateX(-50%);
 
