@@ -5,9 +5,7 @@ export const Container = styled.section`
   display: flex;
   flex-direction: column;
   gap: 20px;
-
   width: 100%;
-  padding: 10px 10px 20px;
 `;
 
 export const EmptyText = styled.div`

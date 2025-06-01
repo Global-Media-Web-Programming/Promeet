@@ -1,10 +1,13 @@
+import * as S from './style';
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import MarkerManager from '../MarkerManager';
 import PlaceCardList from '@/components/promise/place/PlaceCardList';
+import PlaceLikeToggle from '@/components/promise/place/PlaceLikeToggle';
 import BottomSheet from '@/components/ui/BottomSheet';
 import { useMapInfo } from '@/hooks/stores/promise/map/useMapStore';
 import { useLocationInfo } from '@/hooks/stores/promise/useLocationStore';
+import { useUserInfo } from '@/hooks/stores/auth/useUserStore';
 import useGetLikePlaces from '@/hooks/queries/useGetLikePlaces';
 import { CATEGORY, CATEGORY_LABEL } from '@/constants/place';
 import { DEFAULT_SUBWAY_STATION } from '@/constants/promise';
@@ -19,7 +22,7 @@ const SearchPlace = ({ category }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   // 장소 정보에 isLiked, likesCount 넣기 위해
-  const { userId } = useState();
+  const { userId } = useUserInfo();
 
   // Places 서비스 초기화
   const ps = useMemo(() => {
@@ -55,17 +58,22 @@ const SearchPlace = ({ category }) => {
 
   // 장소 정보 + 좋아요 정보
   const LikedPlaces = useGetLikePlaces(placeIds, userId);
+  const isLikesPending = LikedPlaces.some((result) => result.isPending);
+  const hasLikesError = LikedPlaces.some((result) => result.isError);
+
   const mergedPlaces = useMemo(() => {
+    if (isLikesPending) return [];
+    if (hasLikesError) return places.map((place) => ({ ...place, isLiked: false, likesCount: 0 }));
+
     return places.map((place, i) => {
-      console.log(LikedPlaces[i]);
-      const result = LikedPlaces[i];
+      const result = LikedPlaces[i]?.data;
       return {
         ...place,
         isLiked: result?.isLiked ?? false,
         likesCount: result?.likesCount ?? 0,
       };
     });
-  }, [places, LikedPlaces]);
+  }, [places, LikedPlaces, isLikesPending, hasLikesError]);
 
   // 장소 검색 함수
   const searchPlaces = useCallback(() => {
@@ -84,11 +92,14 @@ const SearchPlace = ({ category }) => {
     <>
       <MarkerManager markers={[...mergedPlaces, ...(myLocation ? [myLocation] : [])]} />;
       <BottomSheet id="map_place">
-        <PlaceCardList
-          places={mergedPlaces}
-          isLoading={isLoading}
-          emptyText="주변 장소가 없어요."
-        />
+        <S.ListContainer>
+          <PlaceLikeToggle />
+          <PlaceCardList
+            places={mergedPlaces}
+            isLoading={isLoading}
+            emptyText="주변 장소가 없어요."
+          />
+        </S.ListContainer>
       </BottomSheet>
     </>
   );
