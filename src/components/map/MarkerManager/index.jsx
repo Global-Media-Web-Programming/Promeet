@@ -1,12 +1,13 @@
 import './style.css';
 import { useEffect, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
+import useToggleLikePlace from '@/hooks/mutations/useToggleLikePlace';
 import { useMapInfo } from '@/hooks/stores/map/useMapStore';
+import { useMarkerInfo, useMarkerActions } from '@/hooks/stores/map/useMarkerStore';
+import { useUserInfo } from '@/hooks/stores/auth/useUserStore';
 import { CATEGORY, CATEGORY_MARKER_IMAGE } from '@/constants/place';
 import { MY_LOC_MARKER_IMG, MY_LOC_MARKER_ID } from '@/constants/map';
 import { EMPTY_HEART_SVG, FILLED_HEART_SVG } from '@/constants/svg';
-import useToggleLikePlace from '@/hooks/mutations/useToggleLikePlace';
-import { useMarkerInfo, useMarkerActions } from '@/hooks/stores/map/useMarkerStore';
 
 const MarkerManager = ({ markers }) => {
   const { map } = useMapInfo();
@@ -17,13 +18,14 @@ const MarkerManager = ({ markers }) => {
   const currentOverlayRef = useRef(null);
   const myLocationMarkerRef = useRef(null);
 
+  const { userId } = useUserInfo();
   const { mutate: toggleLike } = useToggleLikePlace();
 
   const handleLikeToggle = useCallback(
     (placeId, isLiked) => {
-      toggleLike({ placeId, isLiked });
+      toggleLike({ placeId, userId, isLiked });
     },
-    [toggleLike],
+    [toggleLike, userId],
   );
 
   // 내 위치 마커 관리
@@ -265,7 +267,7 @@ const MarkerManager = ({ markers }) => {
     return () => {
       window.kakao.maps.event.removeListener(map, 'bounds_changed', boundsChangedListener);
     };
-  }, [map, markers, handleLikeToggle, setActiveMarkerId]);
+  }, [map, markers, setActiveMarkerId]);
 
   return null;
 };

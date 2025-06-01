@@ -1,10 +1,10 @@
 import axiosInstance from '../axiosInstance';
 
 // 좋아요 취소
-export const deleteLike = async (userId, placeId) => {
+export const deleteLike = async (placeId, userId) => {
   const { data } = await axiosInstance.delete(`/likes`, {
-    userId,
     placeId,
+    userId,
   });
   return data;
 };

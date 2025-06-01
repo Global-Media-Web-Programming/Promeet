@@ -7,38 +7,35 @@ import { QUERY_KEY } from '@/constants/key';
 
 const useToggleLikePlace = () => {
   const handleError = useHandleError();
-  // 내 정보
-  // const { myInfo } = useUserStore();
-  // const myUserId = myInfo?.id;
-  const myUserId = '0000'; // 임시 유저 정보
 
   return useMutation({
-    mutationFn: ({ placeId, isLiked }) => (isLiked ? deleteLike(placeId) : postLike(placeId)),
-    onMutate: async ({ placeId, isLiked }) => {
+    mutationFn: ({ placeId, userId, isLiked }) =>
+      isLiked ? deleteLike(placeId, userId) : postLike(placeId, userId),
+    onMutate: async ({ placeId, userId, isLiked }) => {
       // 1. 장소에 관련된 쿼리를 취소 (캐시된 데이터를 새로 불러오는 요청)
       await queryClient.cancelQueries({
-        queryKey: [QUERY_KEY.places, placeId],
+        queryKey: [QUERY_KEY.places, placeId, userId],
+        exact: true, // 정확히 일치하는 쿼리만
       });
 
       // 2. 현재 장소 관련 데이터를 캐시에서 가져오기
-      const prevData = queryClient.getQueryData([QUERY_KEY.places, placeId]);
+      // Optimistic Update를 위해 클라이언트에서만 임시로 사용하는 상태
+      const prevData = queryClient.getQueryData([QUERY_KEY.places, placeId, userId], {
+        exact: true,
+      });
 
-      if (!prevData || !myUserId) return { prevData };
+      if (!prevData || !placeId || !userId) return { prevData };
 
-      // 3. 좋아요 정보 저장
-      queryClient.setQueryData([QUERY_KEY.places, placeId], (old) => {
+      // 3. 서버 응답 기다리지 않고 바로 상태 업데이트
+      queryClient.setQueryData([QUERY_KEY.places, placeId, userId], (old) => {
         if (!old) return old;
-
-        // 취소면 나를 좋아요 목록에서 제거, 누르는 거면 내 id 추가
-        const updatedLikes = isLiked
-          ? old.data.likes.filter((userId) => userId !== myUserId)
-          : [...old.data.likes, myUserId];
 
         return {
           ...old,
           data: {
             ...old.data,
-            likes: updatedLikes,
+            isLiked: !isLiked,
+            likesCount: isLiked ? old.data.likesCount - 1 : old.data.likesCount + 1,
           },
         };
       });
@@ -47,17 +44,17 @@ const useToggleLikePlace = () => {
     },
 
     // 요청 실패시 롤백
-    onError: (error, { placeId }, context) => {
+    onError: (error, { placeId, userId }, context) => {
       if (context?.prevData) {
-        queryClient.setQueryData([QUERY_KEY.places, placeId], context.prevData);
+        queryClient.setQueryData([QUERY_KEY.places, placeId, userId], context.prevData);
       }
       handleError(error);
     },
 
-    // 서버의 실제 최신 데이터를 다시 가져옴
-    onSettled: async (_, __, { placeId }) => {
-      await queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.places, placeId],
+    // 실제 서버의 최신 데이터를 다시 가져옴
+    onSettled: (_, __, { placeId, userId }) => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEY.places, placeId, userId],
         exact: true,
       });
     },

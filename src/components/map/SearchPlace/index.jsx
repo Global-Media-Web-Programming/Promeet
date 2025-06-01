@@ -18,6 +18,9 @@ const SearchPlace = ({ category }) => {
   // 지도 검색 로딩용
   const [isLoading, setIsLoading] = useState(false);
 
+  // 장소 정보에 isLiked, likesCount 넣기 위해
+  const { userId } = useState();
+
   // Places 서비스 초기화
   const ps = useMemo(() => {
     if (!isKakaoLoaded) return null;
@@ -51,10 +54,11 @@ const SearchPlace = ({ category }) => {
   );
 
   // 장소 정보 + 좋아요 정보
-  const LikedPlaces = useGetLikePlaces(placeIds);
+  const LikedPlaces = useGetLikePlaces(placeIds, userId);
   const mergedPlaces = useMemo(() => {
     return places.map((place, i) => {
-      const result = LikedPlaces[i]?.data;
+      console.log(LikedPlaces[i]);
+      const result = LikedPlaces[i];
       return {
         ...place,
         isLiked: result?.isLiked ?? false,

@@ -4,6 +4,7 @@ import matchIcon from '@/utils/matchIcon.jsx';
 import { useMapInfo } from '@/hooks/stores/map/useMapStore';
 import { useBottomSheetActions } from '@/hooks/stores/ui/useBottomSheetStore';
 import { useMarkerActions } from '@/hooks/stores/map/useMarkerStore';
+import { useUserInfo } from '@/hooks/stores/auth/useUserStore';
 import { CATEGORY } from '@/constants/place';
 import useToggleLikePlace from '@/hooks/mutations/useToggleLikePlace';
 
@@ -20,6 +21,7 @@ const PlaceCard = ({
   const { map } = useMapInfo();
   const { setActiveBottomSheet } = useBottomSheetActions();
   const { setActiveMarkerId } = useMarkerActions();
+  const { userId } = useUserInfo();
 
   const handleCardClick = () => {
     if (onClick) {
@@ -41,7 +43,7 @@ const PlaceCard = ({
   const { mutate: toggleLike } = useToggleLikePlace();
 
   const handleLikeToggle = () => {
-    toggleLike({ placeId, isLiked });
+    toggleLike({ placeId, userId, isLiked });
   };
 
   return (
