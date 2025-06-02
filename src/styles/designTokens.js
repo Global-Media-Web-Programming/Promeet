@@ -6,7 +6,7 @@ const designTokens = css`
   /* --css-variable-example: ${theme.color.point2}; */
   --nav-height: 82px;
   --outlet-padding: 30px;
-  --place-category-tab-height: 60px;
+  --place-category-tab-height: 65px;
   --bs-header-height: 50px;
 `;
 

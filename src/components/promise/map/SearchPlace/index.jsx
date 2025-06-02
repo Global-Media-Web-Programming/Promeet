@@ -121,7 +121,7 @@ const SearchPlace = ({ category }) => {
           <PlaceCardList
             places={places}
             isLoading={isLoading}
-            emptyText={isLikeList ? '좋아요한 장소가 없어요.' : '주변 장소가 없어요.'}
+            emptyText={isLikeList ? '좋아요한 장소가 없어요' : '주변 장소가 없어요'}
           />
         </S.ListContainer>
       </BottomSheet>

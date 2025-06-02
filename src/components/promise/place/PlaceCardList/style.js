@@ -10,5 +10,6 @@ export const Container = styled.section`
 
 export const EmptyText = styled.div`
   margin: 30px auto;
+  font-weight: 600;
   color: ${theme.color.text.grey};
 `;

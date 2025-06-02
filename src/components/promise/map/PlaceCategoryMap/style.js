@@ -5,8 +5,8 @@ import MyLocationSvg from '@/assets/img/icon/map/my_location.svg?react';
 export const TabsWrapper = styled.div`
   position: absolute;
   z-index: 2;
-  top: 16px;
-  left: 16px;
+  top: 0;
+  left: 0;
 `;
 
 export const List = styled.div`
@@ -17,10 +17,12 @@ export const List = styled.div`
 `;
 
 export const MyLocationIcon = styled(MyLocationSvg)`
+  cursor: pointer;
+
   position: absolute;
-  z-index: 2;
-  bottom: 35px;
-  left: 35px;
+  z-index: 1;
+  bottom: calc(30px + var(--bs-header-height));
+  left: 30px;
 
   width: 40px;
   height: 40px;
