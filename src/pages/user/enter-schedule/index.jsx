@@ -3,10 +3,9 @@ import FixedTimeTable from '@/components/timeTable/FixedTimeTable';
 
 const UserPage = () => {
   return (
-    <>
-      <S.Container>스케줄 입력 페이지</S.Container>
+    <S.Container>
       <FixedTimeTable />
-    </>
+    </S.Container>
   );
 };
 export default UserPage;
