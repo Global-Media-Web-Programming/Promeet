@@ -5,7 +5,10 @@ import useHandleError from '../useHandleError';
 import queryClient from '@/lib/tanstack-query/queryClient';
 import { QUERY_KEY } from '@/constants/key';
 import { useUserInfo } from '@/hooks/stores/auth/useUserStore';
-import { usePromiseDataInfo, usePromiseDataActions } from '@/stores/promise/usePromiseDataStore';
+import {
+  usePromiseDataInfo,
+  usePromiseDataActions,
+} from '@/hooks/stores/promise/usePromiseDataStore';
 
 const useToggleLikePlace = () => {
   const handleError = useHandleError();

@@ -9,10 +9,9 @@ import { useMapInfo } from '@/hooks/stores/promise/map/useMapStore';
 import { useUserInfo } from '@/hooks/stores/auth/useUserStore';
 import { useLocationInfo } from '@/hooks/stores/promise/useLocationStore';
 import { usePlaceLikeToggleInfo } from '@/hooks/stores/promise/usePlaceLikeToggle';
-
+import { usePromiseDataInfo } from '@/hooks/stores/promise/usePromiseDataStore';
 import { CATEGORY, CATEGORY_LABEL } from '@/constants/place';
 import { DEFAULT_SUBWAY_STATION } from '@/constants/promise';
-import { usePromiseDataInfo } from '@/stores/promise/usePromiseDataStore';
 
 const SearchPlace = ({ category }) => {
   const { isKakaoLoaded } = useMapInfo();
