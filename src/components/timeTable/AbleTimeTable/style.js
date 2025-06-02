@@ -47,14 +47,13 @@ export const Cell = styled.div`
 
 export const Quarter = styled.div`
   cursor: pointer;
+  user-select: none;
 
   flex: 1 1 0;
 
   width: 100%;
 
   background: ${({ selected }) => (selected ? 'rgba(195, 233, 224, 0.80)' : '#fff')};
-
-  transition: background 0.15s;
 
   &:active {
     background: rgb(195, 233, 224, 80%);
