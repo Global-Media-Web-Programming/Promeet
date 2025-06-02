@@ -43,7 +43,7 @@ const SearchPlace = ({ category }) => {
           phone: place.phone,
           address: place.road_address_name ?? place.address_name,
           link: place.place_url,
-          position: new window.kakao.maps.LatLng(place.y, place.x),
+          position: new window.kakao.maps.LatLng(place.x, place.y),
           // 기본값
           isLiked: false,
           likesCount: 0,
