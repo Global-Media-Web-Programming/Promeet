@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Calendar from 'react-calendar';
 import * as S from './style';
 import 'react-calendar/dist/Calendar.css';
+import prevIcon from '../../assets/img/icon/left.svg';
+import nextIcon from '../../assets/img/icon/right.svg';
 
 export default function CalendarRange() {
   const [range, setRange] = useState([new Date(), new Date()]);
@@ -108,6 +110,8 @@ export default function CalendarRange() {
         }
         next2Label={null}
         prev2Label={null}
+        nextLabel={<img src={nextIcon} alt="Next" />}
+        prevLabel={<img src={prevIcon} alt="Previous" />}
       />
     </S.CalendarWrapper>
   );

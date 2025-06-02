@@ -31,6 +31,15 @@ export const CalendarWrapper = styled.div`
       background: none;
     }
   }
+
+  .react-calendar__navigation__next-button,
+  .react-calendar__navigation__prev-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 44px;
+  }
+
   /* stylelint-enable selector-class-pattern */
   abbr[title] {
     text-decoration: none;
