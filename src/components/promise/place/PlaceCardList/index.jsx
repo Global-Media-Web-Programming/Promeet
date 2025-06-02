@@ -14,6 +14,7 @@ const PlaceCardList = ({ places, isLoading, emptyText, onCardClick }) => {
       </S.Container>
     );
   }
+
   return (
     <S.Container>
       {places.length > 0 ? (
@@ -25,6 +26,8 @@ const PlaceCardList = ({ places, isLoading, emptyText, onCardClick }) => {
             type={place.type}
             name={place.name}
             address={place.address}
+            phone={place.phone}
+            link={place.link}
             isLiked={place.isLiked}
             likesCount={place.likesCount}
             onClick={() => onCardClick(place)}
@@ -45,11 +48,13 @@ PlaceCardList.propTypes = {
         La: PropTypes.string.isRequired,
         Ma: PropTypes.string.isRequired,
       }).isRequired,
-      type: PropTypes.oneOf(Object.values(CATEGORY)),
+      type: PropTypes.oneOf(Object.values(CATEGORY)).isRequired,
       name: PropTypes.string.isRequired,
       address: PropTypes.string.isRequired,
-      isLiked: PropTypes.bool,
-      likesCount: PropTypes.number,
+      phone: PropTypes.string,
+      link: PropTypes.string,
+      isLiked: PropTypes.bool.isRequired,
+      likesCount: PropTypes.number.isRequired,
     }),
   ).isRequired,
   isLoading: PropTypes.bool.isRequired,

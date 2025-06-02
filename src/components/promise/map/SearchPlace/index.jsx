@@ -6,23 +6,25 @@ import PlaceCardList from '@/components/promise/place/PlaceCardList';
 import PlaceLikeToggle from '@/components/promise/place/PlaceLikeToggle';
 import BottomSheet from '@/components/ui/BottomSheet';
 import { useMapInfo } from '@/hooks/stores/promise/map/useMapStore';
-import { useLocationInfo } from '@/hooks/stores/promise/useLocationStore';
 import { useUserInfo } from '@/hooks/stores/auth/useUserStore';
-import useGetLikePlaces from '@/hooks/queries/useGetLikePlaces';
+import { useLocationInfo } from '@/hooks/stores/promise/useLocationStore';
+import { usePlaceLikeToggleInfo } from '@/hooks/stores/promise/usePlaceLikeToggle';
+
 import { CATEGORY, CATEGORY_LABEL } from '@/constants/place';
 import { DEFAULT_SUBWAY_STATION } from '@/constants/promise';
+import { usePromiseDataInfo } from '@/stores/promise/usePromiseDataStore';
 
 const SearchPlace = ({ category }) => {
   const { isKakaoLoaded } = useMapInfo();
   const { myLocation, nearestSubwayStation } = useLocationInfo();
-  const [places, setPlaces] = useState([]);
-  // 좋아요 정보 가져오기 위해 id들 저장
-  const [placeIds, setPlaceIds] = useState([]);
-  // 지도 검색 로딩용
+  const [nearbyPlaces, setNearbyPlaces] = useState([]); // 주변 장소
   const [isLoading, setIsLoading] = useState(false);
+  // 선택 탭 ('place' | 'like')
+  const { selectedTab } = usePlaceLikeToggleInfo();
+  const isLikeList = selectedTab === 'like';
 
-  // 장소 정보에 isLiked, likesCount 넣기 위해
   const { userId } = useUserInfo();
+  const { likedPlaces } = usePromiseDataInfo();
 
   // Places 서비스 초기화
   const ps = useMemo(() => {
@@ -30,11 +32,11 @@ const SearchPlace = ({ category }) => {
     return new window.kakao.maps.services.Places();
   }, [isKakaoLoaded]);
 
-  // 검색 콜백
-  const placesSearchCB = useCallback(
+  // 검색 결과 처리
+  const handleSearchResults = useCallback(
     (data, status) => {
-      setIsLoading(false); // 검색 완료되면 로딩 종료
       if (status === window.kakao.maps.services.Status.OK) {
+        // 주변 장소 검색 결과
         const places = data.map((place) => ({
           id: place.id,
           type: category,
@@ -43,61 +45,84 @@ const SearchPlace = ({ category }) => {
           address: place.road_address_name ?? place.address_name,
           link: place.place_url,
           position: new window.kakao.maps.LatLng(place.y, place.x),
+          // 기본값
+          isLiked: false,
+          likesCount: 0,
         }));
-        setPlaces(places);
-        setPlaceIds(places.map((p) => p.id));
+        // 좋아요 내림차순 정렬
+        const sortedPlaces = places.sort((p1, p2) => p2.likesCount - p1.likesCount);
+        setNearbyPlaces(sortedPlaces);
       } else if (status === window.kakao.maps.services.Status.ZERO_RESULT) {
-        setPlaces([]);
-        setPlaceIds([]);
+        setNearbyPlaces([]);
       } else if (status === window.kakao.maps.services.Status.ERROR) {
         throw new Error('장소 검색 중 에러 발생');
       }
+      setIsLoading(false);
     },
     [category],
   );
 
-  // 장소 정보 + 좋아요 정보
-  const LikedPlaces = useGetLikePlaces(placeIds, userId);
-  const isLikesPending = LikedPlaces.some((result) => result.isPending);
-  const hasLikesError = LikedPlaces.some((result) => result.isError);
-
-  const mergedPlaces = useMemo(() => {
-    if (isLikesPending) return [];
-    if (hasLikesError) return places.map((place) => ({ ...place, isLiked: false, likesCount: 0 }));
-
-    return places.map((place, i) => {
-      const result = LikedPlaces[i]?.data;
-      return {
-        ...place,
-        isLiked: result?.isLiked ?? false,
-        likesCount: result?.likesCount ?? 0,
-      };
-    });
-  }, [places, LikedPlaces, isLikesPending, hasLikesError]);
-
-  // 장소 검색 함수
-  const searchPlaces = useCallback(() => {
-    if (!ps) return;
-    setIsLoading(true); // 검색 시작시 로딩 시작
-    const keyword = (nearestSubwayStation ?? DEFAULT_SUBWAY_STATION) + CATEGORY_LABEL[category];
-    ps.keywordSearch(keyword, placesSearchCB);
-  }, [category, ps, placesSearchCB, nearestSubwayStation]);
-
+  // 장소 검색
   useEffect(() => {
     if (!ps) return;
-    searchPlaces();
-  }, [category, ps, searchPlaces]);
+    setIsLoading(true);
+    setNearbyPlaces([]);
+
+    // 주변 장소 검색
+    const keyword = (nearestSubwayStation ?? DEFAULT_SUBWAY_STATION) + CATEGORY_LABEL[category];
+    ps.keywordSearch(keyword, handleSearchResults);
+  }, [category, ps, nearestSubwayStation, handleSearchResults]);
+
+  // 주변 장소에 좋아요 정보 추가
+  const mergedNearbyPlaces = useMemo(() => {
+    if (isLoading) return []; // 검색 중이면
+
+    return nearbyPlaces.map((place) => {
+      const likedPlace = likedPlaces.find((p) => p.place.placeId === place.id);
+      if (likedPlace) {
+        const hasMyLike = likedPlace.userIds.includes(userId);
+        return {
+          ...place,
+          isLiked: hasMyLike,
+          likesCount: likedPlace.likesCount,
+        };
+      }
+      return place;
+    });
+  }, [nearbyPlaces, likedPlaces, userId, isLoading]);
+
+  // 좋아요 장소를 카카오 맵 형식으로 변환
+  const mergedLikedPlaces = useMemo(() => {
+    return likedPlaces.map((likedPlace) => ({
+      id: likedPlace.place.placeId,
+      type: likedPlace.place.type,
+      name: likedPlace.place.name,
+      address: likedPlace.place.address,
+      position: new window.kakao.maps.LatLng(
+        likedPlace.place.position.La,
+        likedPlace.place.position.Ma,
+      ),
+      isLiked: likedPlace.userIds.includes(userId),
+      likesCount: likedPlace.likesCount,
+    }));
+  }, [likedPlaces, userId]);
+
+  // 마커용 장소 목록 (탭에 따라 다르게)
+  const places = useMemo(() => {
+    if (isLoading) return [];
+    return isLikeList ? mergedLikedPlaces : mergedNearbyPlaces;
+  }, [isLikeList, mergedLikedPlaces, mergedNearbyPlaces, isLoading]);
 
   return (
     <>
-      <MarkerManager markers={[...mergedPlaces, ...(myLocation ? [myLocation] : [])]} />;
+      <MarkerManager markers={[...places, ...(myLocation ? [myLocation] : [])]} />;
       <BottomSheet id="map_place">
         <S.ListContainer>
           <PlaceLikeToggle />
           <PlaceCardList
-            places={mergedPlaces}
+            places={places}
             isLoading={isLoading}
-            emptyText="주변 장소가 없어요."
+            emptyText={isLikeList ? '좋아요한 장소가 없어요.' : '주변 장소가 없어요.'}
           />
         </S.ListContainer>
       </BottomSheet>

@@ -4,7 +4,6 @@ import matchIcon from '@/utils/matchIcon.jsx';
 import { useMapInfo } from '@/hooks/stores/promise/map/useMapStore';
 import { useBottomSheetActions } from '@/hooks/stores/ui/useBottomSheetStore';
 import { useMarkerActions } from '@/hooks/stores/promise/map/useMarkerStore';
-import { useUserInfo } from '@/hooks/stores/auth/useUserStore';
 import { CATEGORY } from '@/constants/place';
 import useToggleLikePlace from '@/hooks/mutations/useToggleLikePlace';
 
@@ -14,6 +13,8 @@ const PlaceCard = ({
   type,
   name,
   address,
+  phone,
+  link,
   isLiked,
   likesCount,
   onClick,
@@ -21,7 +22,6 @@ const PlaceCard = ({
   const { map } = useMapInfo();
   const { setActiveBottomSheet } = useBottomSheetActions();
   const { setActiveMarkerId } = useMarkerActions();
-  const { userId } = useUserInfo();
 
   const handleCardClick = () => {
     if (onClick) {
@@ -34,7 +34,7 @@ const PlaceCard = ({
     // 바텀 시트 닫기
     setActiveBottomSheet(null);
     // 지도 중심 이동 (부드럽게)
-    const moveLatLng = new window.kakao.maps.LatLng(position.Ma, position.La);
+    const moveLatLng = new window.kakao.maps.LatLng(position.La, position.Ma);
     map.panTo(moveLatLng);
     // 해당 마커의 오버레이 열기
     setActiveMarkerId(placeId);
@@ -43,7 +43,16 @@ const PlaceCard = ({
   const { mutate: toggleLike } = useToggleLikePlace();
 
   const handleLikeToggle = () => {
-    toggleLike({ placeId, userId, isLiked });
+    const place = {
+      placeId,
+      type,
+      name,
+      position,
+      address,
+      phone,
+      link,
+    };
+    toggleLike({ place, isLiked });
   };
 
   return (
@@ -72,9 +81,11 @@ PlaceCard.propTypes = {
     La: PropTypes.string.isRequired,
     Ma: PropTypes.string.isRequired,
   }).isRequired,
-  type: PropTypes.oneOf(Object.values(CATEGORY)),
   name: PropTypes.string.isRequired,
   address: PropTypes.string.isRequired,
+  type: PropTypes.oneOf(Object.values(CATEGORY)),
+  phone: PropTypes.string,
+  link: PropTypes.string,
   isLiked: PropTypes.bool,
   likesCount: PropTypes.number,
   onClick: PropTypes.func,

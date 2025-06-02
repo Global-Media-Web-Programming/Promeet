@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import useToggleLikePlace from '@/hooks/mutations/useToggleLikePlace';
 import { useMapInfo } from '@/hooks/stores/promise/map/useMapStore';
 import { useMarkerInfo, useMarkerActions } from '@/hooks/stores/promise/map/useMarkerStore';
-import { useUserInfo } from '@/hooks/stores/auth/useUserStore';
 import { CATEGORY, CATEGORY_MARKER_IMAGE } from '@/constants/place';
 import { MY_LOC_MARKER_IMG, MY_LOC_MARKER_ID } from '@/constants/map';
 import { EMPTY_HEART_SVG, FILLED_HEART_SVG } from '@/constants/svg';
@@ -18,14 +17,13 @@ const MarkerManager = ({ markers }) => {
   const currentOverlayRef = useRef(null);
   const myLocationMarkerRef = useRef(null);
 
-  const { userId } = useUserInfo();
   const { mutate: toggleLike } = useToggleLikePlace();
 
   const handleLikeToggle = useCallback(
-    (placeId, isLiked) => {
-      toggleLike({ placeId, userId, isLiked });
+    (place, isLiked) => {
+      toggleLike({ place, isLiked });
     },
-    [toggleLike, userId],
+    [toggleLike],
   );
 
   // 내 위치 마커 관리
@@ -161,7 +159,17 @@ const MarkerManager = ({ markers }) => {
       const heartWrapper = document.createElement('div');
       heartWrapper.className = 'heartWrapper';
       heartWrapper.innerHTML = markerData.isLiked ? FILLED_HEART_SVG : EMPTY_HEART_SVG;
-      heartWrapper.onclick = () => handleLikeToggle(markerData.id, markerData.isLiked);
+      // 서버에 넘길 place 정보
+      const place = {
+        placeId: markerData.id,
+        type: markerData.type,
+        name: markerData.name,
+        position: markerData.position,
+        address: markerData.address,
+        phone: markerData.phone,
+        link: markerData.link,
+      };
+      heartWrapper.onclick = () => handleLikeToggle(place, markerData.isLiked);
 
       const heartCnt = document.createElement('div');
       heartCnt.className = 'heartCnt';
@@ -206,7 +214,7 @@ const MarkerManager = ({ markers }) => {
 
     // 새로운 마커 생성
     placeAndProfileMarkers.forEach((markerData) => {
-      const position = new window.kakao.maps.LatLng(markerData.position.Ma, markerData.position.La);
+      const position = new window.kakao.maps.LatLng(markerData.position.La, markerData.position.Ma);
 
       // 프로필 마커
       if (markerData.profile) {
