@@ -1,6 +1,11 @@
 import * as S from './style';
+import SignInForm from '@/components/auth/SignInForm';
 
-const SchedulePage = () => {
-  return <S.Container>로그인 페이지</S.Container>;
+const SignInPage = () => {
+  return (
+    <S.Container>
+      <SignInForm />
+    </S.Container>
+  );
 };
-export default SchedulePage;
+export default SignInPage;
