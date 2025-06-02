@@ -25,51 +25,66 @@ const useToggleLikePlace = () => {
             userId,
           });
     },
-    onMutate: async ({ place, isLiked }) => {
+    onMutate: async ({ place, promiseId, isLiked }) => {
       // 1. 장소에 관련된 쿼리를 취소
       await queryClient.cancelQueries({
-        queryKey: [QUERY_KEY.places, place.placeId, userId],
-        exact: true,
+        queryKey: [QUERY_KEY.promise, promiseId],
       });
 
       // 2. 현재 좋아요 상태 저장
       const prevLikedPlaces = likedPlaces;
 
       // 3. 낙관적 업데이트
-      const updatedLikedPlaces = prevLikedPlaces.map((likedPlace) => {
-        // 이미 좋아요 정보 있는 장소면
-        if (likedPlace.place.placeId === place.placeId) {
-          return {
-            ...likedPlace,
-            userIds: isLiked
-              ? likedPlace.userIds.filter((id) => id !== userId)
-              : [...likedPlace.userIds, userId],
-            likesCount: isLiked ? likedPlace.likesCount - 1 : likedPlace.likesCount + 1,
-          };
-        }
-        return likedPlace;
-      });
+      let finalLikedPlaces;
 
-      // 처음 좋아요되는 장소인 경우 반영
-      const finalLikedPlaces =
-        !isLiked && !prevLikedPlaces.some((p) => p.place.placeId === place.placeId)
-          ? [
-              ...updatedLikedPlaces,
-              {
-                userIds: [userId],
-                likesCount: 1,
-                place: {
-                  placeId: place.placeId,
-                  type: place.type,
-                  name: place.name,
-                  position: place.position,
-                  address: place.address,
-                  phone: place.phone,
-                  link: place.link,
-                },
+      if (isLiked) {
+        // 좋아요 취소
+        finalLikedPlaces = prevLikedPlaces.map((likedPlace) => {
+          if (likedPlace.place.placeId === place.placeId) {
+            const uniqueUserIds = [...new Set(likedPlace.userIds)].filter((id) => id !== userId);
+            return {
+              ...likedPlace,
+              userIds: uniqueUserIds,
+              likesCount: uniqueUserIds.length,
+            };
+          }
+          return likedPlace;
+        });
+      } else {
+        // 좋아요 추가
+        const existingPlace = prevLikedPlaces.find((p) => p.place.placeId === place.placeId);
+
+        if (existingPlace) {
+          finalLikedPlaces = prevLikedPlaces.map((likedPlace) => {
+            if (likedPlace.place.placeId === place.placeId) {
+              const uniqueUserIds = [...new Set([...likedPlace.userIds, userId])];
+              return {
+                ...likedPlace,
+                userIds: uniqueUserIds,
+                likesCount: uniqueUserIds.length,
+              };
+            }
+            return likedPlace;
+          });
+        } else {
+          finalLikedPlaces = [
+            ...prevLikedPlaces,
+            {
+              userIds: [userId],
+              likesCount: 1,
+              place: {
+                placeId: place.placeId,
+                type: place.type,
+                name: place.name,
+                position: place.position,
+                address: place.address,
+                phone: place.phone,
+                link: place.link,
               },
-            ]
-          : updatedLikedPlaces;
+            },
+          ];
+        }
+      }
 
       setLikedPlaces(finalLikedPlaces);
       return { prevLikedPlaces };
@@ -84,9 +99,9 @@ const useToggleLikePlace = () => {
     },
 
     // 실제 서버의 최신 데이터를 다시 가져옴
-    onSettled: () => {
+    onSettled: (_, __, { promiseId }) => {
       queryClient.invalidateQueries({
-        queryKey: [QUERY_KEY.places],
+        queryKey: [QUERY_KEY.promise, promiseId],
       });
     },
   });

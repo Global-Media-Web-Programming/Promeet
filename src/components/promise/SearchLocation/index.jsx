@@ -44,7 +44,7 @@ const SearchLocation = ({ onBack }) => {
                   : result[0].address.address_name;
                 setMyLocation({
                   position: { La: latitude, Ma: longitude },
-                  id: MY_LOC_MARKER_ID,
+                  placeId: MY_LOC_MARKER_ID,
                   address,
                 });
                 setLocation(address);
@@ -76,7 +76,7 @@ const SearchLocation = ({ onBack }) => {
     if (status === window.kakao.maps.services.Status.OK) {
       const places = data.map((place) => ({
         // 위치 정보 저장
-        id: place.id,
+        placeId: place.id,
         name: place.place_name,
         address: place.road_address_name ?? place.address_name,
         position: new window.kakao.maps.LatLng(place.y, place.x),

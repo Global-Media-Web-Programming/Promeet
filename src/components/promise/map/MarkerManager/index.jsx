@@ -1,36 +1,27 @@
 import './style.css';
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
-import useToggleLikePlace from '@/hooks/mutations/useToggleLikePlace';
 import { useMapInfo } from '@/hooks/stores/promise/map/useMapStore';
 import { useMarkerInfo, useMarkerActions } from '@/hooks/stores/promise/map/useMarkerStore';
+import { useBottomSheetActions } from '@/hooks/stores/ui/useBottomSheetStore';
 import { CATEGORY, CATEGORY_MARKER_IMAGE } from '@/constants/place';
-import { MY_LOC_MARKER_IMG, MY_LOC_MARKER_ID } from '@/constants/map';
-import { EMPTY_HEART_SVG, FILLED_HEART_SVG } from '@/constants/svg';
+import { MY_LOC_MARKER_IMG, MY_LOC_MARKER_ID, MAP_BS_ID } from '@/constants/map';
 
 const MarkerManager = ({ markers }) => {
   const { map } = useMapInfo();
   const { activeMarkerId } = useMarkerInfo();
-  const { setActiveMarkerId, clearActiveMarkerId } = useMarkerActions();
+  const { setActiveMarkerId, setSelectedOverlayId } = useMarkerActions();
   const markersRef = useRef([]);
   const markerMapRef = useRef(new Map()); // 마커 ID와 마커 객체를 매핑
   const currentOverlayRef = useRef(null);
   const myLocationMarkerRef = useRef(null);
-
-  const { mutate: toggleLike } = useToggleLikePlace();
-
-  const handleLikeToggle = useCallback(
-    (place, isLiked) => {
-      toggleLike({ place, isLiked });
-    },
-    [toggleLike],
-  );
+  const { setActiveBottomSheet } = useBottomSheetActions();
 
   // 내 위치 마커 관리
   useEffect(() => {
     if (!map) return;
 
-    const myLocationMarker = markers.find((marker) => marker.id === MY_LOC_MARKER_ID);
+    const myLocationMarker = markers.find((marker) => marker.placeId === MY_LOC_MARKER_ID);
     if (!myLocationMarker) {
       if (myLocationMarkerRef.current) {
         myLocationMarkerRef.current.setMap(null);
@@ -87,7 +78,7 @@ const MarkerManager = ({ markers }) => {
     const marker = markerMapRef.current.get(activeMarkerId);
     if (!marker) return;
 
-    const markerData = markers.find((m) => m.id === activeMarkerId);
+    const markerData = markers.find((m) => m.placeId === activeMarkerId);
     if (!markerData) return;
 
     // 이전 오버레이 닫고
@@ -97,6 +88,10 @@ const MarkerManager = ({ markers }) => {
 
     const container = document.createElement('div');
     container.className = 'infoContainer';
+    container.onclick = () => {
+      setSelectedOverlayId(markerData.placeId);
+      setActiveBottomSheet(MAP_BS_ID);
+    };
 
     const header = document.createElement('header');
     header.className = 'header';
@@ -109,8 +104,9 @@ const MarkerManager = ({ markers }) => {
     closeBtn.className = 'close';
     closeBtn.title = '닫기';
     closeBtn.textContent = '닫기';
-    closeBtn.onclick = () => {
-      clearActiveMarkerId();
+    closeBtn.onclick = (e) => {
+      e.stopPropagation();
+      setActiveMarkerId(null);
       container.remove();
     };
 
@@ -121,63 +117,11 @@ const MarkerManager = ({ markers }) => {
     const body = document.createElement('div');
     body.className = 'body';
 
-    const infoSection = document.createElement('div');
-    infoSection.className = 'infoSection';
-
-    if (markerData.phone) {
-      const phone = document.createElement('div');
-      phone.className = 'ellipsis';
-      phone.textContent = markerData.phone;
-      infoSection.appendChild(phone);
-    }
-
     if (markerData.address) {
       const address = document.createElement('div');
       address.className = 'ellipsis';
       address.textContent = markerData.address;
-      infoSection.appendChild(address);
-    }
-
-    if (markerData.link) {
-      const linkWrapper = document.createElement('div');
-      const link = document.createElement('a');
-      link.href = markerData.link;
-      link.target = '_blank';
-      link.rel = 'noopener noreferrer';
-      link.className = 'link';
-      link.textContent = '정보 보기';
-      linkWrapper.appendChild(link);
-      infoSection.appendChild(linkWrapper);
-    }
-
-    body.appendChild(infoSection);
-
-    if (markerData.isLiked !== undefined && markerData.likesCount !== undefined) {
-      const heartSection = document.createElement('div');
-      heartSection.className = 'heartSection';
-
-      const heartWrapper = document.createElement('div');
-      heartWrapper.className = 'heartWrapper';
-      heartWrapper.innerHTML = markerData.isLiked ? FILLED_HEART_SVG : EMPTY_HEART_SVG;
-      // 서버에 넘길 place 정보
-      const place = {
-        placeId: markerData.id,
-        type: markerData.type,
-        name: markerData.name,
-        position: markerData.position,
-        address: markerData.address,
-        phone: markerData.phone,
-        link: markerData.link,
-      };
-      heartWrapper.onclick = () => handleLikeToggle(place, markerData.isLiked);
-
-      const heartCnt = document.createElement('div');
-      heartCnt.className = 'heartCnt';
-      heartCnt.textContent = markerData.likesCount;
-
-      heartSection.appendChild(heartWrapper);
-      heartSection.appendChild(heartCnt);
-      body.appendChild(heartSection);
+      body.appendChild(address);
     }
 
     container.appendChild(body);
@@ -185,12 +129,12 @@ const MarkerManager = ({ markers }) => {
     const overlay = new window.kakao.maps.CustomOverlay({
       content: container,
       position: marker.getPosition(),
-      yAnchor: 1.5,
+      yAnchor: 1.65,
     });
 
     overlay.setMap(map);
     currentOverlayRef.current = overlay;
-  }, [map, activeMarkerId, markers, handleLikeToggle, clearActiveMarkerId]);
+  }, [map, markers, activeMarkerId, setActiveMarkerId, setActiveBottomSheet, setSelectedOverlayId]);
 
   // 장소/프로필 마커 관리
   useEffect(() => {
@@ -248,13 +192,13 @@ const MarkerManager = ({ markers }) => {
           map,
         });
 
-        if (markerData.id) {
-          markerMapRef.current.set(markerData.id, marker);
+        if (markerData.placeId) {
+          markerMapRef.current.set(markerData.placeId, marker);
         }
 
         window.kakao.maps.event.addListener(marker, 'click', () => {
-          if (markerData.id) {
-            setActiveMarkerId(markerData.id);
+          if (markerData.placeId) {
+            setActiveMarkerId(markerData.placeId);
           }
         });
 
@@ -287,7 +231,7 @@ MarkerManager.propTypes = {
         La: PropTypes.number.isRequired,
         Ma: PropTypes.number.isRequired,
       }).isRequired,
-      id: PropTypes.string,
+      placeId: PropTypes.string,
       type: PropTypes.oneOf(Object.values(CATEGORY)),
       name: PropTypes.string,
       phone: PropTypes.string,

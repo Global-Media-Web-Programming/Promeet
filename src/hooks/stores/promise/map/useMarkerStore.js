@@ -5,6 +5,7 @@ export const useMarkerInfo = () =>
   markerStore(
     useShallow((state) => ({
       activeMarkerId: state.activeMarkerId,
+      selectedOverlayId: state.selectedOverlayId,
     })),
   );
 

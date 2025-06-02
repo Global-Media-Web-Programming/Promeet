@@ -4,7 +4,7 @@ import { theme } from '@/styles/theme';
 import LineSVG from '@/assets/img/icon/horizontal_line.svg?react';
 
 export const BottomSheet = styled(motion.div)`
-  position: absolute;
+  position: fixed;
   z-index: 2;
 
   display: flex;

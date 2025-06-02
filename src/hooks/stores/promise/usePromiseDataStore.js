@@ -5,6 +5,7 @@ export const usePromiseDataInfo = () =>
   promiseDataStore(
     useShallow((state) => ({
       likedPlaces: state.likedPlaces,
+      fixedPlace: state.fixedPlace,
     })),
   );
 

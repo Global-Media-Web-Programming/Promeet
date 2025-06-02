@@ -1,82 +1,92 @@
 import * as S from './style';
 import PropTypes from 'prop-types';
 import matchIcon from '@/utils/matchIcon.jsx';
-import { useMapInfo } from '@/hooks/stores/promise/map/useMapStore';
-import { useBottomSheetActions } from '@/hooks/stores/ui/useBottomSheetStore';
-import { useMarkerActions } from '@/hooks/stores/promise/map/useMarkerStore';
+import usePlaceCardHandlers from './hooks/usePlaceCardHandlers';
 import { CATEGORY } from '@/constants/place';
-import useToggleLikePlace from '@/hooks/mutations/useToggleLikePlace';
 
 const PlaceCard = ({
-  id: placeId,
-  position,
+  placeId,
   type,
   name,
+  position,
   address,
   phone,
   link,
-  isLiked,
-  likesCount,
   onClick,
+  $isRetrieved,
 }) => {
-  const { map } = useMapInfo();
-  const { setActiveBottomSheet } = useBottomSheetActions();
-  const { setActiveMarkerId } = useMarkerActions();
-
-  const handleCardClick = () => {
-    if (onClick) {
-      onClick();
-      return;
-    }
-
-    // 기본 동작
-    // 카드 클릭시 지도 위치 부드럽게 이동, 지도 영역 밖이면 그냥 이동
-    // 바텀 시트 닫기
-    setActiveBottomSheet(null);
-    // 지도 중심 이동 (부드럽게)
-    const moveLatLng = new window.kakao.maps.LatLng(position.La, position.Ma);
-    map.panTo(moveLatLng);
-    // 해당 마커의 오버레이 열기
-    setActiveMarkerId(placeId);
-  };
-
-  const { mutate: toggleLike } = useToggleLikePlace();
-
-  const handleLikeToggle = () => {
-    const place = {
-      placeId,
-      type,
-      name,
-      position,
-      address,
-      phone,
-      link,
-    };
-    toggleLike({ place, isLiked });
-  };
+  const place = { placeId, type, name, position, address, phone, link };
+  const {
+    handleCardClick,
+    handleLikeToggle,
+    handleClickFixPlaceBtn,
+    isCreator,
+    isLiked,
+    likesCount,
+    isSelected,
+    isRetrieved,
+    notShowHeart,
+  } = usePlaceCardHandlers(place, $isRetrieved);
 
   return (
-    <S.PlaceCard onClick={handleCardClick}>
-      <S.CardLeft>
-        <S.CardHeaderWrapper>
-          {matchIcon(type)}
-          <S.PlaceName>{name}</S.PlaceName>
-        </S.CardHeaderWrapper>
-        <S.PlaceAddress>{address}</S.PlaceAddress>
-      </S.CardLeft>
+    <S.PlaceCard
+      $isSelected={isSelected}
+      animate={{
+        backgroundColor: isRetrieved ? '#40B59F50' : 'white',
+      }}
+      transition={{ duration: 1.5 }}
+    >
+      <S.CardBackground onClick={onClick ?? handleCardClick}>
+        <S.CardLeft>
+          <S.CardHeaderWrapper>
+            {matchIcon(type)}
+            <S.PlaceName>{name}</S.PlaceName>
+          </S.CardHeaderWrapper>
+          <S.CardInfoWrapper>
+            {address ? <S.PlaceInfoText>{address}</S.PlaceInfoText> : null}
+            {phone ? <S.PlaceInfoText>{phone}</S.PlaceInfoText> : phone}
+            {link ? (
+              <S.PlaceLink href={link} target="_blank" rel="noopener noreferrer">
+                정보 보기
+              </S.PlaceLink>
+            ) : null}
+          </S.CardInfoWrapper>
+          {isCreator ? (
+            <S.FixPlaceBtn
+              onClick={(e) => {
+                e.stopPropagation();
+                handleClickFixPlaceBtn();
+              }}
+            >
+              {isSelected ? '선택 취소' : '선택하기'}
+            </S.FixPlaceBtn>
+          ) : null}
+        </S.CardLeft>
 
-      <S.CardRight>
-        <S.HeartWrapper onClick={handleLikeToggle}>
-          {isLiked === undefined ? null : isLiked ? <S.FilledHeartIcon /> : <S.EmptyHeartIcon />}
-        </S.HeartWrapper>
-        <S.heartCnt>{likesCount}</S.heartCnt>
-      </S.CardRight>
+        {notShowHeart ? null : (
+          <S.CardRight>
+            <S.HeartWrapper
+              onClick={(e) => {
+                e.stopPropagation();
+                handleLikeToggle();
+              }}
+            >
+              {isLiked === undefined ? null : isLiked ? (
+                <S.FilledHeartIcon />
+              ) : (
+                <S.EmptyHeartIcon />
+              )}
+            </S.HeartWrapper>
+            <S.heartCnt>{likesCount}</S.heartCnt>
+          </S.CardRight>
+        )}
+      </S.CardBackground>
     </S.PlaceCard>
   );
 };
 
 PlaceCard.propTypes = {
-  id: PropTypes.string.isRequired,
+  placeId: PropTypes.string.isRequired,
   position: PropTypes.shape({
     La: PropTypes.string.isRequired,
     Ma: PropTypes.string.isRequired,
@@ -86,9 +96,8 @@ PlaceCard.propTypes = {
   type: PropTypes.oneOf(Object.values(CATEGORY)),
   phone: PropTypes.string,
   link: PropTypes.string,
-  isLiked: PropTypes.bool,
-  likesCount: PropTypes.number,
   onClick: PropTypes.func,
+  $isRetrieved: PropTypes.bool,
 };
 
 export default PlaceCard;

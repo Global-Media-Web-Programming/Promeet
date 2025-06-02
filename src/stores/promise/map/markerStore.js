@@ -6,14 +6,16 @@ const markerStore = create()(
   devtools(
     immer((set) => ({
       activeMarkerId: null,
+      selectedOverlayId: null,
       actions: {
         setActiveMarkerId: (markerId) =>
           set((state) => {
             state.activeMarkerId = markerId;
           }),
-        clearActiveMarkerId: () =>
+        // 오버레이 id랑 marker id랑 같긴 함
+        setSelectedOverlayId: (overlayId) =>
           set((state) => {
-            state.activeMarkerId = null;
+            state.selectedOverlayId = overlayId;
           }),
       },
     })),

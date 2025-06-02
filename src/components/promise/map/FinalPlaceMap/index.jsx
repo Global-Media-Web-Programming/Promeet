@@ -3,6 +3,7 @@ import MapContainer from '../MapContainer';
 import MarkerManager from '../MarkerManager';
 import { CATEGORY } from '@/constants/place';
 
+// 최종 약속 위치 표시하는 맵
 const FinalPlaceMap = ({ place }) => {
   return (
     <MapContainer lat={place.position.Ma} lng={place.position.La}>

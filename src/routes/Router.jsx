@@ -1,9 +1,14 @@
-import { createBrowserRouter, RouterProvider, useNavigate, Outlet } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 import Layout from '../layouts/Layout';
 import ErrorFallback from '../components/ui/ErrorFallback';
 import { ROUTES } from '../constants/routes';
-import { useUserInfo } from '@/hooks/stores/auth/useUserStore';
-import PropTypes from 'prop-types';
+import {
+  ProtectedPageWrapper,
+  CreateOnlyWrapper,
+  JoinOnlyWrapper,
+  PromiseMemberWrapper,
+} from './PageWrappers';
+
 //페이지
 import SignInPage from '../pages/sign-in';
 
@@ -13,12 +18,12 @@ import InfoPage from '../pages/promise/create/info';
 import DatePage from '../pages/promise/create/date';
 import LocationPage from '../pages/promise/create/location';
 import SchedulePage from '../pages/promise/create/schedule';
-import FinalizePage from '../pages/promise/create/finalize';
 
 import JoinPage from '../pages/promise/[id]/join';
 import JoinLocationPage from '../pages/promise/[id]/location';
 import JoinSchedulePage from '../pages/promise/[id]/schedule';
 import ResultPage from '../pages/promise/[id]/result';
+import FinalizePage from '../pages/promise/[id]/finalize';
 
 import SummaryPage from '../pages/promise/[id]/summary';
 
@@ -26,23 +31,6 @@ import UserPage from '../pages/user/index';
 import EnterSchedulePage from '../pages/user/enter-schedule';
 
 import NotFoundPage from '../pages/not-found';
-
-// 페이지 보호
-const ProtectedPageWrapper = ({ children }) => {
-  const { userId } = useUserInfo();
-  const navigate = useNavigate();
-
-  if (!userId) {
-    navigate(ROUTES.SIGN_IN);
-    return null;
-  }
-
-  return children;
-};
-
-ProtectedPageWrapper.propTypes = {
-  children: PropTypes.node.isRequired,
-};
 
 const publicRoutes = [
   {
@@ -84,26 +72,46 @@ const privateRoutes = [
     element: <SchedulePage />,
   },
   {
-    path: ROUTES.PROMISE_CREATE_FINALIZE,
-    element: <FinalizePage />,
+    path: ROUTES.PROMISE_FINALIZE,
+    element: (
+      <CreateOnlyWrapper>
+        <FinalizePage />
+      </CreateOnlyWrapper>
+    ),
   },
   // 약속 참여 관련 (공유 링크)
   {
     path: ROUTES.PROMISE_LOCATION,
-    element: <JoinLocationPage />,
+    element: (
+      <JoinOnlyWrapper>
+        <JoinLocationPage />
+      </JoinOnlyWrapper>
+    ),
   },
   {
     path: ROUTES.PROMISE_SCHEDULE,
-    element: <JoinSchedulePage />,
+    element: (
+      <JoinOnlyWrapper>
+        <JoinSchedulePage />
+      </JoinOnlyWrapper>
+    ),
   },
   {
     path: ROUTES.PROMISE_RESULT,
-    element: <ResultPage />,
+    element: (
+      <JoinOnlyWrapper>
+        <ResultPage />
+      </JoinOnlyWrapper>
+    ),
   },
   // 공통
   {
     path: ROUTES.PROMISE_SUMMARY,
-    element: <SummaryPage />,
+    element: (
+      <PromiseMemberWrapper>
+        <SummaryPage />
+      </PromiseMemberWrapper>
+    ),
   },
   // 유저
   {

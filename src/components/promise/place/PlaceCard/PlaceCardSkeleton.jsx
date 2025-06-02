@@ -3,7 +3,7 @@ import { AnimatePresence } from 'framer-motion';
 
 const skeletonVariants = {
   pulse: {
-    opacity: [0.6, 0.8, 0.6],
+    opacity: [0.4, 0.8, 0.4],
     transition: {
       duration: 1.5,
       repeat: Infinity,

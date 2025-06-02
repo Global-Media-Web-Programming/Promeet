@@ -5,18 +5,19 @@ import EmptyHeartSvg from '@/assets/img/icon/empty_heart.svg?react';
 import FilledHeartSvg from '@/assets/img/icon/filled_heart.svg?react';
 
 export const PlaceCard = styled(motion.div)`
+  border: 4px solid ${({ $isSelected }) => ($isSelected ? theme.color.main : 'transparent')};
+  border-radius: 15px;
+  box-shadow: 0 3px 8px 0 rgb(0, 0, 0, 25%);
+`;
+
+export const CardBackground = styled.div`
   cursor: pointer;
 
   display: flex;
   align-items: center;
   justify-content: space-between;
 
-  width: 100%;
   padding: 15px;
-  border-radius: 15px;
-
-  background: ${theme.color.white};
-  box-shadow: 0 3px 8px 0 rgb(0, 0, 0, 25%);
 `;
 
 const ellipseStyle = css`
@@ -43,11 +44,38 @@ export const PlaceName = styled.h3`
   ${ellipseStyle}
 `;
 
-export const PlaceAddress = styled.p`
+export const CardInfoWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
+
+export const PlaceInfoText = styled.p`
   font-size: 12px;
   max-width: 170px;
   color: ${theme.color.text.grey};
   ${ellipseStyle}
+`;
+
+export const PlaceLink = styled.a`
+  cursor: pointer;
+  font-size: 12px;
+  color: #456aff;
+  text-decoration: none;
+`;
+
+export const FixPlaceBtn = styled.button`
+  cursor: pointer;
+
+  width: 90px;
+  padding: 5px;
+  border: none;
+  border-radius: 20px;
+
+  font-weight: 600;
+  color: ${theme.color.white};
+
+  background-color: ${theme.color.main};
 `;
 
 export const CardRight = styled.div`

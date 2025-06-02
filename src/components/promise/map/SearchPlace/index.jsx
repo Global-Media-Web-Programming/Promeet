@@ -12,6 +12,7 @@ import { usePlaceLikeToggleInfo } from '@/hooks/stores/promise/usePlaceLikeToggl
 import { usePromiseDataInfo } from '@/hooks/stores/promise/usePromiseDataStore';
 import { CATEGORY, CATEGORY_LABEL } from '@/constants/place';
 import { DEFAULT_SUBWAY_STATION } from '@/constants/promise';
+import { MAP_BS_ID } from '@/constants/map';
 
 const SearchPlace = ({ category }) => {
   const { isKakaoLoaded } = useMapInfo();
@@ -37,7 +38,7 @@ const SearchPlace = ({ category }) => {
       if (status === window.kakao.maps.services.Status.OK) {
         // 주변 장소 검색 결과
         const places = data.map((place) => ({
-          id: place.id,
+          placeId: place.id,
           type: category,
           name: place.place_name,
           phone: place.phone,
@@ -77,7 +78,7 @@ const SearchPlace = ({ category }) => {
     if (isLoading) return []; // 검색 중이면
 
     return nearbyPlaces.map((place) => {
-      const likedPlace = likedPlaces.find((p) => p.place.placeId === place.id);
+      const likedPlace = likedPlaces.find((p) => p.place.placeId === place.placeId);
       if (likedPlace) {
         const hasMyLike = likedPlace.userIds.includes(userId);
         return {
@@ -93,7 +94,7 @@ const SearchPlace = ({ category }) => {
   // 좋아요 장소를 카카오 맵 형식으로 변환
   const mergedLikedPlaces = useMemo(() => {
     return likedPlaces.map((likedPlace) => ({
-      id: likedPlace.place.placeId,
+      placeId: likedPlace.place.placeId,
       type: likedPlace.place.type,
       name: likedPlace.place.name,
       address: likedPlace.place.address,
@@ -115,7 +116,7 @@ const SearchPlace = ({ category }) => {
   return (
     <>
       <MarkerManager markers={[...places, ...(myLocation ? [myLocation] : [])]} />;
-      <BottomSheet id="map_place">
+      <BottomSheet id={MAP_BS_ID}>
         <S.ListContainer>
           <PlaceLikeToggle />
           <PlaceCardList
@@ -125,6 +126,10 @@ const SearchPlace = ({ category }) => {
           />
         </S.ListContainer>
       </BottomSheet>
+      <S.NextBtnContainer>
+        <S.Descriptrtion>원하는 장소를 선택해주세요</S.Descriptrtion>
+        <button>약속 정보 보기</button>
+      </S.NextBtnContainer>
     </>
   );
 };
