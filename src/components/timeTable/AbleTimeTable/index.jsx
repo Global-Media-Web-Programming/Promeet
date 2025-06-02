@@ -5,7 +5,6 @@ import TimeIcon from '../../../assets/img/icon/time.svg';
 const DAYS = ['월', '화', '수', '목', '금', '토', '일'];
 const HOURS = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'));
 
-// [hour][day][quarter] 구조로 상태 관리
 const AbleTimeTable = () => {
   const [selected, setSelected] = useState(
     Array.from({ length: 24 }, () => Array.from({ length: 7 }, () => Array(4).fill(false))),
@@ -13,23 +12,19 @@ const AbleTimeTable = () => {
   const isDragging = useRef(false);
   const dragValue = useRef(true);
 
-  // quarter: 0~3 (위에서부터 0,1,2,3)
-  const handleQuarterMouseDown = (hourIdx, dayIdx, quarterIdx) => {
+  const handleQuarterMouseDown = (hourIdx, dayIdx, quarterIdx, e) => {
+    e.preventDefault();
     isDragging.current = true;
     dragValue.current = !selected[hourIdx][dayIdx][quarterIdx];
-    setSelected((prev) =>
-      prev.map((row, h) =>
-        row.map((cell, d) =>
-          cell.map((val, q) =>
-            h === hourIdx && d === dayIdx && q === quarterIdx ? dragValue.current : val,
-          ),
-        ),
-      ),
-    );
+    toggleQuarter(hourIdx, dayIdx, quarterIdx);
   };
 
   const handleQuarterMouseEnter = (hourIdx, dayIdx, quarterIdx) => {
     if (!isDragging.current) return;
+    toggleQuarter(hourIdx, dayIdx, quarterIdx);
+  };
+
+  const toggleQuarter = (hourIdx, dayIdx, quarterIdx) => {
     setSelected((prev) =>
       prev.map((row, h) =>
         row.map((cell, d) =>
@@ -57,6 +52,7 @@ const AbleTimeTable = () => {
           </S.HeaderCell>
         ))}
       </S.Row>
+
       {HOURS.map((hour, hourIdx) => (
         <S.Row key={hour}>
           <S.HeaderCell $noLeft>{hour}</S.HeaderCell>
@@ -66,8 +62,9 @@ const AbleTimeTable = () => {
                 <S.Quarter
                   key={quarterIdx}
                   selected={selected[hourIdx][dayIdx][quarterIdx]}
-                  onMouseDown={() => handleQuarterMouseDown(hourIdx, dayIdx, quarterIdx)}
+                  onMouseDown={(e) => handleQuarterMouseDown(hourIdx, dayIdx, quarterIdx, e)}
                   onMouseEnter={() => handleQuarterMouseEnter(hourIdx, dayIdx, quarterIdx)}
+                  onMouseMove={() => handleQuarterMouseEnter(hourIdx, dayIdx, quarterIdx)}
                 />
               ))}
             </S.Cell>
