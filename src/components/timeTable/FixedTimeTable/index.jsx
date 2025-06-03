@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import * as S from './style';
+import TimeIcon from '../../../assets/img/icon/time.svg';
 // import FixedScheduleModal from './FixedScheduleModal'; // 나중에 브랜치 병합 시 사용
 
 const DAYS = ['월', '화', '수', '목', '금', '토', '일'];
@@ -22,7 +23,9 @@ const FixedTimeTable = () => {
     <>
       <S.TableWrapper>
         <S.Row>
-          <S.HeaderCell $noTop $noLeft />
+          <S.HeaderCell $noTop $noLeft>
+            <img src={TimeIcon} alt="시간표 아이콘" width={24} height={24} />
+          </S.HeaderCell>
           {DAYS.map((day) => (
             <S.HeaderCell key={day} $noTop>
               {day}
