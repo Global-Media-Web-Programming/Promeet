@@ -14,20 +14,16 @@ const MarkerManager = ({ markers, routes }) => {
   const { setActiveBottomSheet } = useBottomSheetActions();
 
   // 마커 관리 refs
-  const markersRef = useRef([]); // 모든 마커/오버레이/polyline
-  const markerMapRef = useRef(new Map()); // placeId와 마커 매핑
-  const currentOverlayRef = useRef(null);
-  const myLocationMarkerRef = useRef(null);
+  const markersRef = useRef([]); // 모든 마커/polyline
+  const markerMapRef = useRef(new Map()); // placeId(마커 id)와 마커 매핑
+  const currentPlaceOverlayRef = useRef(null); // 모든 오버레이
+  const myLocationMarkerRef = useRef(null); // 내 위치 마커는 변했을때만 바꾸기 위해 ref로 관리
 
-  // 마커 정리 함수
+  //  마커/polyline 정리 함수
   const clearMarkers = useCallback(() => {
-    markersRef.current.forEach((marker) => marker?.setMap?.(null));
+    markersRef.current.forEach((marker) => marker?.setMap(null));
     markersRef.current = [];
     markerMapRef.current.clear();
-    currentOverlayRef.current?.setMap(null);
-    currentOverlayRef.current = null;
-    myLocationMarkerRef.current?.setMap(null);
-    myLocationMarkerRef.current = null;
   }, []);
 
   // 지도 영역 변경시 마커 표시/숨김
@@ -37,9 +33,10 @@ const MarkerManager = ({ markers, routes }) => {
 
     markersRef.current.forEach((marker) => {
       if (!marker) return;
-      if (marker.getPosition) {
+
+      const position = marker.getPosition();
+      if (position) {
         markersRef.current.forEach((marker) => {
-          const position = marker.getPosition();
           marker.setVisible(bounds.contain(position));
         });
       }
@@ -48,9 +45,9 @@ const MarkerManager = ({ markers, routes }) => {
 
   // 마커 생성 및 관리
   useEffect(() => {
-    if (!map) return;
+    if (!map || !markers) return;
 
-    clearMarkers();
+    clearMarkers(); // 이전 마커/오버레이 삭제
 
     // 1. 장소 마커 생성
     markers.forEach((markerData) => {
@@ -75,34 +72,11 @@ const MarkerManager = ({ markers, routes }) => {
         );
       }
 
+      marker.setMap(map);
       markersRef.current.push(marker);
     });
 
-    // 2. 내 위치 마커 생성
-    const myLocationMarker = markers.find((m) => m.placeId === MY_LOC_MARKER_ID);
-    if (myLocationMarker) {
-      const position = new window.kakao.maps.LatLng(
-        myLocationMarker.position.Ma,
-        myLocationMarker.position.La,
-      );
-
-      const marker = new window.kakao.maps.Marker({
-        position,
-        image: new window.kakao.maps.MarkerImage(
-          MY_LOC_MARKER_IMG,
-          new window.kakao.maps.Size(30, 30),
-          {
-            offset: new window.kakao.maps.Point(20, 20),
-          },
-        ),
-        map,
-      });
-
-      myLocationMarkerRef.current = marker;
-      markersRef.current.push(marker);
-    }
-
-    // 3. 경로 마커 생성
+    // 2. 경로 마커 생성
     if (routes) {
       routes.forEach((userRoute, index) => {
         // polyline
@@ -116,9 +90,9 @@ const MarkerManager = ({ markers, routes }) => {
           strokeWeight: 5,
           strokeColor: ROUTE_COLORS[index % ROUTE_COLORS.length],
           strokeOpacity: 0.7,
-          strokeStyle: 'solid',
           map,
         });
+        polyline.setMap(map);
         markersRef.current.push(polyline);
 
         // 사용자 정보 오버레이
@@ -140,30 +114,36 @@ const MarkerManager = ({ markers, routes }) => {
             firstStation.position.La,
             firstStation.position.Ma,
           ),
-          yAnchor: 1.5,
+          yAnchor: 1.05,
           map,
         });
+        userOverlay.setMap(map);
         markersRef.current.push(userOverlay);
 
         // 도착역
         const lastStation = userRoute.route[userRoute.route.length - 1].station;
-
-        // 마커
         const stationPosition = new window.kakao.maps.LatLng(
           lastStation.position.La,
           lastStation.position.Ma,
         );
-        const imageSrc = STATION_MARKER_IMAGE;
-        if (!imageSrc) return;
 
-        const lastStationMarker = new window.kakao.maps.Marker({
-          stationPosition,
-          image: new window.kakao.maps.MarkerImage(imageSrc, new window.kakao.maps.Size(30, 30), {
-            offset: new window.kakao.maps.Point(10, 30),
-          }),
+        // 마커
+        const stationImageSize = new window.kakao.maps.Size(20, 20);
+        const stationImageOption = { offset: new window.kakao.maps.Point(8, 12) };
+
+        const stationMarkerImage = new window.kakao.maps.MarkerImage(
+          STATION_MARKER_IMAGE,
+          stationImageSize,
+          stationImageOption,
+        );
+
+        const stationMarker = new window.kakao.maps.Marker({
+          position: stationPosition,
+          image: stationMarkerImage,
           map,
         });
-        markersRef.current.push(lastStationMarker);
+        stationMarker.setMap(map);
+        markersRef.current.push(stationMarker);
 
         // 오버레이
         const stationOverlay = new window.kakao.maps.CustomOverlay({
@@ -173,38 +153,93 @@ const MarkerManager = ({ markers, routes }) => {
             </div>
           `,
           position: stationPosition,
+          yAnchor: 1.6,
           map,
         });
+        stationOverlay.setMap(map);
         markersRef.current.push(stationOverlay);
       });
+    }
+
+    // 3. 내 위치 마커 생성
+    const myLocationMarker = markers.find((m) => m.placeId === MY_LOC_MARKER_ID);
+
+    // 내 위치 마커 안 표시한다하면 제거
+    if (!myLocationMarker) {
+      if (myLocationMarkerRef.current) {
+        myLocationMarkerRef.current.setMap(null);
+        myLocationMarkerRef.current = null;
+      }
+      return;
+    }
+
+    // 기존 내위치 마커랑 새 내 위치 마커 비교해 다르면 위치 업데이트
+    if (myLocationMarkerRef.current) {
+      const currentPos = myLocationMarkerRef.current.getPosition();
+      const newPos = new window.kakao.maps.LatLng(
+        myLocationMarker.position.Ma,
+        myLocationMarker.position.La,
+      );
+
+      if (currentPos.getLat() !== newPos.getLat() || currentPos.getLng() !== newPos.getLng()) {
+        myLocationMarkerRef.current.setPosition(newPos);
+      }
+    } else {
+      // 기존 내위치 마커 없다면 -> 새로 생성
+      const myLocImageSize = new window.kakao.maps.Size(30, 30);
+      const myLocImageOption = { offset: new window.kakao.maps.Point(20, 20) };
+      const myLocMarkerImage = new window.kakao.maps.MarkerImage(
+        MY_LOC_MARKER_IMG,
+        myLocImageSize,
+        myLocImageOption,
+      );
+
+      const myLocPosition = new window.kakao.maps.LatLng(
+        myLocationMarker.position.Ma,
+        myLocationMarker.position.La,
+      );
+
+      const myLocMarker = new window.kakao.maps.Marker({
+        position: myLocPosition,
+        image: myLocMarkerImage,
+        map,
+      });
+
+      myLocMarker.setMap(map);
+      myLocationMarkerRef.current = myLocMarker;
     }
 
     // 지도 영역 변경 이벤트 리스너 등록
     window.kakao.maps.event.addListener(map, 'bounds_changed', handleBoundsChanged);
 
     return () => {
+      // 컴포넌트가 언마운트될 때는 모든 리소스를 정리
       window.kakao.maps.event.removeListener(map, 'bounds_changed', handleBoundsChanged);
       clearMarkers();
+      // 내 위치 마커도 정리
+      myLocationMarkerRef.current?.setMap(null);
+      myLocationMarkerRef.current = null;
     };
   }, [map, markers, routes, clearMarkers, handleBoundsChanged, setActiveMarkerId]);
 
-  // activeMarkerId 변경시 오버레이 처리
+  // activeMarkerId 변경시 장소 오버레이 처리
   useEffect(() => {
     if (!map || !activeMarkerId) {
-      currentOverlayRef.current?.setMap(null);
-      currentOverlayRef.current = null;
+      currentPlaceOverlayRef.current?.setMap(null);
+      currentPlaceOverlayRef.current = null;
       return;
     }
 
-    const marker = markerMapRef.current.get(activeMarkerId);
-    const markerData = markers.find((m) => m.placeId === activeMarkerId);
+    const marker = markerMapRef.current.get(activeMarkerId); // 장소 마커와 매핑돼있는지
+    const markerData = markers.find((m) => m.placeId === activeMarkerId); // 마커 데이터
     if (!marker || !markerData) return;
 
     // 이전 오버레이 닫고
-    if (currentOverlayRef.current) {
-      currentOverlayRef.current.setMap(null);
+    if (currentPlaceOverlayRef.current) {
+      currentPlaceOverlayRef.current.setMap(null);
     }
 
+    // 생성해 추가
     const container = document.createElement('div');
     container.className = 'infoContainer';
     container.onclick = () => {
@@ -245,8 +280,6 @@ const MarkerManager = ({ markers, routes }) => {
 
     container.appendChild(body);
 
-    console.log(marker);
-
     const overlay = new window.kakao.maps.CustomOverlay({
       content: container,
       position: marker.getPosition(),
@@ -254,7 +287,7 @@ const MarkerManager = ({ markers, routes }) => {
     });
 
     overlay.setMap(map);
-    currentOverlayRef.current = overlay;
+    currentPlaceOverlayRef.current = overlay;
   }, [map, markers, activeMarkerId, setActiveMarkerId, setActiveBottomSheet, setSelectedOverlayId]);
 
   return null;
