@@ -36,32 +36,35 @@ const SignInForm = () => {
   // });
 
   return (
-    <S.SignInForm onSubmit={handleSubmit(onSubmit)}>
-      <Input
-        type="text"
-        label="이름"
-        id="name"
-        name="name"
-        useForm
-        control={control}
-        placeholder="이름을 입력해주세요"
-      />
-      <Input
-        type="password"
-        label="비밀번호"
-        id="password"
-        name="password"
-        useForm
-        control={control}
-        placeholder="비밀번호를 입력해주세요"
-      />
-      <Button
-        color="main"
-        disabled={isSubmitting || Object.keys(errors).length > 0 || isSignInPending}
-      >
-        {isSignInPending ? '로그인 중...' : '로그인하기'}
-      </Button>
-    </S.SignInForm>
+    <>
+      <S.Title>로그인</S.Title>
+      <S.SignInForm onSubmit={handleSubmit(onSubmit)}>
+        <Input
+          type="text"
+          id="name"
+          name="name"
+          height="90px"
+          useForm
+          control={control}
+          placeholder="이름을 입력해주세요"
+        />
+        <Input
+          type="password"
+          id="password"
+          name="password"
+          height="90px"
+          useForm
+          control={control}
+          placeholder="비밀번호를 입력해주세요"
+        />
+        <Button
+          color="main"
+          disabled={isSubmitting || Object.keys(errors).length > 0 || isSignInPending}
+        >
+          {isSignInPending ? '로그인 중...' : '로그인하기'}
+        </Button>
+      </S.SignInForm>
+    </>
   );
 };
 

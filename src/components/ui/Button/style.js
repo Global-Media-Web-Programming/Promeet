@@ -14,9 +14,8 @@ export const Button = styled.button`
   border: none;
   border-radius: 15px;
 
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
-  line-height: 28px; /* 140% */
   color: ${theme.color.white};
   letter-spacing: 0.2px;
 

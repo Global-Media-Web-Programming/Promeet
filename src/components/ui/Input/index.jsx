@@ -11,15 +11,15 @@ const FormInput = ({ label, id, name, height, control, ...props }) => {
     control,
     ...props,
   });
+
   return (
-    <S.InputWrapper>
+    <S.InputWrapper $height={height}>
       {label && <label htmlFor={id}>{label}</label>}
       <S.Input
         id={id}
         name={name}
         value={value}
         onChange={onChange}
-        $height={height}
         $hasError={error}
         autoComplete="off"
         spellCheck="false"
@@ -38,12 +38,11 @@ const FormInput = ({ label, id, name, height, control, ...props }) => {
 
 const BasicInput = ({ label, id, height, error, isTouched, ...props }) => {
   return (
-    <S.InputWrapper>
+    <S.InputWrapper $height={height}>
       {label && <label htmlFor={id}>{label}</label>}
       <S.Input
         id={id}
         name={name}
-        $height={height}
         $hasError={isTouched && error}
         autoComplete="off"
         spellCheck="false"

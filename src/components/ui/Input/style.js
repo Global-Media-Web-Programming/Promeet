@@ -18,7 +18,8 @@ export const InputWrapper = styled.div`
 
 export const Input = styled.input`
   width: 100%;
-  padding: 15px 20px;
+  height: 60px;
+  padding: 0 20px;
   border: 1px solid ${({ $hasError }) => ($hasError ? theme.color.error : theme.color.skyBlue)};
   border-radius: 15px;
 
@@ -36,7 +37,7 @@ export const Input = styled.input`
 `;
 
 export const ErrorMessage = styled.p`
-  margin-left: 6px;
+  margin: -5px 0 0 6px;
   font-size: 12px;
   color: ${theme.color.error};
 `;
