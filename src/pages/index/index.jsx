@@ -1,10 +1,11 @@
 import * as S from './style';
 import { useNavigate } from 'react-router-dom';
 import DeferredLoader from '@/components/ui/DeferredLoader';
+import Button from '@/components/ui/Button';
+import Navbar from '@/layouts/Navbar';
 import useGetUserData from '@/hooks/queries/useGetUserData';
 import { useUserInfo } from '@/hooks/stores/auth/useUserStore';
 import useLogout from '@/hooks/mutations/useLogout';
-import Navbar from '@/layouts/Navbar';
 import { ROUTES } from '@/constants/routes';
 
 const HomePage = () => {
@@ -41,9 +42,9 @@ const HomePage = () => {
         <>
           <S.Container>
             <S.Header>{`${userName}님,\n오늘 일정 잊지 않으셨죠?`}</S.Header>
-            <button onClick={handleLogout}>
+            <Button onClick={handleLogout}>
               {isLogoutPending ? '로그아웃 중...' : '로그아웃'}
-            </button>
+            </Button>
           </S.Container>
           <Navbar />
         </>

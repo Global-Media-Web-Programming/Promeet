@@ -2,6 +2,7 @@ import * as S from './style';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { signInSchema } from '@/schemas/auth';
+import Button from '@/components/ui/Button';
 import useSignIn from '@/hooks/mutations/useSignIn';
 
 const SignInForm = () => {
@@ -56,9 +57,12 @@ const SignInForm = () => {
         <p>{errors.password.message}</p>
       )}
       {/* 커스텀 컴포넌트로 변경 필요 */}
-      <button disabled={isSubmitting || Object.keys(errors).length > 0 || isSignInPending}>
+      <Button
+        color="main"
+        disabled={isSubmitting || Object.keys(errors).length > 0 || isSignInPending}
+      >
         {isSignInPending ? '로그인 중...' : '로그인하기'}
-      </button>
+      </Button>
     </S.SignInForm>
   );
 };
