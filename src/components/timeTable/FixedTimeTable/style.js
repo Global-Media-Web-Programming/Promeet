@@ -8,6 +8,7 @@ export const TableWrapper = styled.div`
 
   display: inline-block;
 
+  width: 320px;
   border: none;
   border-radius: 8px;
 
@@ -45,9 +46,22 @@ export const Cell = styled.div`
 `;
 
 export const Quarter = styled.div`
-  cursor: pointer;
-  flex: 1 1 0;
   width: 100%;
+  height: 25%;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  font-size: 10px;
+
+  ${({ selected }) =>
+    selected &&
+    css`
+      font-weight: 600;
+      color: #4d5e80;
+      background: #40b59f80;
+    `}
 `;
 
 export const HeaderCell = styled(Cell)`
