@@ -4,6 +4,7 @@ import DaySelectModal from '@/components/modal/DaySelectModal';
 import TimeSelectModal from '@/components/modal/TimeSelectModal';
 import selectIcon from '@/assets/img/icon/dropdown.svg';
 import deleteIcon from '@/assets/img/icon/delete.svg';
+import crossIcon from '@/assets/img/icon/cross.svg';
 import * as S from './style';
 
 const defaultSchedule = () => ({
@@ -30,7 +31,8 @@ function getEndMins(time) {
   return time.hour === '00' && time.minute === '00' ? 1440 : timeToMinutes(time);
 }
 
-const AddScheduleModal = ({ isOpen, onClose }) => {
+const AddScheduleModal = ({ isOpen, onClose, onAdd }) => {
+  const [title, setTitle] = useState('');
   const [schedules, setSchedules] = useState([defaultSchedule()]);
   const [activeIdx, setActiveIdx] = useState(null);
   const [modalType, setModalType] = useState(null);
@@ -112,12 +114,36 @@ const AddScheduleModal = ({ isOpen, onClose }) => {
   return (
     <>
       <S.Overlay>
-        <S.Slide>
+        <S.TopBar>
           <S.CloseButton onClick={onClose} aria-label="close">
-            ×
+            <img src={crossIcon} alt="Close" />
           </S.CloseButton>
+          <S.AddScheduleTitle>일정 추가</S.AddScheduleTitle>
+          <S.SubmitButton
+            type="button"
+            onClick={() => {
+              // 여러 일정 등록을 위해 schedules 전체 전달
+              onAdd(
+                schedules.map((s) => ({
+                  title,
+                  ...s,
+                })),
+              );
+              setTitle('');
+              setSchedules([defaultSchedule()]);
+              onClose();
+            }}
+          >
+            완료
+          </S.SubmitButton>
+        </S.TopBar>
+        <S.Slide>
           <div>
-            <h2>일정명</h2>
+            <S.ScheduleInput
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="일정명"
+            />
             <S.Divider />
             {schedules.map((item, idx) => (
               <S.TableSetting key={idx} style={{ marginBottom: 24 }}>
@@ -179,6 +205,7 @@ const AddScheduleModal = ({ isOpen, onClose }) => {
 AddScheduleModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
+  onAdd: PropTypes.func.isRequired,
   children: PropTypes.node,
 };
 
