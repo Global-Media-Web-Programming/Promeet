@@ -1,3 +1,4 @@
+/* 장소 오버레이 */
 .infoContainer {
   background-color: white;
   border-radius: 10px;
@@ -37,4 +38,48 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* 경로 */
+.userInfoOverlay {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.userName {
+  display: flex;
+  padding: 5px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border-radius: 5px;
+  background: #40b59f;
+
+  color: #ffffff;
+}
+
+.durationContainer {
+  display: flex;
+  color: #ffffff;
+  font-size: 13px;
+}
+
+.bold {
+  font-weight: 700;
+}
+
+.stationInfoOverlay {
+  display: flex;
+  padding: 5px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  background: #164b4c;
+}
+
+.stationName {
+  color: #ffffff;
+  font-weight: 700;
 }

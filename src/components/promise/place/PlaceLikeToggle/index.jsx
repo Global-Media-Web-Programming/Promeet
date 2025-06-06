@@ -2,7 +2,7 @@ import * as S from './style';
 import {
   usePlaceLikeToggleInfo,
   usePlaceLikeToggleActions,
-} from '@/hooks/stores/promise/usePlaceLikeToggle';
+} from '@/hooks/stores/promise/usePlaceLikeToggleStore';
 
 const PlaceLikeToggle = () => {
   const { selectedTab } = usePlaceLikeToggleInfo();

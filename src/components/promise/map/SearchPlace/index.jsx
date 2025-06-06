@@ -1,14 +1,14 @@
 import * as S from './style';
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import MarkerManager from '../MarkerManager';
 import PlaceCardList from '@/components/promise/place/PlaceCardList';
 import PlaceLikeToggle from '@/components/promise/place/PlaceLikeToggle';
+import MarkerManager from '../MarkerManager';
 import BottomSheet from '@/components/ui/BottomSheet';
 import { useMapInfo } from '@/hooks/stores/promise/map/useMapStore';
 import { useUserInfo } from '@/hooks/stores/auth/useUserStore';
 import { useLocationInfo } from '@/hooks/stores/promise/useLocationStore';
-import { usePlaceLikeToggleInfo } from '@/hooks/stores/promise/usePlaceLikeToggle';
+import { usePlaceLikeToggleInfo } from '@/hooks/stores/promise/usePlaceLikeToggleStore';
 import { usePromiseDataInfo } from '@/hooks/stores/promise/usePromiseDataStore';
 import { CATEGORY, CATEGORY_LABEL } from '@/constants/place';
 import { DEFAULT_SUBWAY_STATION } from '@/constants/promise';
@@ -24,8 +24,7 @@ const SearchPlace = ({ category }) => {
   const isLikeList = selectedTab === 'like';
 
   const { userId } = useUserInfo();
-  const { likedPlaces } = usePromiseDataInfo();
-  console.log(likedPlaces);
+  const { likedPlaces, routes } = usePromiseDataInfo();
 
   // Places 서비스 초기화
   const ps = useMemo(() => {
@@ -116,7 +115,7 @@ const SearchPlace = ({ category }) => {
 
   return (
     <>
-      <MarkerManager markers={[...places, ...(myLocation ? [myLocation] : [])]} />;
+      <MarkerManager markers={[...places, ...(myLocation ? [myLocation] : [])]} routes={routes} />
       <BottomSheet id={MAP_BS_ID}>
         <S.ListContainer>
           <PlaceLikeToggle />

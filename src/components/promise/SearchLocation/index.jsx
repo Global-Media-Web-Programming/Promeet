@@ -34,6 +34,11 @@ const SearchLocation = ({ onBack }) => {
           async (position) => {
             const { latitude, longitude } = position.coords;
             const latlng = new window.kakao.maps.LatLng(latitude, longitude);
+            // 내 위치 저장 - 마커에서 사용
+            setMyLocation({
+              position: { La: latitude, Ma: longitude },
+              placeId: MY_LOC_MARKER_ID,
+            });
 
             // 좌표 -> 주소
             const geocoder = new window.kakao.maps.services.Geocoder();
@@ -42,12 +47,7 @@ const SearchLocation = ({ onBack }) => {
                 const address = result[0].road_address
                   ? result[0].road_address.address_name
                   : result[0].address.address_name;
-                setMyLocation({
-                  position: { La: latitude, Ma: longitude },
-                  placeId: MY_LOC_MARKER_ID,
-                  address,
-                });
-                setLocation(address);
+                setLocation(address); // 주소 문자열 저장
               }
             });
           },

@@ -1,7 +1,7 @@
 import * as S from './style';
 import Tabs from '@/components/ui/Tabs';
-import MapContainer from '@/components/promise/map/MapContainer';
-import SearchPlace from '@/components/promise/map/SearchPlace';
+import MapContainer from '../MapContainer';
+import SearchPlace from '../SearchPlace';
 import { useTabsInfo } from '@/hooks/stores/ui/useTabsStore';
 import { useLocationInfo, useLocationActions } from '@/hooks/stores/promise/useLocationStore';
 import useHandleError from '@/hooks/useHandleError';
@@ -12,7 +12,6 @@ const PlaceCategoryMap = () => {
   const { selectedValue } = useTabsInfo();
   const { allowMyLocation } = useLocationInfo();
   const { setMyLocation } = useLocationActions();
-
   // 임시 사용자 좌표
   const schoolLat = 37.494705526855;
   const schoolLng = 126.95994559383;
