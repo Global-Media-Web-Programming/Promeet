@@ -25,6 +25,7 @@ const SearchPlace = ({ category }) => {
 
   const { userId } = useUserInfo();
   const { likedPlaces } = usePromiseDataInfo();
+  console.log(likedPlaces);
 
   // Places 서비스 초기화
   const ps = useMemo(() => {

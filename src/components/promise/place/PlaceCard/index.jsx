@@ -25,7 +25,7 @@ const PlaceCard = ({
     likesCount,
     isSelected,
     isRetrieved,
-    notShowHeart,
+    showHeart,
   } = usePlaceCardHandlers(place, $isRetrieved);
 
   return (
@@ -63,7 +63,7 @@ const PlaceCard = ({
           ) : null}
         </S.CardLeft>
 
-        {notShowHeart ? null : (
+        {showHeart ? (
           <S.CardRight>
             <S.HeartWrapper
               onClick={(e) => {
@@ -79,7 +79,7 @@ const PlaceCard = ({
             </S.HeartWrapper>
             <S.heartCnt>{likesCount}</S.heartCnt>
           </S.CardRight>
-        )}
+        ) : null}
       </S.CardBackground>
     </S.PlaceCard>
   );

@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
-import { postLike } from '@/apis/post/place';
-import { deleteLike } from '@/apis/delete/place';
+import { postPlaceLike } from '@/apis/post/promise';
+import { deletePlaceLike } from '@/apis/delete/promise';
 import useHandleError from '../useHandleError';
 import queryClient from '@/lib/tanstack-query/queryClient';
 import { QUERY_KEY } from '@/constants/key';
@@ -17,10 +17,11 @@ const useToggleLikePlace = () => {
   const { setLikedPlaces } = usePromiseDataActions();
 
   return useMutation({
-    mutationFn: ({ place, isLiked }) => {
+    mutationFn: ({ promiseId, place, isLiked }) => {
       isLiked
-        ? deleteLike(place.placeId, userId)
-        : postLike({
+        ? deletePlaceLike(promiseId, place.placeId, userId)
+        : postPlaceLike({
+            promiseId,
             place,
             userId,
           });
@@ -39,21 +40,25 @@ const useToggleLikePlace = () => {
 
       if (isLiked) {
         // 좋아요 취소
-        finalLikedPlaces = prevLikedPlaces.map((likedPlace) => {
-          if (likedPlace.place.placeId === place.placeId) {
-            const uniqueUserIds = [...new Set(likedPlace.userIds)].filter((id) => id !== userId);
-            return {
-              ...likedPlace,
-              userIds: uniqueUserIds,
-              likesCount: uniqueUserIds.length,
-            };
-          }
-          return likedPlace;
-        });
+        finalLikedPlaces = prevLikedPlaces
+          .map((likedPlace) => {
+            if (likedPlace.place.placeId === place.placeId) {
+              const uniqueUserIds = [...new Set(likedPlace.userIds)].filter((id) => id !== userId);
+              return {
+                ...likedPlace,
+                userIds: uniqueUserIds,
+                likesCount: uniqueUserIds.length,
+              };
+            }
+            return likedPlace;
+          })
+          .filter((likedPlace) => likedPlace.likesCount > 0); // likesCount가 0이면 제거
       } else {
         // 좋아요 추가
+        // 장소가 이전 좋아요 배열에 있는지
         const existingPlace = prevLikedPlaces.find((p) => p.place.placeId === place.placeId);
 
+        // 있으면 userIds, likesCount만 업데이트
         if (existingPlace) {
           finalLikedPlaces = prevLikedPlaces.map((likedPlace) => {
             if (likedPlace.place.placeId === place.placeId) {
@@ -67,6 +72,7 @@ const useToggleLikePlace = () => {
             return likedPlace;
           });
         } else {
+          // 없으면 장소 정보도 추가
           finalLikedPlaces = [
             ...prevLikedPlaces,
             {
@@ -87,7 +93,7 @@ const useToggleLikePlace = () => {
       }
 
       setLikedPlaces(finalLikedPlaces);
-      return { prevLikedPlaces };
+      return { prevLikedPlaces }; // 요청 실패시 되돌리기용
     },
 
     // 요청 실패시 롤백
