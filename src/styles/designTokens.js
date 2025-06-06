@@ -5,6 +5,7 @@ import { theme } from './theme';
 const designTokens = css`
   /* --css-variable-example: ${theme.color.point2}; */
   --nav-height: 82px;
+  --header-height: 80px;
   --outlet-padding: 30px;
   --place-category-tab-height: 65px;
   --bs-header-height: 50px;

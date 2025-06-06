@@ -3,13 +3,14 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { signInSchema } from '@/schemas/auth';
 import Button from '@/components/ui/Button';
+import Input from '@/components/ui/Input';
 import useSignIn from '@/hooks/mutations/useSignIn';
 
 const SignInForm = () => {
   const {
-    register,
+    control,
     handleSubmit,
-    formState: { isSubmitting, errors, touchedFields },
+    formState: { isSubmitting, errors },
     setError,
     // watch, // 디버깅용
   } = useForm({
@@ -36,27 +37,24 @@ const SignInForm = () => {
 
   return (
     <S.SignInForm onSubmit={handleSubmit(onSubmit)}>
-      {/* 커스텀 컴포넌트로 변경 필요 */}
-      <input
+      <Input
         type="text"
-        id="name"
         label="이름"
-        {...register('name')}
+        id="name"
+        name="name"
+        useForm
+        control={control}
         placeholder="이름을 입력해주세요"
       />
-      {/* 커스텀 컴포넌트에 prop으로 넣어서 사용 필요 */}
-      {touchedFields.name && errors.name && errors.name.message && <p>{errors.name.message}</p>}
-      <input
+      <Input
         type="password"
-        id="password"
         label="비밀번호"
-        {...register('password')}
-        placeholder="비밀번호를 입력해주세요(4자 이상)"
+        id="password"
+        name="password"
+        useForm
+        control={control}
+        placeholder="비밀번호를 입력해주세요"
       />
-      {touchedFields.password && errors.password && errors.name.message && (
-        <p>{errors.password.message}</p>
-      )}
-      {/* 커스텀 컴포넌트로 변경 필요 */}
       <Button
         color="main"
         disabled={isSubmitting || Object.keys(errors).length > 0 || isSignInPending}
