@@ -5,6 +5,10 @@ import { immer } from 'zustand/middleware/immer';
 const promiseDataStore = create()(
   devtools(
     immer((set) => ({
+      name: '',
+      description: '',
+      memberCnt: 2,
+      availableTimes: [],
       // 임시 데이터
       routes: [
         {
@@ -101,6 +105,22 @@ const promiseDataStore = create()(
       likedPlaces: [],
       fixedPlace: null,
       actions: {
+        setName: (name) =>
+          set((state) => {
+            state.name = name;
+          }),
+        setDescription: (description) =>
+          set((state) => {
+            state.description = description;
+          }),
+        setAvailableTimes: (availableTimes) =>
+          set((state) => {
+            state.availableTimes = availableTimes;
+          }),
+        setMemberCnt: (memberCnt) =>
+          set((state) => {
+            state.memberCnt = memberCnt;
+          }),
         setRoutes: (routes) =>
           set((state) => {
             state.routes = routes;
