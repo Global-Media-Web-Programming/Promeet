@@ -32,6 +32,19 @@ export const FixedScheduleTitle = styled.p`
 
 export const ButtonOptions = styled.div`
   display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const DelSchedulButton = styled.button`
+  cursor: pointer;
+
+  width: 24px;
+  height: 24px;
+  border: none;
+
+  background: none;
 `;
 
 export const AddScheduleButton = styled.button`
