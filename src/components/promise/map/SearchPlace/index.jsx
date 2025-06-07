@@ -1,10 +1,12 @@
 import * as S from './style';
 import { useEffect, useState, useCallback, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import PlaceCardList from '@/components/promise/place/PlaceCardList';
 import PlaceLikeToggle from '@/components/promise/place/PlaceLikeToggle';
 import MarkerManager from '../MarkerManager';
 import BottomSheet from '@/components/ui/BottomSheet';
+import Button from '@/components/ui/Button';
 import { useMapInfo } from '@/hooks/stores/promise/map/useMapStore';
 import { useUserInfo } from '@/hooks/stores/auth/useUserStore';
 import { useLocationInfo } from '@/hooks/stores/promise/useLocationStore';
@@ -12,9 +14,24 @@ import { usePromiseDataInfo } from '@/hooks/stores/promise/usePromiseDataStore';
 import { usePlaceLikeToggleInfo } from '@/hooks/stores/promise/usePlaceLikeToggleStore';
 import { CATEGORY, CATEGORY_LABEL } from '@/constants/place';
 import { DEFAULT_SUBWAY_STATION } from '@/constants/promise';
+import { ROUTES } from '@/constants/routes';
 import { MAP_BS_ID } from '@/constants/map';
 
-const SearchPlace = ({ category }) => {
+const getButtonText = (userType, canFix) => {
+  const texts = {
+    create: {
+      true: '약속 장소를 선택했어요',
+      false: '참여자들이 하나 이상의 장소를 좋아요 해야해요',
+    },
+    join: {
+      true: '약속 정보 보기',
+      false: '약속 확정 대기 중',
+    },
+  };
+  return texts[userType][canFix];
+};
+
+const SearchPlace = ({ category, canFix }) => {
   const { isKakaoLoaded } = useMapInfo();
   const { myLocation } = useLocationInfo();
   const [nearbyPlaces, setNearbyPlaces] = useState([]); // 주변 장소
@@ -23,8 +40,10 @@ const SearchPlace = ({ category }) => {
   const { selectedTab } = usePlaceLikeToggleInfo();
   const isLikeList = selectedTab === 'like';
 
-  const { userId } = useUserInfo();
+  const { userId, userType } = useUserInfo();
   const { likedPlaces, routes, nearestSubwayStation } = usePromiseDataInfo();
+
+  const navigate = useNavigate();
 
   // Places 서비스 초기화
   const ps = useMemo(() => {
@@ -114,6 +133,11 @@ const SearchPlace = ({ category }) => {
     return isLikeList ? mergedLikedPlaces : mergedNearbyPlaces;
   }, [isLikeList, mergedLikedPlaces, mergedNearbyPlaces, isLoading]);
 
+  const buttonText = getButtonText(userType, canFix);
+  const handleNextBtnClick = () => {
+    navigate(ROUTES.PROMISE_SUMMARY);
+  };
+
   return (
     <>
       <MarkerManager markers={[...places, ...(myLocation ? [myLocation] : [])]} routes={routes} />
@@ -129,7 +153,9 @@ const SearchPlace = ({ category }) => {
       </BottomSheet>
       <S.NextBtnContainer>
         <S.Descriptrtion>원하는 장소를 선택해주세요</S.Descriptrtion>
-        <button>약속 정보 보기</button>
+        <Button onClick={handleNextBtnClick} disabled={!canFix}>
+          {buttonText}
+        </Button>
       </S.NextBtnContainer>
     </>
   );
@@ -137,6 +163,7 @@ const SearchPlace = ({ category }) => {
 
 SearchPlace.propTypes = {
   category: PropTypes.oneOf(Object.values(CATEGORY)).isRequired,
+  canFix: PropTypes.bool.isRequired,
 };
 
 export default SearchPlace;

@@ -7,8 +7,9 @@ import { useLocationInfo, useLocationActions } from '@/hooks/stores/promise/useL
 import useHandleError from '@/hooks/useHandleError';
 import { CATEGORY, CATEGORY_LABEL } from '@/constants/place';
 import { MY_LOC_MARKER_ID } from '@/constants/map';
+import { promiseDataShape } from '@/types/promise';
 
-const PlaceCategoryMap = () => {
+const PlaceCategoryMap = ({ promiseData }) => {
   const { selectedValue } = useTabsInfo();
   const { allowMyLocation } = useLocationInfo();
   const { setMyLocation } = useLocationActions();
@@ -40,7 +41,7 @@ const PlaceCategoryMap = () => {
   return (
     <>
       <MapContainer lat={schoolLat} lng={schoolLng}>
-        <SearchPlace category={selectedValue} />
+        <SearchPlace category={selectedValue} canFix={promiseData.canFix} />
       </MapContainer>
       <S.TabsWrapper>
         <Tabs defaultValue={CATEGORY.RESTAURANT} option="장소 카테고리 탭">
@@ -57,3 +58,7 @@ const PlaceCategoryMap = () => {
 };
 
 export default PlaceCategoryMap;
+
+PlaceCategoryMap.propTypes = {
+  promiseData: promiseDataShape,
+};

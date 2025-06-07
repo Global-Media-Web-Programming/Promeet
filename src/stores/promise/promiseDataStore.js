@@ -8,6 +8,7 @@ const initialState = {
   memberCnt: 2,
   availableTimes: [],
   nearestSubwayStation: null,
+  members: [],
   // 임시 데이터
   routes: [
     {
@@ -130,6 +131,10 @@ const promiseDataStore = create()(
           setNearestSubwayStation: (value) =>
             set((state) => {
               state.nearestSubwayStation = value;
+            }),
+          setMembers: (members) =>
+            set((state) => {
+              state.members = members;
             }),
           setRoutes: (routes) =>
             set((state) => {
