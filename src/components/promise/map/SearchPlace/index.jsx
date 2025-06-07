@@ -44,7 +44,7 @@ const SearchPlace = ({ category }) => {
           phone: place.phone,
           address: place.road_address_name ?? place.address_name,
           link: place.place_url,
-          position: new window.kakao.maps.LatLng(place.x, place.y),
+          position: new window.kakao.maps.LatLng(place.y, place.x),
           // 기본값
           isLiked: false,
           likesCount: 0,
@@ -69,7 +69,8 @@ const SearchPlace = ({ category }) => {
     setNearbyPlaces([]);
 
     // 주변 장소 검색
-    const keyword = (nearestSubwayStation ?? DEFAULT_SUBWAY_STATION) + CATEGORY_LABEL[category];
+    const keyword =
+      (nearestSubwayStation.name ?? DEFAULT_SUBWAY_STATION) + CATEGORY_LABEL[category];
     ps.keywordSearch(keyword, handleSearchResults);
   }, [category, ps, nearestSubwayStation, handleSearchResults]);
 

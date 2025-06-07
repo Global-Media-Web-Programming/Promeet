@@ -54,7 +54,9 @@ export default function usePlaceCardHandlers(place, $isRetrieved) {
   const isSelected = fixedPlace?.placeId === place.placeId;
 
   // 위치 입력 컴포넌트에선 하트 안 보여주기
-  const showHeart = pathname === ROUTES.PROMISE_CREATE_LOCATION || ROUTES.PROMISE_LOCATION;
+  const showHeart =
+    pathname !== ROUTES.PROMISE_CREATE_LOCATION && pathname !== ROUTES.PROMISE_LOCATION;
+  console.log(showHeart);
 
   return {
     handleCardClick,

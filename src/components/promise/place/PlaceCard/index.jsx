@@ -88,8 +88,8 @@ const PlaceCard = ({
 PlaceCard.propTypes = {
   placeId: PropTypes.string.isRequired,
   position: PropTypes.shape({
-    La: PropTypes.string.isRequired,
     Ma: PropTypes.string.isRequired,
+    La: PropTypes.string.isRequired,
   }).isRequired,
   name: PropTypes.string.isRequired,
   address: PropTypes.string.isRequired,

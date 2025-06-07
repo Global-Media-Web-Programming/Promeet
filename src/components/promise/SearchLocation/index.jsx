@@ -12,19 +12,23 @@ import { PROMISE_LOCATION_HEADER_TEXT } from '@/constants/promise';
 import { MY_LOC_MARKER_ID } from '@/constants/map';
 import useDebounce from '@/hooks/useDebounce';
 import useHandleError from '@/hooks/useHandleError';
+import useNearestSubwayStation from '@/hooks/kakao/useNearestSubwayStation';
 
 const SearchLocation = ({ onBack }) => {
   const [searchInput, setSearchInput] = useState('');
   const searchTerm = useDebounce(searchInput, 300);
   const [places, setPlaces] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedPosition, setSelectedPosition] = useState(null);
 
   const { isKakaoLoaded } = useMapInfo();
   const { allowMyLocation } = useLocationInfo();
-  const { setLocation, setMyLocation } = useLocationActions();
+  const { setMyLocation } = useLocationActions();
   const handleError = useHandleError();
-
   const navigate = useNavigate();
+
+  // 선택한 위치의 가까운 역 찾기
+  useNearestSubwayStation(selectedPosition?.Ma, selectedPosition?.La);
 
   const handleMyLocationClick = () => {
     // 위치 동의 모달 띄우기
@@ -34,22 +38,10 @@ const SearchLocation = ({ onBack }) => {
         navigator.geolocation.getCurrentPosition(
           async (position) => {
             const { latitude, longitude } = position.coords;
-            const latlng = new window.kakao.maps.LatLng(latitude, longitude);
             // 내 위치 저장 - 마커에서 사용
             setMyLocation({
-              position: { La: latitude, Ma: longitude },
+              position: { Ma: latitude, La: longitude },
               placeId: MY_LOC_MARKER_ID,
-            });
-
-            // 좌표 -> 주소
-            const geocoder = new window.kakao.maps.services.Geocoder();
-            geocoder.coord2Address(latlng.getLng(), latlng.getLat(), (result, status) => {
-              if (status === window.kakao.maps.services.Status.OK) {
-                const address = result[0].road_address
-                  ? result[0].road_address.address_name
-                  : result[0].address.address_name;
-                setLocation(address); // 주소 문자열 저장
-              }
             });
           },
           (error) => handleError(error),
@@ -59,8 +51,8 @@ const SearchLocation = ({ onBack }) => {
   };
 
   const handleCardClick = (place) => {
-    // 장소 저장하고 장소 검색 슬라이드 닫기
-    setLocation(place);
+    // 주소 저장해 중간 위치 저장 후 장소 검색 슬라이드 닫기
+    setSelectedPosition(place.position);
     onBack();
     navigate(ROUTES.PROMISE_CREATE_SCHEDULE);
   };
@@ -115,6 +107,7 @@ const SearchLocation = ({ onBack }) => {
         onBackwardClick={onBack}
       />
       <Input
+        height="60px"
         value={searchInput}
         onChange={(e) => setSearchInput(e.target.value)}
         placeholder="주소를 입력해주세요"
