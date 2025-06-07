@@ -8,15 +8,15 @@ import BottomSheet from '@/components/ui/BottomSheet';
 import { useMapInfo } from '@/hooks/stores/promise/map/useMapStore';
 import { useUserInfo } from '@/hooks/stores/auth/useUserStore';
 import { useLocationInfo } from '@/hooks/stores/promise/useLocationStore';
-import { usePlaceLikeToggleInfo } from '@/hooks/stores/promise/usePlaceLikeToggleStore';
 import { usePromiseDataInfo } from '@/hooks/stores/promise/usePromiseDataStore';
+import { usePlaceLikeToggleInfo } from '@/hooks/stores/promise/usePlaceLikeToggleStore';
 import { CATEGORY, CATEGORY_LABEL } from '@/constants/place';
 import { DEFAULT_SUBWAY_STATION } from '@/constants/promise';
 import { MAP_BS_ID } from '@/constants/map';
 
 const SearchPlace = ({ category }) => {
   const { isKakaoLoaded } = useMapInfo();
-  const { myLocation, nearestSubwayStation } = useLocationInfo();
+  const { myLocation } = useLocationInfo();
   const [nearbyPlaces, setNearbyPlaces] = useState([]); // 주변 장소
   const [isLoading, setIsLoading] = useState(false);
   // 선택 탭 ('place' | 'like')
@@ -24,7 +24,7 @@ const SearchPlace = ({ category }) => {
   const isLikeList = selectedTab === 'like';
 
   const { userId } = useUserInfo();
-  const { likedPlaces, routes } = usePromiseDataInfo();
+  const { likedPlaces, routes, nearestSubwayStation } = usePromiseDataInfo();
 
   // Places 서비스 초기화
   const ps = useMemo(() => {

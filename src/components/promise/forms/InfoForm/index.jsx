@@ -1,4 +1,5 @@
 import * as S from './style';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -16,7 +17,8 @@ const InfoForm = () => {
   const {
     control,
     handleSubmit,
-    formState: { isSubmitting, errors },
+    trigger,
+    formState: { isSubmitting, errors, dirtyFields },
     // watch, // 디버깅용
   } = useForm({
     resolver: zodResolver(PromiseSchema),
@@ -27,6 +29,11 @@ const InfoForm = () => {
       memberCnt: 2,
     },
   });
+
+  // 초기 유효성 검사 트리거
+  useEffect(() => {
+    trigger();
+  }, [trigger]);
 
   // 폼 제출 핸들러
   const onSubmit = (formData) => {
@@ -48,6 +55,7 @@ const InfoForm = () => {
         useForm
         control={control}
         placeholder="약속 이름을 입력해주세요"
+        showError={dirtyFields.name}
       />
       <Input
         type="text"
@@ -58,26 +66,28 @@ const InfoForm = () => {
         useForm
         control={control}
         placeholder="약속 설명을 입력해주세요"
+        showError={dirtyFields.description}
       />
 
-      <S.MembersCountInput>
-        <Input
-          type="number"
-          id="memberCnt"
-          name="memberCnt"
-          label="참여 인원 수 (본인 포함)"
-          height="110px"
-          useForm
-          isNumber
-          control={control}
-          min={MEMBER_CNT_MIN}
-          max={MEMBER_CNT_MAX}
-        />
-      </S.MembersCountInput>
+      <Input
+        type="number"
+        id="memberCnt"
+        name="memberCnt"
+        label="참여 인원 수 (본인 포함)"
+        height="110px"
+        useForm
+        isNumber
+        control={control}
+        min={MEMBER_CNT_MIN}
+        max={MEMBER_CNT_MAX}
+        showError={dirtyFields.memberCnt}
+      />
 
-      <Button disabled={Object.keys(errors).length > 0 || isSubmitting}>
-        {isSubmitting ? '저장 중...' : '다음'}
-      </Button>
+      <S.BtnWrapper>
+        <Button disabled={Object.keys(errors).length > 0 || isSubmitting}>
+          {isSubmitting ? '저장 중...' : '다음'}
+        </Button>
+      </S.BtnWrapper>
     </S.Form>
   );
 };

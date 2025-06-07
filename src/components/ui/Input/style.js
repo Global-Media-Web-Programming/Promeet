@@ -106,4 +106,9 @@ export const NumberInput = styled(Input)`
     margin: 0;
     appearance: none;
   }
+
+  &:focus {
+    border-color: ${({ $hasError }) => ($hasError ? theme.color.error : theme.color.skyBlue)};
+    outline: none;
+  }
 `;

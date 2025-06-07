@@ -1,4 +1,5 @@
 import * as S from './style';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { signInSchema } from '@/schemas/auth';
@@ -10,9 +11,9 @@ const SignInForm = () => {
   const {
     control,
     handleSubmit,
-    formState: { isSubmitting, errors },
+    trigger,
+    formState: { isSubmitting, errors, dirtyFields },
     setError,
-    // watch, // 디버깅용
   } = useForm({
     resolver: zodResolver(signInSchema),
     mode: 'onChange',
@@ -24,16 +25,15 @@ const SignInForm = () => {
 
   const { mutate: signIn, isPending: isSignInPending } = useSignIn(setError);
 
+  // 초기 유효성 검사 트리거
+  useEffect(() => {
+    trigger();
+  }, [trigger]);
+
   // 폼 제출 핸들러
   const onSubmit = (formData) => {
     signIn(formData);
   };
-
-  // // 디버깅용
-  // console.log('현재 signIn form', {
-  //   errors,
-  //   data: watch(),
-  // });
 
   return (
     <>
@@ -47,6 +47,7 @@ const SignInForm = () => {
           useForm
           control={control}
           placeholder="이름을 입력해주세요"
+          showError={dirtyFields.name}
         />
         <Input
           type="password"
@@ -56,6 +57,7 @@ const SignInForm = () => {
           useForm
           control={control}
           placeholder="비밀번호를 입력해주세요"
+          showError={dirtyFields.password}
         />
         <Button
           color="main"

@@ -13,7 +13,7 @@ const userStore = create()(
           create: [],
           join: [],
         },
-        userType: '', // 'create' | 'join' | 'member'
+        userType: '', // 'create' | 'join'
         actions: {
           setUserId: (userId) =>
             set((state) => {

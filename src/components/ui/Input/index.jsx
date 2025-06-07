@@ -2,7 +2,7 @@ import * as S from './style';
 import PropTypes from 'prop-types';
 import { useController } from 'react-hook-form';
 
-const FormInput = ({ label, id, name, height, control, ...props }) => {
+const FormInput = ({ label, id, name, height, control, showError, ...props }) => {
   const {
     field: { value, onChange },
     fieldState: { error },
@@ -20,14 +20,14 @@ const FormInput = ({ label, id, name, height, control, ...props }) => {
         name={name}
         value={value}
         onChange={onChange}
-        $hasError={error}
+        $hasError={showError && error}
         autoComplete="off"
         spellCheck="false"
         aria-invalid={!!error}
         aria-describedby={error ? `${id}-error` : undefined}
         {...props}
       />
-      {error?.message && (
+      {showError && error?.message && (
         <S.ErrorMessage id={`${id}-error`} role="alert" aria-live="polite">
           {error.message}
         </S.ErrorMessage>
@@ -36,21 +36,21 @@ const FormInput = ({ label, id, name, height, control, ...props }) => {
   );
 };
 
-const BasicInput = ({ label, id, height, error, isTouched, ...props }) => {
+const BasicInput = ({ label, id, height, error, showError, ...props }) => {
   return (
     <S.InputWrapper $height={height}>
       {label && <label htmlFor={id}>{label}</label>}
       <S.Input
         id={id}
         name={name}
-        $hasError={isTouched && error}
+        $hasError={showError && error}
         autoComplete="off"
         spellCheck="false"
         aria-invalid={!!error}
         aria-describedby={error ? `${id}-error` : undefined}
         {...props}
       />
-      {isTouched && error && (
+      {showError && error && (
         <S.ErrorMessage id={`${id}-error`} role="alert" aria-live="polite">
           {error}
         </S.ErrorMessage>
@@ -133,17 +133,17 @@ const NumberFormInput = ({ label, id, name, height, control, min = 2, max = 10, 
  * @param {string} [id] - input id (label이 있을 때만 필수)
  * @param {boolean} [useForm=false] - react-hook-form 사용 여부
  * @param {string} [height='100px'] - lable, input, errorMessage 포함 높이 지정
- * @param {string} [error] - 에러 메시지 (useForm=false일 때)
- * @param {boolean} [isTouched] - 입력 필드 터치 여부 (useForm=false일 때)
  * @param {boolean} [isNumber=false] - 숫자 입력 필드 여부
  * @param {number} [min=2] - 최소값 (isNumber=true일 때)
  * @param {number} [max=10] - 최대값 (isNumber=true일 때)
+ * @param {string} [showError] - 에러 표시 여부 (사용자가 입력 시작했을때만)
+ * @param {string} [error] - 에러 메시지 (useForm=false일 때)
  */
 const Input = ({
   useForm = false,
   height = '100px',
   error,
-  isTouched,
+  showError,
   isNumber = false,
   min,
   max,
@@ -151,12 +151,14 @@ const Input = ({
 }) => {
   if (useForm) {
     if (isNumber) {
-      return <NumberFormInput height={height} min={min} max={max} {...props} />;
+      return (
+        <NumberFormInput height={height} min={min} max={max} showError={showError} {...props} />
+      );
     }
-    return <FormInput height={height} {...props} />;
+    return <FormInput height={height} showError={showError} {...props} />;
   }
 
-  return <BasicInput error={error} isTouched={isTouched} height={height} {...props} />;
+  return <BasicInput error={error} showError={showError} height={height} {...props} />;
 };
 
 FormInput.propTypes = {
@@ -165,6 +167,7 @@ FormInput.propTypes = {
   name: PropTypes.string.isRequired,
   height: PropTypes.string,
   control: PropTypes.object.isRequired,
+  showError: PropTypes.bool,
 };
 
 NumberFormInput.propTypes = {
@@ -175,6 +178,7 @@ NumberFormInput.propTypes = {
   control: PropTypes.object.isRequired,
   min: PropTypes.number,
   max: PropTypes.number,
+  showError: PropTypes.bool,
 };
 
 BasicInput.propTypes = {
@@ -182,7 +186,7 @@ BasicInput.propTypes = {
   id: PropTypes.string.isRequired,
   height: PropTypes.string,
   error: PropTypes.string.isRequired,
-  isTouched: PropTypes.bool,
+  showError: PropTypes.bool,
 };
 
 Input.propTypes = {
@@ -191,7 +195,7 @@ Input.propTypes = {
   useForm: PropTypes.bool,
   height: PropTypes.string,
   error: PropTypes.string,
-  isTouched: PropTypes.bool,
+  showError: PropTypes.bool,
   isNumber: PropTypes.bool,
   min: PropTypes.number,
   max: PropTypes.number,

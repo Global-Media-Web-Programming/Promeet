@@ -8,6 +8,7 @@ export const usePromiseDataInfo = () =>
       description: state.description,
       memberCnt: state.memberCnt,
       availableTimes: state.availableTimes,
+      nearestSubwayStation: state.nearestSubwayStation,
       routes: state.routes,
       likedPlaces: state.likedPlaces,
       fixedPlace: state.fixedPlace,
