@@ -8,6 +8,10 @@ function timeToMinutes({ hour, minute }) {
   return Number(hour) * 60 + Number(minute);
 }
 
+function getEndMins(time) {
+  return time.hour === '00' && time.minute === '00' ? 1440 : timeToMinutes(time);
+}
+
 const FixedTimeTable = ({ schedules, defaultStart, defaultEnd }) => {
   const defaultMin = timeToMinutes(defaultStart);
   const defaultMax = timeToMinutes(defaultEnd);
@@ -17,7 +21,7 @@ const FixedTimeTable = ({ schedules, defaultStart, defaultEnd }) => {
 
   if (schedules.length > 0) {
     const allStart = schedules.map((s) => timeToMinutes(s.startTime));
-    const allEnd = schedules.map((s) => timeToMinutes(s.endTime));
+    const allEnd = schedules.map((s) => getEndMins(s.endTime)); // <-- 여기!
     const minSchedule = Math.min(...allStart);
     const maxSchedule = Math.max(...allEnd);
 
@@ -42,7 +46,7 @@ const FixedTimeTable = ({ schedules, defaultStart, defaultEnd }) => {
       (s) =>
         s.day.startsWith(day) &&
         cellTime >= timeToMinutes(s.startTime) &&
-        cellTime < timeToMinutes(s.endTime),
+        cellTime < getEndMins(s.endTime),
     );
   };
 
@@ -50,6 +54,21 @@ const FixedTimeTable = ({ schedules, defaultStart, defaultEnd }) => {
     if (!schedule) return false;
     const start = schedule.startTime;
     return Number(hour) === Number(start.hour) && quarter * 15 === Number(start.minute);
+  };
+
+  const isScheduleEndCell = (schedule, hour, quarter) => {
+    if (!schedule) return false;
+    const end = schedule.endTime;
+    const endHour = end.hour === '00' && end.minute === '00' ? 24 : Number(end.hour);
+    const endMinute = end.hour === '00' && end.minute === '00' ? 0 : Number(end.minute);
+
+    // 마지막 셀(예: 12:45~13:00)에서만 true
+    return (
+      (Number(hour) === endHour - (endMinute === 0 ? 1 : 0) &&
+        quarter * 15 + 15 === (endMinute === 0 ? 60 : endMinute)) ||
+      // 24:00(00:00)일 때 마지막 셀(23:45~24:00)
+      (end.hour === '00' && end.minute === '00' && Number(hour) === 23 && quarter === 3)
+    );
   };
 
   return (
@@ -72,8 +91,10 @@ const FixedTimeTable = ({ schedules, defaultStart, defaultEnd }) => {
               {Array.from({ length: 4 }).map((_, quarter) => {
                 const schedule = getScheduleForCell(day, hour, quarter);
                 const showTitle = isScheduleStartCell(schedule, hour, quarter);
+                const isStart = isScheduleStartCell(schedule, hour, quarter);
+                const isEnd = isScheduleEndCell(schedule, hour, quarter);
                 return (
-                  <S.Quarter key={quarter} selected={!!schedule}>
+                  <S.Quarter key={quarter} selected={!!schedule} isStart={isStart} isEnd={isEnd}>
                     {showTitle ? schedule.title : ''}
                   </S.Quarter>
                 );

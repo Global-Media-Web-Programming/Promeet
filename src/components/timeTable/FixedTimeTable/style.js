@@ -50,18 +50,29 @@ export const Quarter = styled.div`
   height: 25%;
 
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: flex-start;
 
   font-size: 10px;
+  white-space: normal;
+  word-break: break-all;
 
-  ${({ selected }) =>
+  ${({ selected, isStart, isEnd }) =>
     selected &&
     css`
       font-weight: 600;
       color: #4d5e80;
       background: #40b59f80;
+      ${isStart && 'border-radius: 6px 6px 0 0; z-index: 100; padding: 2px 1px 0;'}
+      ${isEnd && 'border-radius: 0 0 6px 6px;'}
+      ${isStart && isEnd && 'border-radius: 6px;'}
     `}
+`;
+
+export const DeleteScheduleButton = styled.button`
+  border: none;
+  color: #ffffff;
+  background: none;
 `;
 
 export const HeaderCell = styled(Cell)`
