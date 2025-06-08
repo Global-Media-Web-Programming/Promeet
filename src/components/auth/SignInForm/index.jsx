@@ -36,7 +36,7 @@ const SignInForm = () => {
   };
 
   return (
-    <>
+    <S.Container>
       <S.Title>로그인</S.Title>
       <S.SignInForm onSubmit={handleSubmit(onSubmit)}>
         <Input
@@ -66,7 +66,7 @@ const SignInForm = () => {
           {isSignInPending ? '로그인 중...' : '로그인하기'}
         </Button>
       </S.SignInForm>
-    </>
+    </S.Container>
   );
 };
 

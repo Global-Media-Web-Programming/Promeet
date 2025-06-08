@@ -10,7 +10,7 @@ import Button from '@/components/ui/Button';
 import { useMapInfo } from '@/hooks/stores/promise/map/useMapStore';
 import { useUserInfo } from '@/hooks/stores/auth/useUserStore';
 import { useLocationInfo } from '@/hooks/stores/promise/useLocationStore';
-import { usePromiseDataInfo } from '@/hooks/stores/promise/usePromiseDataStore';
+import { usePromiseDataFromServerInfo } from '@/hooks/stores/promise/usePromiseDataFromServerStore';
 import { usePlaceLikeToggleInfo } from '@/hooks/stores/promise/usePlaceLikeToggleStore';
 import { CATEGORY, CATEGORY_LABEL } from '@/constants/place';
 import { DEFAULT_SUBWAY_STATION } from '@/constants/promise';
@@ -31,7 +31,7 @@ const getButtonText = (userType, canFix) => {
   return texts[userType][canFix];
 };
 
-const SearchPlace = ({ category, canFix }) => {
+const SearchPlace = ({ category }) => {
   const { isKakaoLoaded } = useMapInfo();
   const { myLocation } = useLocationInfo();
   const [nearbyPlaces, setNearbyPlaces] = useState([]); // 주변 장소
@@ -41,7 +41,8 @@ const SearchPlace = ({ category, canFix }) => {
   const isLikeList = selectedTab === 'like';
 
   const { userId, userType } = useUserInfo();
-  const { likedPlaces, routes, nearestSubwayStation } = usePromiseDataInfo();
+  const { promiseDataFromServer } = usePromiseDataFromServerInfo();
+  const { likedPlaces, routes, centerStation, canFix } = promiseDataFromServer;
 
   const navigate = useNavigate();
 
@@ -88,10 +89,9 @@ const SearchPlace = ({ category, canFix }) => {
     setNearbyPlaces([]);
 
     // 주변 장소 검색
-    const keyword =
-      (nearestSubwayStation.name ?? DEFAULT_SUBWAY_STATION) + CATEGORY_LABEL[category];
+    const keyword = (centerStation.name ?? DEFAULT_SUBWAY_STATION) + CATEGORY_LABEL[category];
     ps.keywordSearch(keyword, handleSearchResults);
-  }, [category, ps, nearestSubwayStation, handleSearchResults]);
+  }, [category, ps, centerStation, handleSearchResults]);
 
   // 주변 장소에 좋아요 정보 추가
   const mergedNearbyPlaces = useMemo(() => {
@@ -163,7 +163,6 @@ const SearchPlace = ({ category, canFix }) => {
 
 SearchPlace.propTypes = {
   category: PropTypes.oneOf(Object.values(CATEGORY)).isRequired,
-  canFix: PropTypes.bool.isRequired,
 };
 
 export default SearchPlace;

@@ -6,15 +6,16 @@ import queryClient from '@/lib/tanstack-query/queryClient';
 import { QUERY_KEY } from '@/constants/key';
 import { useUserInfo } from '@/hooks/stores/auth/useUserStore';
 import {
-  usePromiseDataInfo,
-  usePromiseDataActions,
-} from '@/hooks/stores/promise/usePromiseDataStore';
+  usePromiseDataFromServerInfo,
+  usePromiseDataFromServerActions,
+} from '@/hooks/stores/promise/usePromiseDataFromServerStore';
 
 const useToggleLikePlace = () => {
   const handleError = useHandleError();
   const { userId } = useUserInfo();
-  const { likedPlaces } = usePromiseDataInfo();
-  const { setLikedPlaces } = usePromiseDataActions();
+  const { promiseDataFromServer } = usePromiseDataFromServerInfo();
+  const { likedPlaces } = promiseDataFromServer;
+  const { setLikedPlaces } = usePromiseDataFromServerActions();
 
   return useMutation({
     mutationFn: ({ promiseId, place, isLiked }) => {

@@ -1,25 +1,15 @@
-import { useParams } from 'react-router-dom';
 import WaitingSubmit from '@/components/promise/WaitingSubmit';
 import PlaceCategoryMap from '@/components/promise/map/PlaceCategoryMap';
-import useGetPromiseData from '@/hooks/queries/useGetPromiseData';
-import { useUserInfo } from '@/hooks/stores/auth/useUserStore';
-import { promiseDataShape } from '@/types/promise';
+import { usePromiseDataFromServerInfo } from '@/hooks/stores/promise/usePromiseDataFromServerStore';
 
 const FinalizePage = () => {
-  const { promiseId } = useParams();
-  const { userId } = useUserInfo();
+  const { promiseDataFromServer } = usePromiseDataFromServerInfo();
 
-  const { data: promiseData } = useGetPromiseData(promiseId, userId);
-
-  if (!promiseData.isAllParticipantsSubmit) {
-    return <WaitingSubmit promiseData={promiseData} />;
+  if (!promiseDataFromServer.isAllMemebersSubmit) {
+    return <WaitingSubmit />;
   }
 
-  return <PlaceCategoryMap promiseData={promiseData} />;
-};
-
-FinalizePage.propTypes = {
-  promiseData: promiseDataShape,
+  return <PlaceCategoryMap />;
 };
 
 export default FinalizePage;

@@ -26,7 +26,7 @@ export const InfoConainer = styled.div`
   gap: 15px;
 `;
 
-export const Title = styled.h2`
+export const Name = styled.h2`
   font-size: 30px;
   font-weight: 700;
 `;

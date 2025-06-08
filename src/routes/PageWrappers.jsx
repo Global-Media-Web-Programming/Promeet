@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { BUILD_ROUTES, ROUTES } from '../constants/routes';
 import { useUserInfo, useUserActions } from '@/hooks/stores/auth/useUserStore';
 import { usePromiseDataActions } from '@/hooks/stores/promise/usePromiseDataStore';
+import { usePromiseDataFromServerInfo } from '@/hooks/stores/promise/usePromiseDataFromServerStore';
 import useGetPromiseData from '@/hooks/queries/useGetPromiseData';
 
 // 로그인 안됐을 때 페이지 보호
@@ -30,12 +31,13 @@ export const CreateOnlyWrapper = ({ children }) => {
   const { userId } = useUserInfo();
   const navigate = useNavigate();
   const { promiseId } = useParams();
-  const { data: promiseData } = useGetPromiseData(promiseId, userId);
+  useGetPromiseData(promiseId, userId);
+  const { promiseDataFromServer } = usePromiseDataFromServerInfo();
   const { setUserType } = useUserActions();
 
   // 유저가 생성한 약속이 아니면 홈으로 리다이렉트
   useEffect(() => {
-    const isCreator = promiseData.creatorId === userId;
+    const isCreator = promiseDataFromServer.creatorId === userId;
     if (!isCreator) {
       navigate(ROUTES.HOME);
       return null;
@@ -43,7 +45,7 @@ export const CreateOnlyWrapper = ({ children }) => {
 
     // 유저 타입 정의
     setUserType('create');
-  }, [promiseData.creatorId, userId, navigate, setUserType]);
+  }, [promiseDataFromServer.creatorId, userId, navigate, setUserType]);
 
   return children;
 };
@@ -59,15 +61,16 @@ export const JoinOnlyWrapper = ({ children }) => {
   const { promiseId } = useParams();
   const { pathname } = useLocation();
   const { setUserType } = useUserActions();
-  const { data: promiseData } = useGetPromiseData(promiseId, userId);
+  useGetPromiseData(promiseId, userId);
+  const { promiseDataFromServer } = usePromiseDataFromServerInfo();
   const { hasNearestSubwayStationData } = usePromiseDataActions();
 
   useEffect(() => {
-    if (!promiseData) return;
+    if (!promiseDataFromServer) return;
 
     // 초대받은 사람 체크 (생성자가 아니면서 members에 있는 경우)
-    const isInvitedMember = promiseData.members.some(
-      (member) => member.userId === userId && member.userId !== promiseData.creatorId,
+    const isInvitedMember = promiseDataFromServer.members.some(
+      (member) => member.userId === userId && member.userId !== promiseDataFromServer.creatorId,
     );
 
     // 참여 권한 없음 → 홈으로 이동
@@ -75,6 +78,9 @@ export const JoinOnlyWrapper = ({ children }) => {
       navigate(ROUTES.HOME);
       return;
     }
+
+    // 참여자 유형 저장
+    setUserType('join');
 
     // schedule 페이지에서 위치 정보 체크
     if (pathname === ROUTES.PROMISE_SCHEDULE) {
@@ -88,18 +94,17 @@ export const JoinOnlyWrapper = ({ children }) => {
 
     // result 페이지에서 데이터 제출 체크
     if (pathname === ROUTES.PROMISE_RESULT) {
-      const currentMember = promiseData.members.find((member) => member.userId === userId);
+      const currentMember = promiseDataFromServer.members.find(
+        (member) => member.userId === userId,
+      );
       // 정보 입력 안된 사용자면 위치 입력부터 하게 함
       if (!currentMember?.hasSubmittedData) {
         navigate(BUILD_ROUTES.PROMISE_LOCATION(promiseId));
         return;
       }
     }
-
-    // 참여자 유형 저장
-    setUserType('join');
   }, [
-    promiseData,
+    promiseDataFromServer,
     userId,
     pathname,
     promiseId,
@@ -120,22 +125,23 @@ export const PromiseMemberWrapper = ({ children }) => {
   const { userId } = useUserInfo();
   const navigate = useNavigate();
   const { promiseId } = useParams();
-  const { data: promiseData } = useGetPromiseData(promiseId, userId);
+  useGetPromiseData(promiseId, userId);
+  const { promiseDataFromServer } = usePromiseDataFromServerInfo();
 
   useEffect(() => {
     // 약속 멤버 체크
-    const isMember = promiseData.members.some((member) => member.userId === userId);
+    const isMember = promiseDataFromServer.members.some((member) => member.userId === userId);
     if (!isMember) {
       navigate(ROUTES.HOME);
       return;
     }
 
     // 약속 상태 체크
-    if (promiseData && !promiseData.isFixed) {
+    if (promiseDataFromServer && !promiseDataFromServer.isFixed) {
       // 홈 페이지로 리다이렉트
       navigate(ROUTES.HOME);
     }
-  }, [promiseData, userId, promiseId, navigate]);
+  }, [promiseDataFromServer, userId, promiseId, navigate]);
 
   return children;
 };

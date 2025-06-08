@@ -8,6 +8,7 @@ import {
   usePromiseDataInfo,
   usePromiseDataActions,
 } from '@/hooks/stores/promise/usePromiseDataStore';
+import { usePromiseDataFromServerInfo } from '@/hooks/stores/promise/usePromiseDataFromServerStore';
 import useToggleLikePlace from '@/hooks/mutations/useToggleLikePlace';
 import { ROUTES } from '@/constants/routes';
 
@@ -16,8 +17,9 @@ export default function usePlaceCardHandlers(place, $isRetrieved) {
   const { setActiveBottomSheet } = useBottomSheetActions();
   const { setActiveMarkerId } = useMarkerActions();
   const { userId, userType } = useUserInfo();
-  const { likedPlaces, fixedPlace } = usePromiseDataInfo();
-  const { setFixedPlace } = usePromiseDataActions();
+  const { selectedPlace } = usePromiseDataInfo();
+  const { setSelectedPlace } = usePromiseDataActions();
+  const { promiseDataFromServer } = usePromiseDataFromServerInfo();
   const { promiseId } = useParams();
   const { pathname } = useLocation();
   const { mutate: toggleLike } = useToggleLikePlace();
@@ -30,6 +32,7 @@ export default function usePlaceCardHandlers(place, $isRetrieved) {
     }
   }, [$isRetrieved]);
 
+  const { likedPlaces } = promiseDataFromServer;
   const likedPlace = likedPlaces?.find((p) => p.place.placeId === place.placeId);
   const isLiked = likedPlace?.userIds?.includes(userId) ?? false;
   const likesCount = likedPlace?.likesCount ?? 0;
@@ -46,17 +49,16 @@ export default function usePlaceCardHandlers(place, $isRetrieved) {
   };
 
   const handleClickFixPlaceBtn = () => {
-    isSelected ? setFixedPlace(null) : setFixedPlace(place);
+    isSelected ? setSelectedPlace(null) : setSelectedPlace(place);
   };
 
   const isCreator = userType === 'create';
 
-  const isSelected = fixedPlace?.placeId === place.placeId;
+  const isSelected = selectedPlace?.placeId === place.placeId;
 
   // 위치 입력 컴포넌트에선 하트 안 보여주기
   const showHeart =
     pathname !== ROUTES.PROMISE_CREATE_LOCATION && pathname !== ROUTES.PROMISE_LOCATION;
-  console.log(showHeart);
 
   return {
     handleCardClick,
