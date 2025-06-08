@@ -45,7 +45,7 @@ const DatePage = () => {
         endTime: '',
       })),
     });
-    navigate('/promise/create/schedule');
+    navigate('/promise/create/location');
   };
 
   return (
