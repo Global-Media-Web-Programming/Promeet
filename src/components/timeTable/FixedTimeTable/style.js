@@ -60,8 +60,6 @@ export const ButtonGroup = styled.div`
   margin: 2px 0 0 2px;
 
   opacity: ${({ selected }) => (selected ? 100% : 0%)};
-
-  transition: opacity 0.15s;
 `;
 
 export const EditButton = styled.button`
