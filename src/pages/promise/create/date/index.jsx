@@ -1,12 +1,12 @@
 import * as S from './style';
 import CalendarRange from '@/components/calendar';
-import promiseDataStore from '@/stores/promise/promiseDataStore';
+import { usePromiseDataActions } from '@/hooks/stores/promise/usePromiseDataStore';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const DatePage = () => {
   const navigate = useNavigate();
-  const { setPromiseData } = promiseDataStore();
+  const { setAvailableTimes } = usePromiseDataActions();
   const [selectedRange, setSelectedRange] = useState(null);
 
   const handleDateRangeChange = (range) => {
@@ -36,15 +36,14 @@ const DatePage = () => {
       });
       d.setDate(d.getDate() + 1);
     }
-    setPromiseData({
-      availableTimes: dates.map((item, idx) => ({
+    setAvailableTimes(
+      dates.map((item, idx) => ({
         id: `schedule${idx + 1}`,
         date: item.dateStr,
         day: item.day,
-        startTime: '',
-        endTime: '',
+        timeRanges: [],
       })),
-    });
+    );
     navigate('/promise/create/location');
   };
 

@@ -3,6 +3,7 @@ import { theme } from '@/styles/theme';
 
 export const Container = styled.section`
   display: flex;
+  flex-direction: column;
   align-items: flex-start;
   justify-content: center;
 
@@ -14,7 +15,6 @@ export const Container = styled.section`
 
 export const TableScrollWrapper = styled.div`
   overflow: auto;
-
   width: 100%;
   max-width: 400px;
   max-height: 600px;
@@ -22,5 +22,16 @@ export const TableScrollWrapper = styled.div`
 
 export const TableInnerWrapper = styled.div`
   width: fit-content;
-  min-width: 400px;
+`;
+
+export const CreatePromiseButton = styled.button`
+  width: 400px;
+  height: 48px;
+  margin-top: 24px;
+  border: none;
+  border-radius: 8px;
+
+  color: ${theme.color.white};
+
+  background: ${theme.color.main};
 `;
