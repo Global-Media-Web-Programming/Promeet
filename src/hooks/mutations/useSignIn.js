@@ -31,12 +31,6 @@ const useSignIn = (setError) => {
       navigate(ROUTES.HOME);
     },
     onError: (error) => {
-      if (error.code === 'MISSING_REQUIRED_FIELD') {
-        setError('name', '.');
-        setError('password', { message: error.message }); // 비번 필드 밑에만 에러 메시지 표시
-        return;
-      }
-
       if (error.code === 'INVALID_PASSWORD') {
         setError('password', { message: error.message });
         return;
