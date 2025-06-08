@@ -1,4 +1,3 @@
-//card을 위해 만든 페이지
 import React from 'react';
 import styles from './CardStyle';
 
