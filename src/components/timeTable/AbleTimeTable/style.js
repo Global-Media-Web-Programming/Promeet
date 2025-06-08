@@ -52,8 +52,8 @@ export const Quarter = styled.div`
 
   width: 100%;
 
-  background: ${({ selected, isFixed }) =>
-    selected ? 'rgba(195, 233, 224, 0.80)' : isFixed ? '#949494' : '#fff'};
+  background: ${({ selected, $isFixed }) =>
+    selected ? 'rgba(195, 233, 224, 0.80)' : $isFixed ? '#949494' : '#fff'};
 
   &:active {
     background: rgb(195, 233, 224, 80%);

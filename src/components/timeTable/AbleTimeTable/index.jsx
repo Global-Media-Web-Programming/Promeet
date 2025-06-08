@@ -98,7 +98,7 @@ const AbleTimeTable = ({ days, onChange, fixedSchedule = [] }) => {
                   <S.Quarter
                     key={quarterIdx}
                     selected={selected[hourIdx][dayIdx][quarterIdx]}
-                    isFixed={isFixed}
+                    $isFixed={isFixed}
                     onMouseDown={(e) => handleQuarterMouseDown(hourIdx, dayIdx, quarterIdx, e)}
                     onMouseEnter={() => handleQuarterMouseEnter(hourIdx, dayIdx, quarterIdx)}
                     onMouseMove={() => handleQuarterMouseEnter(hourIdx, dayIdx, quarterIdx)}
