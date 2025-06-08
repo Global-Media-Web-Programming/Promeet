@@ -1,21 +1,25 @@
-import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-
-const DAYS = ['월', '화', '수', '목', '금', '토', '일'];
+import { useState, useEffect } from 'react';
+import DaySelectModal from '@/components/modal/DaySelectModal';
+import TimeSelectModal from '@/components/modal/TimeSelectModal';
+import selectIcon from '@/assets/img/icon/dropdown.svg';
+import crossIcon from '@/assets/img/icon/cross.svg';
+import * as S from './style';
 
 const EditScheduleModal = ({ isOpen, schedule, onClose, onUpdate }) => {
   const [form, setForm] = useState({
     title: '',
-    day: '월',
+    day: '월요일',
     startTime: { hour: '09', minute: '00' },
-    endTime: { hour: '10', minute: '00' },
+    endTime: { hour: '18', minute: '00' },
   });
+  const [modalType, setModalType] = useState(null);
 
   useEffect(() => {
     if (schedule) {
       setForm({
         title: schedule.title || '',
-        day: schedule.day || '월',
+        day: schedule.day || '월요일',
         startTime: {
           hour: String(schedule.startTime.hour).padStart(2, '0'),
           minute: String(schedule.startTime.minute).padStart(2, '0'),
@@ -30,17 +34,26 @@ const EditScheduleModal = ({ isOpen, schedule, onClose, onUpdate }) => {
 
   if (!isOpen || !schedule) return null;
 
+  const openModal = (type) => setModalType(type);
+  const closeModal = () => setModalType(null);
+
+  const handleDaySelect = (day) => {
+    setForm((prev) => ({ ...prev, day }));
+    closeModal();
+  };
+
+  const handleStartTimeSelect = (time) => {
+    setForm((prev) => ({ ...prev, startTime: time }));
+    closeModal();
+  };
+
+  const handleEndTimeSelect = (time) => {
+    setForm((prev) => ({ ...prev, endTime: time }));
+    closeModal();
+  };
+
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    if (name.startsWith('startTime') || name.startsWith('endTime')) {
-      const [key, sub] = name.split('.');
-      setForm((prev) => ({
-        ...prev,
-        [key]: { ...prev[key], [sub]: value },
-      }));
-    } else {
-      setForm((prev) => ({ ...prev, [name]: value }));
-    }
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handleSubmit = (e) => {
@@ -60,125 +73,71 @@ const EditScheduleModal = ({ isOpen, schedule, onClose, onUpdate }) => {
   };
 
   return (
-    <div
-      style={{
-        position: 'fixed',
-        left: 0,
-        top: 0,
-        width: '100vw',
-        height: '100vh',
-        background: 'rgba(0,0,0,0.3)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 1000,
-      }}
-      onClick={onClose}
-    >
-      <form
-        style={{
-          background: '#fff',
-          borderRadius: 8,
-          padding: 24,
-          minWidth: 280,
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 12,
-        }}
-        onClick={(e) => e.stopPropagation()}
-        onSubmit={handleSubmit}
-      >
-        <h3>일정 수정</h3>
-        <label>
-          제목
-          <input
+    <>
+      <S.Overlay>
+        <S.TopBar>
+          <S.CloseButton onClick={onClose} aria-label="close">
+            <img src={crossIcon} alt="Close" />
+          </S.CloseButton>
+          <S.AddScheduleTitle>일정 수정</S.AddScheduleTitle>
+          <S.SubmitButton type="button" onClick={handleSubmit}>
+            저장
+          </S.SubmitButton>
+        </S.TopBar>
+        <S.Slide>
+          <S.ScheduleInput
             name="title"
             value={form.title}
             onChange={handleChange}
+            placeholder="일정명"
             required
-            style={{ width: '100%' }}
           />
-        </label>
-        <label>
-          요일
-          <select name="day" value={form.day} onChange={handleChange}>
-            {DAYS.map((d) => (
-              <option key={d} value={d}>
-                {d}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          시작 시간
-          <input
-            name="startTime.hour"
-            type="number"
-            min="0"
-            max="23"
-            value={form.startTime.hour}
-            onChange={handleChange}
-            style={{ width: 40 }}
-          />
-          :
-          <input
-            name="startTime.minute"
-            type="number"
-            min="0"
-            max="59"
-            step="15"
-            value={form.startTime.minute}
-            onChange={handleChange}
-            style={{ width: 40 }}
-          />
-        </label>
-        <label>
-          종료 시간
-          <input
-            name="endTime.hour"
-            type="number"
-            min="0"
-            max="23"
-            value={form.endTime.hour}
-            onChange={handleChange}
-            style={{ width: 40 }}
-          />
-          :
-          <input
-            name="endTime.minute"
-            type="number"
-            min="0"
-            max="59"
-            step="15"
-            value={form.endTime.minute}
-            onChange={handleChange}
-            style={{ width: 40 }}
-          />
-        </label>
-        <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
-          <button
-            type="submit"
-            style={{
-              flex: 1,
-              background: '#2563eb',
-              color: '#fff',
-              border: 'none',
-              borderRadius: 4,
-              padding: 8,
-            }}
-          >
-            저장
-          </button>
-          <button
-            type="button"
-            onClick={onClose}
-            style={{ flex: 1, background: '#eee', border: 'none', borderRadius: 4, padding: 8 }}
-          >
-            취소
-          </button>
-        </div>
-      </form>
-    </div>
+          <S.Divider />
+          <S.TableSetting>
+            <S.DayTimeSelect>
+              <S.DaySelectButton type="button" onClick={() => openModal('day')}>
+                {form.day}
+                <img src={selectIcon} alt="Select Day" />
+              </S.DaySelectButton>
+              <S.TimeRow>
+                <S.TimeButton type="button" onClick={() => openModal('start')}>
+                  {form.startTime.hour}:{form.startTime.minute}
+                  <img src={selectIcon} alt="Select Time" />
+                </S.TimeButton>
+              </S.TimeRow>
+              <S.TimeRow>
+                <S.TimeButton type="button" onClick={() => openModal('end')}>
+                  {form.endTime.hour === '00' && form.endTime.minute === '00'
+                    ? '24:00'
+                    : `${form.endTime.hour}:${form.endTime.minute}`}
+                  <img src={selectIcon} alt="Select Time" />
+                </S.TimeButton>
+              </S.TimeRow>
+            </S.DayTimeSelect>
+          </S.TableSetting>
+        </S.Slide>
+      </S.Overlay>
+      <DaySelectModal
+        isOpen={modalType === 'day'}
+        onClose={closeModal}
+        onSelect={handleDaySelect}
+      />
+      <TimeSelectModal
+        isOpen={modalType === 'start'}
+        onClose={closeModal}
+        onSelect={handleStartTimeSelect}
+        initialHour={form.startTime.hour}
+        initialMinute={form.startTime.minute}
+      />
+      <TimeSelectModal
+        isOpen={modalType === 'end'}
+        onClose={closeModal}
+        onSelect={handleEndTimeSelect}
+        initialHour={form.endTime.hour}
+        initialMinute={form.endTime.minute}
+        isEnd
+      />
+    </>
   );
 };
 
