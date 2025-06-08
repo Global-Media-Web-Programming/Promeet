@@ -80,11 +80,15 @@ const SchedulePage = () => {
 
   return (
     <S.Container>
-      <AbleTimeTable
-        days={promiseData.availableTimes}
-        onChange={handleTimeTableChange}
-        fixedSchedule={fixedSchedule}
-      />
+      <S.TableScrollWrapper>
+        <S.TableInnerWrapper>
+          <AbleTimeTable
+            days={promiseData.availableTimes}
+            onChange={handleTimeTableChange}
+            fixedSchedule={fixedSchedule}
+          />
+        </S.TableInnerWrapper>
+      </S.TableScrollWrapper>
     </S.Container>
   );
 };
