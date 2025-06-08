@@ -45,6 +45,53 @@ export const Cell = styled.div`
   }
 `;
 
+export const ButtonGroup = styled.div`
+  position: absolute;
+  z-index: 1;
+  top: -100%;
+  left: 1%;
+  transform: translateY(-50%);
+
+  display: flex;
+  gap: 2px;
+  align-items: center;
+  justify-content: center;
+
+  margin: 2px 0 0 2px;
+
+  opacity: ${({ selected }) => (selected ? 100% : 0%)};
+
+  transition: opacity 0.15s;
+`;
+
+export const EditButton = styled.button`
+  cursor: pointer;
+
+  padding: 0 2px;
+  border: none;
+
+  font-family: Pretendard, sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  font-style: normal;
+
+  background: none;
+`;
+
+export const DeleteButton = styled.button`
+  cursor: pointer;
+
+  padding: 0 2px;
+  border: none;
+
+  font-family: Pretendard, sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  font-style: normal;
+
+  background: none;
+`;
+
 export const Quarter = styled.div`
   width: 100%;
   height: 25%;
@@ -57,6 +104,8 @@ export const Quarter = styled.div`
   white-space: normal;
   word-break: break-all;
 
+  position: relative;
+
   ${({ selected, isStart, isEnd }) =>
     selected &&
     css`
@@ -67,6 +116,10 @@ export const Quarter = styled.div`
       ${isEnd && 'border-radius: 0 0 6px 6px;'}
       ${isStart && isEnd && 'border-radius: 6px;'}
     `}
+
+  &:hover ${/*sc-selector*/ ButtonGroup} {
+    opacity: 100%;
+  }
 `;
 
 export const DeleteScheduleButton = styled.button`

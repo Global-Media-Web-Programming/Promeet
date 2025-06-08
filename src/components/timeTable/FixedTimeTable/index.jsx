@@ -1,6 +1,9 @@
 import * as S from './style';
 import TimeIcon from '../../../assets/img/icon/time.svg';
+import EditIcon from '../../../assets/img/icon/edit.svg';
+import DelIcon from '../../../assets/img/icon/delete.svg';
 import PropTypes from 'prop-types';
+import { useState } from 'react';
 
 const DAYS = ['월', '화', '수', '목', '금', '토', '일'];
 
@@ -12,7 +15,10 @@ function getEndMins(time) {
   return time.hour === '00' && time.minute === '00' ? 1440 : timeToMinutes(time);
 }
 
-const FixedTimeTable = ({ schedules, defaultStart, defaultEnd }) => {
+const FixedTimeTable = ({ schedules, defaultStart, defaultEnd, onEdit, onDelete }) => {
+  // 선택된 scheduleId를 state로 관리
+  const [selectedId, setSelectedId] = useState(null);
+
   const defaultMin = timeToMinutes(defaultStart);
   const defaultMax = timeToMinutes(defaultEnd);
 
@@ -93,9 +99,50 @@ const FixedTimeTable = ({ schedules, defaultStart, defaultEnd }) => {
                 const showTitle = isScheduleStartCell(schedule, hour, quarter);
                 const isStart = isScheduleStartCell(schedule, hour, quarter);
                 const isEnd = isScheduleEndCell(schedule, hour, quarter);
+                // 일정이 있는 셀만 클릭 이벤트 부여
                 return (
-                  <S.Quarter key={quarter} selected={!!schedule} isStart={isStart} isEnd={isEnd}>
-                    {showTitle ? schedule.title : ''}
+                  <S.Quarter
+                    key={quarter}
+                    selected={!!schedule}
+                    isStart={isStart}
+                    isEnd={isEnd}
+                    onClick={() => {
+                      if (schedule) {
+                        setSelectedId(
+                          selectedId === schedule.scheduleId ? null : schedule.scheduleId,
+                        );
+                      }
+                    }}
+                    style={{ cursor: schedule ? 'pointer' : 'default' }}
+                  >
+                    {showTitle ? (
+                      <>
+                        {schedule.title}
+                        {/* 선택된 일정의 범위에서만 버튼 노출 */}
+                        {!!schedule && selectedId === schedule.scheduleId && (
+                          <S.ButtonGroup selected>
+                            <S.EditButton
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onEdit(schedule);
+                              }}
+                            >
+                              <img src={EditIcon} alt="수정" width={12} height={12} />
+                            </S.EditButton>
+                            <S.DeleteButton
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onDelete(schedule); // schedule 객체 전체 전달
+                              }}
+                            >
+                              <img src={DelIcon} alt="삭제" width={10} height={10} />
+                            </S.DeleteButton>
+                          </S.ButtonGroup>
+                        )}
+                      </>
+                    ) : (
+                      ''
+                    )}
                   </S.Quarter>
                 );
               })}
@@ -120,6 +167,7 @@ FixedTimeTable.propTypes = {
         hour: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
         minute: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
       }),
+      scheduleId: PropTypes.string,
     }),
   ).isRequired,
   defaultStart: PropTypes.shape({
@@ -130,6 +178,8 @@ FixedTimeTable.propTypes = {
     hour: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     minute: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   }).isRequired,
+  onEdit: PropTypes.func,
+  onDelete: PropTypes.func,
 };
 
 export default FixedTimeTable;
