@@ -92,6 +92,7 @@ const EnterSchedulePage = () => {
       <EditScheduleModal
         isOpen={editOpen}
         schedule={editingSchedule}
+        userId={userId}
         onClose={() => setEditOpen(false)}
         onUpdate={handleUpdateSchedule}
       />

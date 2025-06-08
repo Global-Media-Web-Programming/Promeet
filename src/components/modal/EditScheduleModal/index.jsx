@@ -6,7 +6,27 @@ import selectIcon from '@/assets/img/icon/dropdown.svg';
 import crossIcon from '@/assets/img/icon/cross.svg';
 import * as S from './style';
 
-const EditScheduleModal = ({ isOpen, schedule, onClose, onUpdate }) => {
+export async function updateFixedSchedule(userId, scheduleId, fixedSchedule) {
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_SERVER_API_URL}/user/${userId}/fixed-schedules/${scheduleId}`,
+      {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fixedSchedule }),
+      },
+    );
+    const data = await response.json();
+    if (!response.ok || !data.success) {
+      throw new Error(data.error?.message || '수정에 실패했습니다.');
+    }
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message || '네트워크 오류' };
+  }
+}
+
+const EditScheduleModal = ({ isOpen, schedule, userId, onClose, onUpdate }) => {
   const [form, setForm] = useState({
     title: '',
     day: '월요일',
@@ -56,20 +76,29 @@ const EditScheduleModal = ({ isOpen, schedule, onClose, onUpdate }) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onUpdate({
-      ...schedule,
-      ...form,
-      startTime: {
-        hour: form.startTime.hour,
-        minute: form.startTime.minute,
-      },
-      endTime: {
-        hour: form.endTime.hour,
-        minute: form.endTime.minute,
-      },
-    });
+
+    // 서버가 요구하는 형식으로 변환
+    const fixedSchedule = {
+      id: schedule.scheduleId, // 또는 schedule.id
+      day: form.day,
+      startTime: `${form.startTime.hour}:${form.startTime.minute}`,
+      endTime: `${form.endTime.hour}:${form.endTime.minute}`,
+      title: form.title, // title 필드가 필요하다면 포함
+    };
+
+    const result = await updateFixedSchedule(userId, schedule.scheduleId, fixedSchedule);
+    if (result.success) {
+      onUpdate({
+        ...schedule,
+        ...form,
+        startTime: { ...form.startTime },
+        endTime: { ...form.endTime },
+      });
+    } else {
+      alert(result.error || '수정에 실패했습니다.');
+    }
   };
 
   return (
@@ -144,6 +173,7 @@ const EditScheduleModal = ({ isOpen, schedule, onClose, onUpdate }) => {
 EditScheduleModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   schedule: PropTypes.object,
+  userId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired, // 추가
   onClose: PropTypes.func.isRequired,
   onUpdate: PropTypes.func.isRequired,
 };
