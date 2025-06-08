@@ -4,7 +4,7 @@ import useErrorHandler from '../useHandleError';
 import { useUserActions } from '../stores/auth/useUserStore';
 import { ROUTES } from '@/constants/routes';
 import { postSignIn } from '@/apis/post/auth';
-import { getUserData } from '@/apis/get/auth';
+import { getUserData } from '@/apis/get/user';
 
 const useSignIn = (setError) => {
   const handleError = useErrorHandler();

@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getUserData } from '@/apis/get/auth';
+import { getUserData } from '@/apis/get/user';
 import { QUERY_KEY } from '@/constants/key';
 import { useUserActions } from '../stores/auth/useUserStore';
 import useErrorHandler from '../useHandleError';
