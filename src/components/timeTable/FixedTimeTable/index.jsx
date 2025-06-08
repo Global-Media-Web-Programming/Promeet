@@ -157,29 +157,29 @@ const FixedTimeTable = ({ schedules, defaultStart, defaultEnd, onEdit, onDelete 
 FixedTimeTable.propTypes = {
   schedules: PropTypes.arrayOf(
     PropTypes.shape({
-      title: PropTypes.string,
-      day: PropTypes.string,
+      scheduleId: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
+      day: PropTypes.string.isRequired,
       startTime: PropTypes.shape({
-        hour: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-        minute: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-      }),
+        hour: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+        minute: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+      }).isRequired,
       endTime: PropTypes.shape({
-        hour: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-        minute: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-      }),
-      scheduleId: PropTypes.string,
+        hour: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+        minute: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+      }).isRequired,
     }),
   ).isRequired,
   defaultStart: PropTypes.shape({
-    hour: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    minute: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    hour: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    minute: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   }).isRequired,
   defaultEnd: PropTypes.shape({
-    hour: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    minute: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    hour: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    minute: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   }).isRequired,
-  onEdit: PropTypes.func,
-  onDelete: PropTypes.func,
+  onEdit: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
 };
 
 export default FixedTimeTable;

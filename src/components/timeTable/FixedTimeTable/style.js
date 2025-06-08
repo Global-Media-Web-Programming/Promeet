@@ -114,10 +114,6 @@ export const Quarter = styled.div`
       ${isEnd && 'border-radius: 0 0 6px 6px;'}
       ${isStart && isEnd && 'border-radius: 6px;'}
     `}
-
-  &:hover ${/*sc-selector*/ ButtonGroup} {
-    opacity: 100%;
-  }
 `;
 
 export const DeleteScheduleButton = styled.button`
