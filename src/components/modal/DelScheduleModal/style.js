@@ -1,112 +1,66 @@
 import styled from 'styled-components';
 
-export const Overlay = styled.div`
-  position: fixed;
-  z-index: 2000;
-  top: 0;
-  left: 0;
+export const ModalContent = styled.div`
+  min-width: 220px;
+  text-align: center;
+`;
 
+export const Title = styled.div`
+  margin-bottom: 16px;
+  font-size: 1.08rem;
+  font-weight: 600;
+`;
+
+export const Info = styled.div`
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #666666;
+`;
+
+export const ScheduleName = styled.p`
+  font-family: Pretendard, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #002055;
+`;
+
+export const ButtonRow = styled.div`
   display: flex;
-  align-items: center;
+  gap: 8px;
   justify-content: center;
-
-  width: 100vw;
-  height: 100vh;
-
-  background: rgb(0, 0, 0, 20%);
-`;
-
-export const Modal = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-
-  min-width: 320px;
-  padding: 24px;
-  border-radius: 12px;
-
-  background: #ffffff;
-  box-shadow: 0 2px 16px #00000022;
-`;
-
-export const Title = styled.h3`
-  margin-bottom: 16px;
-
-  font-family: Pretendard, sans-serif;
-  font-size: 18px;
-  font-weight: 600;
-  font-style: normal;
-  color: #000000;
-`;
-
-export const List = styled.ul`
-  overflow-y: auto;
-  max-height: 200px;
-  margin-bottom: 16px;
-  padding: 0;
-`;
-
-export const ListItem = styled.li`
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-
-  &:last-child {
-    margin-bottom: 0;
-  }
-`;
-
-export const ScheduleInfo = styled.span`
-  flex: 1;
-
-  font-family: Pretendard, sans-serif;
-  font-weight: 300;
-  font-style: normal;
-  color: #848a94;
-`;
-
-export const TitleText = styled.span`
-  font-family: Pretendard, sans-serif;
-  font-weight: 600;
-  font-style: normal;
-  color: #4d5e80;
 `;
 
 export const DeleteButton = styled.button`
   cursor: pointer;
 
-  margin-left: 8px;
-  padding: 3px 10px;
+  flex: 1;
+
+  padding: 6px 16px;
   border: none;
   border-radius: 4px;
 
   font-family: Pretendard, sans-serif;
-  font-size: 15px;
-  font-weight: 500;
-  font-style: normal;
+  font-weight: 600;
   color: #ffffff;
 
-  background: #ff4d4f;
+  background: #ff5353;
 
-  &:hover {
-    background: #d9363e;
+  :hover {
+    background: #ff0000;
   }
 `;
 
-export const CloseButton = styled.button`
+export const CancelButton = styled.button`
   cursor: pointer;
 
-  width: 100%;
-  margin-top: 4px;
-  padding: 8px 0;
-  border: none;
-  border-radius: 6px;
+  flex: 1;
 
-  font-size: 1rem;
+  padding: 6px 16px;
+  border: none;
+  border-radius: 4px;
+
+  font-weight: 600;
+  color: #222222;
 
   background: #eeeeee;
-
-  &:hover {
-    background: #e0e7ef;
-  }
 `;

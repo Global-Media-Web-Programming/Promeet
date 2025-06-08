@@ -1,49 +1,44 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import * as S from './style';
+import CommonModal from '@/components/modal/CommonModal';
+import PropTypes from 'prop-types';
 
-const DelScheduleModal = ({ isOpen, schedules, onClose, onDelete }) => {
-  if (!isOpen) return null;
+const DelScheduleModal = ({ isOpen, schedule, onClose, onDelete }) => {
+  if (!isOpen || !schedule) return null;
 
   return (
-    <S.Overlay>
-      <S.Modal>
-        <S.Title>일정 삭제</S.Title>
-        <S.List>
-          {schedules.length === 0 && <S.ListItem>등록된 일정이 없습니다.</S.ListItem>}
-          {schedules.map((s) => (
-            <S.ListItem key={s.scheduleId}>
-              <S.ScheduleInfo>
-                <S.TitleText>{s.title}</S.TitleText> {s.day} {s.startTime.hour}:{s.startTime.minute}
-                ~{s.endTime.hour}:{s.endTime.minute}
-              </S.ScheduleInfo>
-              <S.DeleteButton onClick={() => onDelete(s.scheduleId)}>삭제</S.DeleteButton>
-            </S.ListItem>
-          ))}
-        </S.List>
-        <S.CloseButton onClick={onClose}>닫기</S.CloseButton>
-      </S.Modal>
-    </S.Overlay>
+    <CommonModal isOpen={isOpen} onClose={onClose}>
+      <S.ModalContent>
+        <S.Title>이 일정을 삭제하시겠습니까?</S.Title>
+        <S.Info>
+          <S.ScheduleName>{schedule.title}</S.ScheduleName>
+          <br />
+          {schedule.day} {schedule.startTime.hour}:{schedule.startTime.minute} ~{' '}
+          {schedule.endTime.hour}:{schedule.endTime.minute}
+        </S.Info>
+        <S.ButtonRow>
+          <S.CancelButton onClick={onClose}>취소</S.CancelButton>
+          <S.DeleteButton onClick={() => onDelete(schedule.scheduleId)}>삭제</S.DeleteButton>
+        </S.ButtonRow>
+      </S.ModalContent>
+    </CommonModal>
   );
 };
 
 DelScheduleModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
-  schedules: PropTypes.arrayOf(
-    PropTypes.shape({
-      scheduleId: PropTypes.string.isRequired,
-      title: PropTypes.string.isRequired,
-      day: PropTypes.string.isRequired,
-      startTime: PropTypes.shape({
-        hour: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-        minute: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-      }).isRequired,
-      endTime: PropTypes.shape({
-        hour: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-        minute: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-      }).isRequired,
-    }),
-  ).isRequired,
+  schedule: PropTypes.shape({
+    scheduleId: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    day: PropTypes.string.isRequired,
+    startTime: PropTypes.shape({
+      hour: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+      minute: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    }).isRequired,
+    endTime: PropTypes.shape({
+      hour: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+      minute: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    }).isRequired,
+  }),
   onClose: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
 };
