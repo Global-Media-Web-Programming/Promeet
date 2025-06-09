@@ -59,14 +59,10 @@ const EnterSchedulePage = () => {
 
   // 일정 추가 (AddScheduleModal에서 여러 일정 한 번에 추가)
   const handleAddSchedules = (schedules) => {
-    // scheduleId 부여(임시, 서버 연동 전)
-    const withId = schedules.map((s) => ({
-      ...s,
-      scheduleId: Math.random().toString(36).slice(2, 12), // 임시 id
-    }));
+    // scheduleId를 새로 만들지 않고, 그대로 사용!
     setFixedScheduleData((prev) => ({
       ...prev,
-      fixedSchedules: [...prev.fixedSchedules, ...withId],
+      fixedSchedules: [...prev.fixedSchedules, ...schedules],
     }));
     setOpen(false);
   };

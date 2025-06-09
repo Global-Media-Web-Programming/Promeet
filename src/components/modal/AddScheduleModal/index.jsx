@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import DaySelectModal from '@/components/modal/DaySelectModal';
 import TimeSelectModal from '@/components/modal/TimeSelectModal';
 import selectIcon from '@/assets/img/icon/dropdown.svg';
@@ -8,6 +9,7 @@ import crossIcon from '@/assets/img/icon/cross.svg';
 import * as S from './style';
 
 const defaultSchedule = () => ({
+  scheduleId: uuidv4(),
   day: '월요일',
   startTime: { hour: '09', minute: '00' },
   endTime: { hour: '18', minute: '00' },
@@ -130,16 +132,14 @@ const AddScheduleModal = ({ isOpen, onClose, onAdd }) => {
     };
 
     const fixedSchedules = schedules.map((s, idx) => ({
-      id: `schedule${idx + 1}`,
+      id: s.scheduleId,
       date: dayToDate[s.day] || getDateStr(idx),
       day: s.day,
       startTime: `${s.startTime.hour}:${s.startTime.minute}`,
       endTime: `${s.endTime.hour}:${s.endTime.minute}`,
     }));
 
-    const data = { fixedSchedules };
-
-    console.log('[AddScheduleModal] 서버에 보낼 데이터:', data);
+    console.log('[AddScheduleModal] 서버에 보낼 데이터:', { fixedSchedules });
 
     // 기존 onAdd 호출
     onAdd(
