@@ -120,7 +120,9 @@ const FixedTimeTable = ({ schedules, defaultStart, defaultEnd, onEdit, onDelete 
                         {schedule.title}
                         {/* 선택된 일정의 범위에서만 버튼 노출 */}
                         {!!schedule && selectedId === schedule.scheduleId && (
-                          <S.ButtonGroup selected>
+                          <S.ButtonGroup
+                            style={{ opacity: selectedId === schedule.scheduleId ? 1 : 0 }}
+                          >
                             <S.EditButton
                               onClick={(e) => {
                                 e.stopPropagation();

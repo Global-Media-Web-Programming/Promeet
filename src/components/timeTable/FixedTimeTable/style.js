@@ -58,9 +58,6 @@ export const ButtonGroup = styled.div`
   justify-content: center;
 
   margin: 2px 0 0 2px;
-  /* stylelint-disable selector-class-pattern */
-  opacity: ${({ selected }) => (selected ? 100% : 0%)};
-  /* stylelint-enable selector-class-pattern */
 `;
 
 export const EditButton = styled.button`
