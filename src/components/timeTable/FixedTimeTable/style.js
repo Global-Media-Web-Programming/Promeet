@@ -58,6 +58,8 @@ export const ButtonGroup = styled.div`
   justify-content: center;
 
   margin: 2px 0 0 2px;
+
+  opacity: ${({ selected }) => (selected ? 100% : 0%)};
 `;
 
 export const EditButton = styled.button`
