@@ -56,3 +56,11 @@ export const AddScheduleButton = styled.button`
 
   background: none;
 `;
+
+export const TableScrollWrapper = styled.div`
+  overflow: hidden auto;
+
+  width: 100%;
+  max-width: 400px;
+  max-height: 600px;
+`;

@@ -81,13 +81,15 @@ const EnterSchedulePage = () => {
           </S.AddScheduleButton>
         </S.ButtonOptions>
       </S.TopBar>
-      <FixedTimeTable
-        schedules={fixedScheduleData.fixedSchedules}
-        defaultStart={DEFAULT_START}
-        defaultEnd={DEFAULT_END}
-        onEdit={handleEditSchedule}
-        onDelete={handleAskDeleteSchedule} // 삭제 버튼 클릭 시 모달 띄우기
-      />
+      <S.TableScrollWrapper>
+        <FixedTimeTable
+          schedules={fixedScheduleData.fixedSchedules}
+          defaultStart={DEFAULT_START}
+          defaultEnd={DEFAULT_END}
+          onEdit={handleEditSchedule}
+          onDelete={handleAskDeleteSchedule}
+        />
+      </S.TableScrollWrapper>
       <AddScheduleModal isOpen={open} onClose={() => setOpen(false)} onAdd={handleAddSchedules} />
       <EditScheduleModal
         isOpen={editOpen}
