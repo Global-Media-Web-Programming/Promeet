@@ -7,6 +7,15 @@ import crossIcon from '@/assets/img/icon/cross.svg';
 import * as S from './style';
 
 export async function updateFixedSchedule(userId, scheduleId, fixedSchedule) {
+  // 데이터 콘솔 출력
+  console.log('[EditScheduleModal] updateFixedSchedule 호출', {
+    userId,
+    scheduleId,
+    fixedSchedule,
+  });
+
+  // 실제 서버 요청은 주석 처리
+  /*
   try {
     const response = await fetch(
       `${import.meta.env.VITE_SERVER_API_URL}/user/${userId}/fixed-schedules/${scheduleId}`,
@@ -24,6 +33,9 @@ export async function updateFixedSchedule(userId, scheduleId, fixedSchedule) {
   } catch (error) {
     return { success: false, error: error.message || '네트워크 오류' };
   }
+  */
+  // 서버 없이 성공 처리
+  return { success: true };
 }
 
 const EditScheduleModal = ({ isOpen, schedule, userId, onClose, onUpdate }) => {

@@ -4,6 +4,14 @@ import PropTypes from 'prop-types';
 
 // userId를 prop으로 추가로 받도록 수정
 async function deleteFixedSchedule(userId, scheduleId) {
+  // 데이터 콘솔 출력
+  console.log('[DelScheduleModal] deleteFixedSchedule 호출', {
+    userId,
+    scheduleId,
+  });
+
+  // 실제 서버 요청은 주석 처리
+  /*
   try {
     const response = await fetch(
       `${import.meta.env.VITE_SERVER_API_URL}/user/${userId}/fixed-schedules/${scheduleId}`,
@@ -22,6 +30,9 @@ async function deleteFixedSchedule(userId, scheduleId) {
   } catch (error) {
     return { success: false, error: error.message || '네트워크 오류' };
   }
+  */
+  // 서버 없이 성공 처리
+  return { success: true };
 }
 
 const DelScheduleModal = ({ isOpen, schedule, userId, onClose, onDelete }) => {
