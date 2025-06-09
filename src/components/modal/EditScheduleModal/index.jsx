@@ -38,6 +38,24 @@ export async function updateFixedSchedule(userId, scheduleId, fixedSchedule) {
   return { success: true };
 }
 
+// 시간 → 분 변환
+function timeToMinutes({ hour, minute }) {
+  return Number(hour) * 60 + Number(minute);
+}
+function addMinutes(time, mins) {
+  let total = timeToMinutes(time) + mins;
+  if (total < 0) total += 24 * 60;
+  total = total % (24 * 60);
+  return {
+    hour: String(Math.floor(total / 60)).padStart(2, '0'),
+    minute: String(total % 60).padStart(2, '0'),
+  };
+}
+// 00:00(24:00) 처리 보조
+function getEndMins(time) {
+  return time.hour === '00' && time.minute === '00' ? 1440 : timeToMinutes(time);
+}
+
 const EditScheduleModal = ({ isOpen, schedule, userId, onClose, onUpdate }) => {
   const [form, setForm] = useState({
     title: '',
@@ -74,13 +92,60 @@ const EditScheduleModal = ({ isOpen, schedule, userId, onClose, onUpdate }) => {
     closeModal();
   };
 
+  // 시작 시간 선택: 끝 시간과의 관계 예외 처리
   const handleStartTimeSelect = (time) => {
-    setForm((prev) => ({ ...prev, startTime: time }));
+    const startMins = timeToMinutes(time);
+    const isEndTimeMidnight = form.endTime.hour === '00' && form.endTime.minute === '00';
+    let endMins = isEndTimeMidnight ? 1440 : timeToMinutes(form.endTime);
+
+    let newStart = time;
+    let newEnd = form.endTime;
+
+    if (startMins >= endMins) {
+      // 시작이 23:00 이후면 끝 00:00(24:00)
+      if (startMins >= 1380) {
+        newEnd = { hour: '00', minute: '00' };
+      }
+      // 끝이 24:00이면 그대로
+      else if (isEndTimeMidnight) {
+        newEnd = { hour: '00', minute: '00' };
+      }
+      // 그 외 1시간 뒤
+      else {
+        newEnd = addMinutes(time, 60);
+      }
+    }
+    setForm((prev) => ({
+      ...prev,
+      startTime: newStart,
+      endTime: newEnd,
+    }));
     closeModal();
   };
 
+  // 끝 시간 선택: 시작 시간과의 관계 예외 처리
   const handleEndTimeSelect = (time) => {
-    setForm((prev) => ({ ...prev, endTime: time }));
+    const endMins = getEndMins(time);
+    const startMins = timeToMinutes(form.startTime);
+
+    let newEnd = time;
+    let newStart = form.startTime;
+
+    if (endMins <= startMins) {
+      // 01:00 이전이면 시작 00:00
+      if (endMins < 60) {
+        newStart = { hour: '00', minute: '00' };
+      }
+      // 그 외 1시간 전
+      else {
+        newStart = addMinutes(time, -60);
+      }
+    }
+    setForm((prev) => ({
+      ...prev,
+      startTime: newStart,
+      endTime: newEnd,
+    }));
     closeModal();
   };
 
