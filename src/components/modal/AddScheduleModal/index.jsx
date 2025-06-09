@@ -109,6 +109,50 @@ const AddScheduleModal = ({ isOpen, onClose, onAdd }) => {
     setSchedules((prev) => prev.filter((_, i) => i !== idx));
   };
 
+  // 완료 버튼 클릭 시 서버에 보낼 데이터 형식으로 가공 후 콘솔 출력
+  const handleSubmit = () => {
+    // 예시: 오늘 날짜를 임시로 넣음 (실제 구현시 달력 등에서 받아야 함)
+    const today = new Date();
+    const getDateStr = (addDays) => {
+      const d = new Date(today);
+      d.setDate(today.getDate() + addDays);
+      return d.toISOString().slice(0, 10);
+    };
+    // 요일별로 날짜 매핑 (실제는 서버/캘린더에서 받아야 함)
+    const dayToDate = {
+      월요일: getDateStr(0),
+      화요일: getDateStr(1),
+      수요일: getDateStr(2),
+      목요일: getDateStr(3),
+      금요일: getDateStr(4),
+      토요일: getDateStr(5),
+      일요일: getDateStr(6),
+    };
+
+    const fixedSchedules = schedules.map((s, idx) => ({
+      id: `schedule${idx + 1}`,
+      date: dayToDate[s.day] || getDateStr(idx),
+      day: s.day,
+      startTime: `${s.startTime.hour}:${s.startTime.minute}`,
+      endTime: `${s.endTime.hour}:${s.endTime.minute}`,
+    }));
+
+    const data = { fixedSchedules };
+
+    console.log('[AddScheduleModal] 서버에 보낼 데이터:', data);
+
+    // 기존 onAdd 호출
+    onAdd(
+      schedules.map((s) => ({
+        title,
+        ...s,
+      })),
+    );
+    setTitle('');
+    setSchedules([defaultSchedule()]);
+    onClose();
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -119,21 +163,7 @@ const AddScheduleModal = ({ isOpen, onClose, onAdd }) => {
             <img src={crossIcon} alt="Close" />
           </S.CloseButton>
           <S.AddScheduleTitle>일정 추가</S.AddScheduleTitle>
-          <S.SubmitButton
-            type="button"
-            onClick={() => {
-              // 여러 일정 등록을 위해 schedules 전체 전달
-              onAdd(
-                schedules.map((s) => ({
-                  title,
-                  ...s,
-                })),
-              );
-              setTitle('');
-              setSchedules([defaultSchedule()]);
-              onClose();
-            }}
-          >
+          <S.SubmitButton type="button" onClick={handleSubmit}>
             완료
           </S.SubmitButton>
         </S.TopBar>
