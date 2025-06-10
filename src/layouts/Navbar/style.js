@@ -13,7 +13,6 @@ export const BottomBar = styled.nav`
   justify-content: space-around;
 
   width: 100%;
-  max-width: 390px;
   height: 70px;
 
   background-color: white;
