@@ -5,7 +5,6 @@ import { useUserActions } from '../stores/auth/useUserStore';
 import { ROUTES } from '@/constants/routes';
 import { postSignIn } from '@/apis/post/auth';
 import { getUserData } from '@/apis/get/user';
-import { getPromiseData } from '@/apis/get/promise';
 
 const useSignIn = (setError) => {
   const handleError = useErrorHandler();
@@ -13,37 +12,24 @@ const useSignIn = (setError) => {
   const { setUserId, setUserName, setFixedSchedules, setPromises, setUserType } = useUserActions();
 
   return useMutation({
-    mutationFn: async ({ name, password, promiseId }) => {
-      const signInResult = await postSignIn(name, password, promiseId);
-      const userId = signInResult.data.userId;
-
-      // 약속 페이지에서 로그인한 경우에만 약속 정보 확인
-      if (promiseId) {
-        const { data: promiseData } = await getPromiseData(promiseId, userId);
-        const isInvitedMember = promiseData.members.some(
-          (member) => member.userId === userId && member.userId !== promiseData.creatorId,
-        );
-        return { signInResult, isInvitedMember };
-      }
-
-      return { signInResult, isInvitedMember: false };
-    },
-    onSuccess: async ({ signInResult, isInvitedMember }) => {
-      const userId = signInResult.data.userId;
+    mutationFn: async ({ name, password, promiseId }) => postSignIn(name, password, promiseId),
+    onSuccess: async ({ data }, { promiseId }) => {
+      const userId = data.userId;
       setUserId(userId);
 
       // 데이터 프리로드
       const userData = await getUserData(userId);
-      const { name, fixedSchedule, promise } = userData.data;
+      const { name, fixedSchedule, promises } = userData.data;
 
       setUserName(name);
       setFixedSchedules(fixedSchedule);
       setPromises({
-        create: promise?.create ?? [],
-        join: promise?.join ?? [],
+        create: promises?.create ?? [],
+        join: promises?.join ?? [],
       });
 
-      if (isInvitedMember) {
+      // 참여 요청받은 약속이면
+      if (promiseId && promises.join.includes(promiseId)) {
         setUserType('join');
         navigate(ROUTES.PROMISE_LOCATION);
       } else {

@@ -1,5 +1,6 @@
 import * as S from './style';
 import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { signInSchema } from '@/schemas/auth';
@@ -23,6 +24,8 @@ const SignInForm = () => {
     },
   });
 
+  const { promiseId } = useParams();
+
   const { mutate: signIn, isPending: isSignInPending } = useSignIn(setError);
 
   // 초기 유효성 검사 트리거
@@ -32,7 +35,8 @@ const SignInForm = () => {
 
   // 폼 제출 핸들러
   const onSubmit = (formData) => {
-    signIn(formData);
+    if (promiseId) signIn({ ...formData, promiseId });
+    else signIn(formData);
   };
 
   return (

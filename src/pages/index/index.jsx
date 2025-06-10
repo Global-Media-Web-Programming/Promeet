@@ -71,6 +71,8 @@ const HomePage = () => {
   const createdPromises = createQueries.map((q) => q.data).filter(Boolean);
   const joinedPromises = joinQueries.map((q) => q.data).filter(Boolean);
 
+  // console.log(createIds);
+
   const allPromises = [...createdPromises, ...joinedPromises]; // 생성 + 초대
   const { todayPromises, futurePromises } = classifyPromises(allPromises);
 
