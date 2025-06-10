@@ -1,19 +1,23 @@
 import * as S from './style';
 import { useParams } from 'react-router-dom';
 import SignInForm from '@/components/auth/SignInForm';
+import DeferredLoader from '@/components/ui/DeferredLoader';
 import { useUserInfo } from '@/hooks/stores/auth/useUserStore';
-import { usePromiseDataFromServerInfo } from '@/hooks/stores/promise/usePromiseDataFromServerStore';
 import useGetPromiseData from '@/hooks/queries/useGetPromiseData';
 import useGetUserData from '@/hooks/queries/useGetUserData';
 
 const JoinPage = () => {
   const { promiseId } = useParams();
   const { userId } = useUserInfo();
-  useGetPromiseData(promiseId, userId);
-  const { promiseDataFromServer } = usePromiseDataFromServerInfo(); // store에서 데이터 가져오기
-  const { createrId, name, description } = promiseDataFromServer;
-  // 생성자 이름 가져오기
-  const { data: userData } = useGetUserData(createrId, true);
+  const { data: promiseData, isPending: isPromisePending } = useGetPromiseData(promiseId, userId);
+
+  const { data: userData, isPending: isUserPending } = useGetUserData(promiseData?.creatorId, true);
+
+  if (isPromisePending || isUserPending) {
+    return <DeferredLoader />;
+  }
+
+  const { name, description } = promiseData;
 
   return (
     <S.Container>
