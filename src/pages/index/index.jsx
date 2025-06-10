@@ -7,7 +7,7 @@ import Navbar from '@/layouts/Navbar';
 import useGetUserData from '@/hooks/queries/useGetUserData';
 // import useGetMultiplePromiseData from '@/hooks/queries/useGetMultiplePromiseData';
 import { useUserInfo } from '@/hooks/stores/auth/useUserStore';
-import useLogout from '@/hooks/mutations/useLogout';
+// import useLogout from '@/hooks/mutations/useLogout';
 import { ROUTES } from '@/constants/routes';
 
 // 오늘, 다가오는 약속 추출
@@ -58,10 +58,10 @@ const HomePage = () => {
   // const createQueries = useGetMultiplePromiseData(createIds, userId);
   // const joinQueries = useGetMultiplePromiseData(joinIds, userId);
 
-  const { mutate: logout, isPending: isLogoutPending } = useLogout();
-  const handleLogout = () => {
-    logout({ userId });
-  };
+  // const { mutate: logout, isPending: isLogoutPending } = useLogout();
+  // const handleLogout = () => {
+  //   logout({ userId });
+  // };
 
   // const isLoading =
   //   isGetUserDataPending ||
@@ -236,10 +236,6 @@ const HomePage = () => {
                 {promise.title}
               </div>
             ))}
-
-            <Button onClick={handleLogout}>
-              {isLogoutPending ? '로그아웃 중...' : '로그아웃'}
-            </Button>
           </S.Container>
           <Navbar />
         </>
