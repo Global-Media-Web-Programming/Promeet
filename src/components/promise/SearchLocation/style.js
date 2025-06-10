@@ -10,6 +10,8 @@ export const Container = styled.section`
 `;
 
 export const CurrLocationButton = styled.button`
+  cursor: pointer;
+
   display: flex;
   gap: 10px;
   align-items: center;

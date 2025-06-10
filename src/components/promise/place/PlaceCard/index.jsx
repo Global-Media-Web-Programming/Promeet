@@ -17,15 +17,15 @@ const PlaceCard = ({
 }) => {
   const place = { placeId, type, name, position, address, phone, link };
   const {
-    handleCardClick,
-    handleLikeToggle,
-    handleClickFixPlaceBtn,
+    showHeart,
     isCreator,
     isLiked,
     likesCount,
     isSelected,
     isRetrieved,
-    showHeart,
+    handleCardClick,
+    handleLikeToggle,
+    handleClickFixPlaceBtn,
   } = usePlaceCardHandlers(place, $isRetrieved);
 
   return (

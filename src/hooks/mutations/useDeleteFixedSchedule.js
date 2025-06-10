@@ -14,7 +14,9 @@ const useDeleteFixedSchedules = () => {
     mutationFn: ({ scheduleId }) => deleteFixedSchedule(userId, scheduleId),
     onSuccess: (_, __) => {
       // 유저 정보 캐시 무효화 (고정 일정 포함)
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.user, userId] });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEY.user, userId],
+      });
     },
     onError: (error) => {
       handleError(error);

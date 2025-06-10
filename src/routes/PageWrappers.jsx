@@ -6,10 +6,12 @@ import { useUserInfo, useUserActions } from '@/hooks/stores/auth/useUserStore';
 import { usePromiseDataActions } from '@/hooks/stores/promise/usePromiseDataStore';
 import { usePromiseDataFromServerInfo } from '@/hooks/stores/promise/usePromiseDataFromServerStore';
 import useGetPromiseData from '@/hooks/queries/useGetPromiseData';
+import DeferredLoader from '@/components/ui/DeferredLoader';
 
 // 로그인 안됐을 때 페이지 보호
 export const ProtectedPageWrapper = ({ children }) => {
   const { userId } = useUserInfo();
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,21 +33,24 @@ export const CreateOnlyWrapper = ({ children }) => {
   const { userId } = useUserInfo();
   const navigate = useNavigate();
   const { promiseId } = useParams();
-  useGetPromiseData(promiseId, userId);
+  const { isPending } = useGetPromiseData(promiseId, userId);
   const { promiseDataFromServer } = usePromiseDataFromServerInfo();
   const { setUserType } = useUserActions();
 
-  // 유저가 생성한 약속이 아니면 홈으로 리다이렉트
   useEffect(() => {
-    const isCreator = promiseDataFromServer.creatorId === userId;
-    if (!isCreator) {
-      navigate(ROUTES.HOME);
-      return null;
+    if (!isPending && promiseDataFromServer) {
+      const isCreator = promiseDataFromServer.creatorId === userId;
+      if (!isCreator) {
+        navigate(ROUTES.HOME);
+        return;
+      }
+      setUserType('create');
     }
+  }, [isPending, promiseDataFromServer, userId, navigate, setUserType]);
 
-    // 유저 타입 정의
-    setUserType('create');
-  }, [promiseDataFromServer.creatorId, userId, navigate, setUserType]);
+  if (isPending) {
+    return <DeferredLoader />;
+  }
 
   return children;
 };
@@ -61,50 +66,51 @@ export const JoinOnlyWrapper = ({ children }) => {
   const { promiseId } = useParams();
   const { pathname } = useLocation();
   const { setUserType } = useUserActions();
-  useGetPromiseData(promiseId, userId);
+  const { isPending } = useGetPromiseData(promiseId, userId);
   const { promiseDataFromServer } = usePromiseDataFromServerInfo();
   const { hasNearestSubwayStationData } = usePromiseDataActions();
 
   useEffect(() => {
-    if (!promiseDataFromServer) return;
+    if (!isPending && promiseDataFromServer) {
+      // 초대받은 사람 체크 (생성자가 아니면서 members에 있는 경우)
+      const isInvitedMember = promiseDataFromServer.members.some(
+        (member) => member.userId === userId && member.userId !== promiseDataFromServer.creatorId,
+      );
 
-    // 초대받은 사람 체크 (생성자가 아니면서 members에 있는 경우)
-    const isInvitedMember = promiseDataFromServer.members.some(
-      (member) => member.userId === userId && member.userId !== promiseDataFromServer.creatorId,
-    );
-
-    // 참여 권한 없음 → 홈으로 이동
-    if (!isInvitedMember) {
-      navigate(ROUTES.HOME);
-      return;
-    }
-
-    // 참여자 유형 저장
-    setUserType('join');
-
-    // schedule 페이지에서 위치 정보 체크
-    if (pathname === ROUTES.PROMISE_SCHEDULE) {
-      // 위치 정보 (가까운 지하철 정보) 미제출시 위치 입력 페이지로 이동
-      const hasNS = hasNearestSubwayStationData();
-      if (!hasNS) {
-        navigate(BUILD_ROUTES.PROMISE_LOCATION(promiseId));
+      // 참여 권한 없음 → 홈으로 이동
+      if (!isInvitedMember) {
+        navigate(ROUTES.HOME);
         return;
       }
-    }
 
-    // result 페이지에서 데이터 제출 체크
-    if (pathname === ROUTES.PROMISE_RESULT) {
-      const currentMember = promiseDataFromServer.members.find(
-        (member) => member.userId === userId,
-      );
-      // 정보 입력 안된 사용자면 위치 입력부터 하게 함
-      if (!currentMember?.hasSubmittedData) {
-        navigate(BUILD_ROUTES.PROMISE_LOCATION(promiseId));
-        return;
+      // 참여자 유형 저장
+      setUserType('join');
+
+      // schedule 페이지에서 위치 정보 체크
+      if (pathname === ROUTES.PROMISE_SCHEDULE) {
+        // 위치 정보 (가까운 지하철 정보) 미제출시 위치 입력 페이지로 이동
+        const hasNS = hasNearestSubwayStationData();
+        if (!hasNS) {
+          navigate(BUILD_ROUTES.PROMISE_LOCATION(promiseId));
+          return;
+        }
+      }
+
+      // result 페이지에서 데이터 제출 체크
+      if (pathname === ROUTES.PROMISE_RESULT) {
+        const currentMember = promiseDataFromServer.members.find(
+          (member) => member.userId === userId,
+        );
+        // 정보 입력 안된 사용자면 위치 입력부터 하게 함
+        if (!currentMember?.hasSubmittedData) {
+          navigate(BUILD_ROUTES.PROMISE_LOCATION(promiseId));
+          return;
+        }
       }
     }
   }, [
     promiseDataFromServer,
+    isPending,
     userId,
     pathname,
     promiseId,
@@ -112,6 +118,10 @@ export const JoinOnlyWrapper = ({ children }) => {
     setUserType,
     hasNearestSubwayStationData,
   ]);
+
+  if (isPending) {
+    return <DeferredLoader />;
+  }
 
   return children;
 };
@@ -125,23 +135,28 @@ export const PromiseMemberWrapper = ({ children }) => {
   const { userId } = useUserInfo();
   const navigate = useNavigate();
   const { promiseId } = useParams();
-  useGetPromiseData(promiseId, userId);
+  const { isPending } = useGetPromiseData(promiseId, userId);
   const { promiseDataFromServer } = usePromiseDataFromServerInfo();
 
   useEffect(() => {
-    // 약속 멤버 체크
-    const isMember = promiseDataFromServer.members.some((member) => member.userId === userId);
-    if (!isMember) {
-      navigate(ROUTES.HOME);
-      return;
-    }
+    if (!isPending && promiseDataFromServer) {
+      // 약속 멤버 체크
+      const isMember = promiseDataFromServer.members.some((member) => member.userId === userId);
+      if (!isMember) {
+        navigate(ROUTES.HOME);
+        return;
+      }
 
-    // 약속 상태 체크
-    if (promiseDataFromServer && !promiseDataFromServer.isFixed) {
-      // 홈 페이지로 리다이렉트
-      navigate(ROUTES.HOME);
+      // 약속 상태 체크
+      if (promiseDataFromServer && !promiseDataFromServer.isFixed) {
+        // 홈 페이지로 리다이렉트
+        navigate(ROUTES.HOME);
+      }
     }
-  }, [promiseDataFromServer, userId, promiseId, navigate]);
+    if (isPending) {
+      return <DeferredLoader />;
+    }
+  }, [promiseDataFromServer, isPending, userId, promiseId, navigate]);
 
   return children;
 };

@@ -14,10 +14,9 @@ const useToggleLikePlace = () => {
   const handleError = useHandleError();
   const { userId } = useUserInfo();
   const { promiseDataFromServer } = usePromiseDataFromServerInfo();
-  const { likedPlaces } = promiseDataFromServer;
   const { setLikedPlaces } = usePromiseDataFromServerActions();
 
-  return useMutation({
+  const mutation = useMutation({
     mutationFn: ({ promiseId, place, isLiked }) => {
       isLiked
         ? deletePlaceLike(promiseId, place.placeId, userId)
@@ -112,6 +111,18 @@ const useToggleLikePlace = () => {
       });
     },
   });
+
+  // promiseDataFromServer가 없으면 빈 mutation 반환
+  if (!promiseDataFromServer) {
+    return {
+      mutate: () => {},
+      isPending: false,
+      isError: false,
+      isSuccess: false,
+    };
+  }
+  const { likedPlaces } = promiseDataFromServer;
+  return mutation;
 };
 
 export default useToggleLikePlace;

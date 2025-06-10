@@ -18,6 +18,7 @@ const useGetPromiseData = (promiseId, userId) => {
         return data;
       } catch (error) {
         handleError(error);
+        throw error;
       }
     },
     enabled: !!promiseId,

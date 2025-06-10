@@ -11,11 +11,12 @@ const usePatchFixedSchedule = () => {
   const { userId } = useUserInfo();
 
   return useMutation({
-    mutationFn: ({ scheduleId, fixedSchedule }) =>
-      patchFixedSchedule(userId, scheduleId, fixedSchedule),
+    mutationFn: ({ fixedSchedule }) => patchFixedSchedule(userId, fixedSchedule.id, fixedSchedule),
     onSuccess: (_, __) => {
       // 유저 정보 캐시 무효화 (고정 일정 포함)
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.user, userId] });
+      queryClient.refetchQueries({
+        queryKey: [QUERY_KEY.user, userId],
+      });
     },
     onError: (error) => {
       handleError(error);

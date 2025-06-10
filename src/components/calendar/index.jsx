@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Calendar from 'react-calendar';
 import * as S from './style';
 import 'react-calendar/dist/Calendar.css';
 import prevIcon from '../../assets/img/icon/left.svg';
 import nextIcon from '../../assets/img/icon/right.svg';
+import PropTypes from 'prop-types';
 
-export default function CalendarRange() {
+export default function CalendarRange({ onChange, value }) {
   const [range, setRange] = useState([new Date(), new Date()]);
   const [dragging, setDragging] = useState(false);
   const [dragRange, setDragRange] = useState({ from: null, to: null });
@@ -29,26 +30,29 @@ export default function CalendarRange() {
     }
   };
 
-  const handleMouseUp = () => {
+  const handleMouseUp = useCallback(() => {
     if (dragRange.from && dragRange.to) {
       const [start, end] = [dragRange.from, dragRange.to].sort((a, b) => a - b);
       setRange([start, end]);
+      if (typeof onChange === 'function') {
+        onChange([start, end]);
+      }
     }
     setDragging(false);
-  };
+  }, [dragRange.from, dragRange.to, onChange]);
 
   useEffect(() => {
     document.addEventListener('mouseup', handleMouseUp);
     return () => {
       document.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [dragRange]);
+  }, [dragRange, handleMouseUp]);
 
   return (
     <S.CalendarWrapper>
       <Calendar
-        onChange={() => {}}
-        value={range}
+        onChange={onChange}
+        value={value}
         tileDisabled={({ date }) => isPastDay(date)}
         tileClassName={({ date, view, activeStartDate }) => {
           if (view === 'month') {
@@ -86,19 +90,9 @@ export default function CalendarRange() {
           return null;
         }}
         tileContent={({ date }) => (
-          <div
+          <S.TileOverlay
             onMouseDown={() => handleMouseDown(date)}
             onMouseEnter={() => handleMouseEnter(date)}
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              zIndex: 5,
-              backgroundColor: 'transparent',
-              cursor: 'pointer',
-            }}
           />
         )}
         locale="en-US"
@@ -116,3 +110,8 @@ export default function CalendarRange() {
     </S.CalendarWrapper>
   );
 }
+
+CalendarRange.propTypes = {
+  onChange: PropTypes.func,
+  value: PropTypes.any,
+};

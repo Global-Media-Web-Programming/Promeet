@@ -13,6 +13,7 @@ import { MY_LOC_MARKER_ID } from '@/constants/map';
 import useDebounce from '@/hooks/useDebounce';
 import useHandleError from '@/hooks/useHandleError';
 import useNearestSubwayStation from '@/hooks/kakao/useNearestSubwayStation';
+import LocationAgreementModal from '@/components/modal/LocationAgreementModal';
 
 const SearchLocation = ({ onBack }) => {
   const [searchInput, setSearchInput] = useState('');
@@ -20,6 +21,7 @@ const SearchLocation = ({ onBack }) => {
   const [places, setPlaces] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedPosition, setSelectedPosition] = useState(null);
+  const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
 
   const { isKakaoLoaded } = useMapInfo();
   const { allowMyLocation } = useLocationInfo();
@@ -31,9 +33,9 @@ const SearchLocation = ({ onBack }) => {
   useNearestSubwayStation(selectedPosition?.Ma, selectedPosition?.La);
 
   const handleMyLocationClick = () => {
-    // 위치 동의 모달 띄우기
-    if (!allowMyLocation) alert('위치 동의 필요');
-    else {
+    if (!allowMyLocation) {
+      setIsLocationModalOpen(true); // 위치 동의 모달 오픈
+    } else {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           async (position) => {
@@ -125,6 +127,11 @@ const SearchLocation = ({ onBack }) => {
           <span onClick={handleMyLocationClick}>현위치 불러오기</span>
         </S.CurrLocationButton>
       )}
+      {/* 위치 동의 모달 */}
+      <LocationAgreementModal
+        isOpen={isLocationModalOpen}
+        onClose={() => setIsLocationModalOpen(false)}
+      />
     </S.Container>
   );
 };

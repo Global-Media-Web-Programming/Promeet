@@ -27,6 +27,7 @@ const useGetUserData = (userId, readOnly = false) => {
         return data;
       } catch (error) {
         handleError(error);
+        throw error;
       }
     },
     enabled: !!userId,

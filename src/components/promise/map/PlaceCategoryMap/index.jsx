@@ -1,4 +1,5 @@
 import * as S from './style';
+import { useState } from 'react';
 import Tabs from '@/components/ui/Tabs';
 import MapContainer from '../MapContainer';
 import SearchPlace from '../SearchPlace';
@@ -8,18 +9,20 @@ import { usePromiseDataFromServerInfo } from '@/hooks/stores/promise/usePromiseD
 import useHandleError from '@/hooks/useHandleError';
 import { CATEGORY, CATEGORY_LABEL } from '@/constants/place';
 import { MY_LOC_MARKER_ID, DEFAULT_LAT, DEFAULT_LNG } from '@/constants/map';
+import LocationAgreementModal from '@/components/modal/LocationAgreementModal';
 
 const PlaceCategoryMap = () => {
   const { selectedValue } = useTabsInfo();
   const { allowMyLocation, myLocation } = useLocationInfo();
   const { setMyLocation } = useLocationActions();
   const { promiseDataFromServer } = usePromiseDataFromServerInfo();
+  const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
 
   const handleError = useHandleError();
 
   const handleMyLocationClick = () => {
     // 위치 동의 모달 띄우기
-    if (!allowMyLocation) alert('위치 동의 필요');
+    if (!allowMyLocation) setIsLocationModalOpen(true);
     else {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
@@ -54,6 +57,11 @@ const PlaceCategoryMap = () => {
         </Tabs>
       </S.TabsWrapper>
       <S.MyLocationIcon onClick={handleMyLocationClick} />
+      {/* 위치 동의 모달 */}
+      <LocationAgreementModal
+        isOpen={isLocationModalOpen}
+        onClose={() => setIsLocationModalOpen(false)}
+      />
     </>
   );
 };

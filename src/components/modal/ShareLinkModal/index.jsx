@@ -15,7 +15,9 @@ const ShareLinkModal = ({ isOpen, shareLink, onClose }) => {
     <CommonModal isOpen={isOpen} onClose={onClose}>
       <S.Container>
         <S.Text>{`약속의 링크가 생성되었어요\n 공유하고 친구의 일정을 알아보세요`}</S.Text>
-        <S.Link>{shareLink}</S.Link>
+        <S.Link>
+          <p>{shareLink}</p>
+        </S.Link>
         <S.BtnWrapper>
           <Button onClick={handleCopyLinkBtnClick}>주소 복사하기</Button>
         </S.BtnWrapper>

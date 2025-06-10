@@ -5,7 +5,7 @@ import { immer } from 'zustand/middleware/immer';
 const locationStore = create()(
   devtools(
     immer((set) => ({
-      allowMyLocation: true, // 임시 설정
+      allowMyLocation: false,
       myLocation: null,
       actions: {
         setAllowMyLocation: (allow) =>

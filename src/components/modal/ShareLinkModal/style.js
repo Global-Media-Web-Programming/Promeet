@@ -19,6 +19,13 @@ export const Link = styled.div`
   border: 1px solid #c2c2c2;
   border-radius: 15px;
   color: ${theme.color.text.grey};
+
+  p {
+    overflow: hidden;
+    max-width: 100%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 `;
 
 export const BtnWrapper = styled.div`

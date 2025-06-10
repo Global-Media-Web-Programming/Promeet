@@ -15,6 +15,7 @@ const useGetMultiplePromiseData = (promiseIds, userId) => {
           return data;
         } catch (error) {
           handleError(error);
+          throw error;
         }
       },
       enabled: !!promiseId,

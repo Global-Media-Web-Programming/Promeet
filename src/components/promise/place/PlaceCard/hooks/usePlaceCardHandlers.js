@@ -25,12 +25,34 @@ export default function usePlaceCardHandlers(place, $isRetrieved) {
   const { mutate: toggleLike } = useToggleLikePlace();
   const [isRetrieved, setIsRetrieved] = useState(false); // 조회될때 색 표시
 
+  // 선택한 장소 카드 잠시 강조
   useEffect(() => {
     if ($isRetrieved) {
       setIsRetrieved(true);
       setTimeout(() => setIsRetrieved(false), 1500);
     }
   }, [$isRetrieved]);
+
+  const isCreator = userType === 'create';
+
+  // 위치 입력 컴포넌트에선 하트 안 보여주기
+  const showHeart =
+    pathname !== ROUTES.PROMISE_CREATE_LOCATION && pathname !== ROUTES.PROMISE_LOCATION;
+
+  if (!promiseDataFromServer) {
+    return {
+      showHeart,
+      isCreator,
+      // 지도에서 필요한 것들
+      isLiked: false,
+      likesCount: 0,
+      isSelected: false,
+      isRetrieved: false,
+      handleCardClick: () => {},
+      handleLikeToggle: () => {},
+      handleClickFixPlaceBtn: () => {},
+    };
+  }
 
   const { likedPlaces } = promiseDataFromServer;
   const likedPlace = likedPlaces?.find((p) => p.place.placeId === place.placeId);
@@ -52,23 +74,17 @@ export default function usePlaceCardHandlers(place, $isRetrieved) {
     isSelected ? setSelectedPlace(null) : setSelectedPlace(place);
   };
 
-  const isCreator = userType === 'create';
-
   const isSelected = selectedPlace?.placeId === place.placeId;
 
-  // 위치 입력 컴포넌트에선 하트 안 보여주기
-  const showHeart =
-    pathname !== ROUTES.PROMISE_CREATE_LOCATION && pathname !== ROUTES.PROMISE_LOCATION;
-
   return {
-    handleCardClick,
-    handleLikeToggle,
-    handleClickFixPlaceBtn,
+    showHeart,
     isCreator,
     isLiked,
     likesCount,
     isSelected,
     isRetrieved,
-    showHeart,
+    handleCardClick,
+    handleLikeToggle,
+    handleClickFixPlaceBtn,
   };
 }
