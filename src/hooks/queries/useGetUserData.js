@@ -15,12 +15,12 @@ const useGetUserData = (userId, readOnly = false) => {
         const { data } = await getUserData(userId);
         if (!readOnly) {
           // 데이터를 가져오자마자 store 업데이트
-          const { name, fixedSchedule, promise } = data;
+          const { name, fixedSchedule, promises } = data;
           setUserName(name);
           setFixedSchedules(fixedSchedule);
           setPromises({
-            create: promise?.create ?? [],
-            join: promise?.join ?? [],
+            create: promises?.create ?? [],
+            join: promises?.join ?? [],
           });
         }
 

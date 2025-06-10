@@ -18,7 +18,7 @@ const useGetMultiplePromiseData = (promiseIds, userId) => {
           throw error;
         }
       },
-      enabled: !!promiseId,
+      enabled: !!promiseId || !!promiseIds.length,
     })),
   });
 };
