@@ -13,6 +13,27 @@ export const Header = styled.header`
   padding: 24px;
 `;
 
+export const HeaderRow = styled.div`
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  margin-top: 30px;
+`;
+
+export const AlarmIcon = styled.img`
+  cursor: pointer;
+
+  position: absolute;
+  right: 30px;
+
+  width: 50px;
+  height: 50px;
+`;
+
 export const TopRow = styled.div`
   display: flex;
   align-items: center;
@@ -26,65 +47,46 @@ export const TopRow = styled.div`
 `;
 
 export const Greeting = styled.div`
-  margin-top: 20px;
+  margin-top: 50px;
 
   font-size: 25px;
   font-weight: 700;
   line-height: 36px;
   color: var(--text-black, #555555);
+  text-align: left;
 `;
 
-export const Card = styled.div`
+export const CardSliderWrapper = styled.div`
+  touch-action: pan-y;
+
   position: relative;
 
-  padding: 16px;
-  border-radius: 20px;
+  overflow: hidden;
 
-  color: white;
-
-  background-color: #6dbbae;
-
-  h3 {
-    margin-bottom: 4px;
-
-    font-family: 'Pretendard Variable', sans-serif;
-    font-size: 18px;
-    font-weight: 600;
-    line-height: 18px;
-  }
-
-  p {
-    font-family: 'Pretendard Variable', sans-serif;
-    font-size: 12px;
-    font-weight: 400;
-    line-height: 12px;
-    color: #feffff;
-  }
+  width: ${({ cardWidth, visibleWidth }) => cardWidth + visibleWidth}px;
+  height: 180px;
+  margin: 0 auto;
 `;
 
-export const Avatars = styled.div`
+export const CardSlider = styled.div`
+  transform: ${({ cardIdx, cardWidth, cardGap }) =>
+    `translateX(-${cardIdx * (cardWidth + cardGap)}px)`};
   display: flex;
-  margin-top: 12px;
-
-  img {
-    width: 32px;
-    height: 32px;
-    margin-right: -8px;
-    border: 2px solid white;
-    border-radius: 50%;
-  }
+  gap: ${({ cardGap }) => cardGap}px;
+  transition: transform 0.3s;
 `;
 
-export const Dday = styled.div`
-  position: absolute;
-  right: 16px;
-  bottom: 16px;
+export const CardWrapper = styled.div`
+  position: relative;
 
-  font-family: 'Jalnan 2 TTF', serif;
-  font-size: 24px;
-  font-weight: 400;
-  line-height: 12px;
-  color: white;
+  width: ${({ cardWidth }) => cardWidth}px;
+  min-width: ${({ cardWidth }) => cardWidth}px;
+  max-width: ${({ cardWidth }) => cardWidth}px;
+  border-radius: 16px;
+
+  opacity: ${({ active }) => (active ? 100% : 60%)};
+  background: #ffffff;
+  box-shadow: ${({ active }) => (active ? '0 4px 24px rgba(0,0,0,0.10)' : 'none')};
 `;
 
 export const SectionTitle = styled.div`
@@ -96,48 +98,46 @@ export const SectionTitle = styled.div`
   color: var(--text-blue, #002055);
 `;
 
-export const Appointment = styled.div`
+export const AppointmentList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  max-width: 390px;
+  margin: 0 auto;
+`;
+
+export const AppointmentItem = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
 
-  margin: 0 24px 12px;
-  padding: 16px;
+  box-sizing: border-box;
+  height: 100px;
+  padding: 0 24px;
+  border: 1px solid #e9f1ff;
   border-radius: 16px;
 
-  background-color: white;
+  background: white;
+`;
+
+export const AppointmentInfo = styled.div`
+  flex: 1;
+  margin-right: 16px;
 
   small {
-    font-family: 'Pretendard Variable', sans-serif;
-    font-size: 12px;
-    font-weight: 400;
-    line-height: 12px;
-    color: var(--text-grey, #848a94);
+    font-size: 13px;
+    color: #848a94;
   }
 
   h4 {
-    margin: 4px 0;
-
-    font-family: 'Pretendard Variable', sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 14px;
-    color: var(--text-blue, #002055);
+    margin: 4px 0 0;
+    font-size: 18px;
+    font-weight: 600;
   }
 
   span {
-    font-family: 'Pretendard Variable', sans-serif;
-    font-size: 12px;
-    font-weight: 400;
-    line-height: 12px;
-    color: var(--text-grey, #848a94);
+    font-size: 13px;
+    color: #848a94;
   }
-`;
-
-export const DdayCircle = styled.div`
-  font-family: 'Pretendard Variable', sans-serif;
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 12px;
-  color: var(--text-blue, #002055);
 `;

@@ -49,120 +49,53 @@ const HomePage = () => {
   return (
     <S.Container>
       <S.Header>
-        <div
-          style={{
-            position: 'relative',
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            marginTop: '30px',
-          }}
-        >
-          <S.TopRow style={{ textAlign: 'center' }}>Friday, 30</S.TopRow>
-          <img
-            src={alarmIcon}
-            alt="알람"
-            style={{
-              position: 'absolute',
-              right: '30px',
-              width: 50,
-              height: 50,
-              cursor: 'pointer',
-            }}
-          />
-        </div>
-        <S.Greeting style={{ textAlign: 'left', marginTop: '50px' }}>
+        <S.HeaderRow>
+          <S.TopRow>Friday, 30</S.TopRow>
+          <S.AlarmIcon src={alarmIcon} alt="알람" />
+        </S.HeaderRow>
+        <S.Greeting>
           박숭실님,
           <br />
           오늘 일정 잊지 않으셨죠?
         </S.Greeting>
       </S.Header>
 
-      <div
-        style={{
-          position: 'relative',
-          width: `${CARD_WIDTH + VISIBLE_WIDTH}px`,
-          margin: '0 auto',
-          overflow: 'hidden',
-          touchAction: 'pan-y',
-          height: 180,
-        }}
+      <S.CardSliderWrapper
+        cardWidth={CARD_WIDTH}
+        visibleWidth={VISIBLE_WIDTH}
         onTouchStart={handleDragStart}
         onTouchEnd={handleDragEnd}
         onMouseDown={handleDragStart}
         onMouseUp={handleDragEnd}
       >
-        <div
-          style={{
-            display: 'flex',
-            transition: 'transform 0.3s',
-            transform: `translateX(-${cardIdx * (CARD_WIDTH + CARD_GAP)}px)`,
-            gap: `${CARD_GAP}px`,
-          }}
-        >
+        <S.CardSlider cardIdx={cardIdx} cardWidth={CARD_WIDTH} cardGap={CARD_GAP}>
           {cards.map((card, i) => (
-            <div
-              key={i}
-              style={{
-                width: `${CARD_WIDTH}px`,
-                minWidth: `${CARD_WIDTH}px`,
-                maxWidth: `${CARD_WIDTH}px`,
-                opacity: cardIdx === i ? 1 : 0.6,
-                boxShadow: cardIdx === i ? '0 4px 24px rgba(0,0,0,0.10)' : 'none',
-                borderRadius: 16,
-                background: '#fff',
-                position: 'relative',
-              }}
-            >
+            <S.CardWrapper key={i} cardWidth={CARD_WIDTH} active={cardIdx === i}>
               <Card
                 title={card.title}
                 subtitle={card.desc}
                 dday={card.dday}
                 avatars={card.avatars}
               />
-            </div>
+            </S.CardWrapper>
           ))}
-        </div>
-      </div>
+        </S.CardSlider>
+      </S.CardSliderWrapper>
 
       <S.SectionTitle>다가오는 약속</S.SectionTitle>
 
-      <div
-        style={{
-          maxWidth: '390px',
-          margin: '0 auto',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '16px',
-        }}
-      >
+      <S.AppointmentList>
         {appointments.map((appointment, i) => (
-          <div
-            key={i}
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              background: 'white',
-              borderRadius: '16px',
-              border: '1px solid #E9F1FF',
-              padding: '0 24px',
-              height: '100px',
-              boxSizing: 'border-box',
-            }}
-          >
-            <div style={{ flex: 1, marginRight: '16px' }}>
-              <small style={{ color: '#848A94', fontSize: '13px' }}>{appointment.small}</small>
-              <h4 style={{ margin: '4px 0 0 0', fontSize: '18px', fontWeight: 600 }}>
-                {appointment.title}
-              </h4>
-              <span style={{ color: '#848A94', fontSize: '13px' }}>{appointment.date}</span>
-            </div>
+          <S.AppointmentItem key={i}>
+            <S.AppointmentInfo>
+              <small>{appointment.small}</small>
+              <h4>{appointment.title}</h4>
+              <span>{appointment.date}</span>
+            </S.AppointmentInfo>
             <AppointmentCard dday={appointment.dday} label="" size={60} />
-          </div>
+          </S.AppointmentItem>
         ))}
-      </div>
+      </S.AppointmentList>
     </S.Container>
   );
 };
