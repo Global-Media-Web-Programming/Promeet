@@ -58,60 +58,41 @@ export const LogoutButton = styled.button`
   }
 `;
 
-// 고정 일정 카드
-export const FixedCard = styled.div`
-  position: relative;
+// 고정 일정 버튼
+export const FixedButton = styled.button`
+  cursor: pointer;
 
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
 
   width: 380px;
   max-width: 95%;
   height: 166px;
   margin: 32px auto 0;
+  padding: 32px 24px;
+  border: none;
   border-radius: 16px;
 
   background: #40b59f;
 `;
 
-export const FixedCardBg = styled.div`
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background: #3aa690;
-`;
-
-export const FixedCardBgBlue = styled.div`
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background: rgb(0, 100, 255, 10%);
-`;
-
-export const FixedCardLight = styled.div`
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle, rgb(255, 255, 255, 30%), transparent);
-`;
-
-export const FixedCardTitle = styled.h3`
-  position: absolute;
-  top: 20%;
-  left: 20px;
-
+export const FixedButtonTitle = styled.h3`
+  font-family: 'Pretendard Variable', sans-serif;
   font-size: 24px;
-  font-weight: bold;
+  font-weight: 700;
   color: white;
 `;
 
-export const FixedCardDesc = styled.p`
-  position: absolute;
-  top: 60%;
-  left: 20px;
-
+export const FixedButtonDesc = styled.p`
+  font-family: 'Pretendard Variable', sans-serif;
   font-size: 16px;
+  font-weight: 500;
   line-height: 21px;
   color: white;
+  text-align: left;
 `;
 
 // 섹션 타이틀

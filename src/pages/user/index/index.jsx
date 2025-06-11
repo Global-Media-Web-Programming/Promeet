@@ -6,18 +6,22 @@ import Navbar from '@/layouts/Navbar';
 import dayjs from 'dayjs';
 import { useUserInfo } from '@/hooks/stores/auth/useUserStore';
 import useLogout from '@/hooks/mutations/useLogout';
+import { useNavigate } from 'react-router-dom';
+import { ROUTES } from '@/constants/routes';
 
-const FixedScheduleCard = () => (
-  <S.FixedCard>
-    <S.FixedCardBg />
-    <S.FixedCardTitle>고정 일정</S.FixedCardTitle>
-    <S.FixedCardDesc>
-      매주 반복되는 일정을 설정하여
-      <br />
-      편리하게 약속을 잡으세요.
-    </S.FixedCardDesc>
-  </S.FixedCard>
-);
+const FixedScheduleButton = () => {
+  const navigate = useNavigate();
+  return (
+    <S.FixedButton onClick={() => navigate(ROUTES.ENTER_SCHEDULE)}>
+      <S.FixedButtonTitle>고정 일정</S.FixedButtonTitle>
+      <S.FixedButtonDesc>
+        매주 반복되는 일정을 설정하여
+        <br />
+        편리하게 약속을 잡으세요.
+      </S.FixedButtonDesc>
+    </S.FixedButton>
+  );
+};
 
 const _createdPromises = [
   {
@@ -225,7 +229,7 @@ const UserPage = () => {
             </S.LogoutButton>
           </S.UserHeader>
 
-          <FixedScheduleCard />
+          <FixedScheduleButton />
 
           <S.SectionTitle>다가오는 약속</S.SectionTitle>
           <S.CardList>
