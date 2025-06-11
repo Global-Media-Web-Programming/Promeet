@@ -1,13 +1,11 @@
 import * as S from './style';
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { useNavigate, useParams } from 'react-router-dom';
 import Header from '../Header';
 import Input from '@/components/ui/Input';
 import PlaceCardList from '@/components/promise/place/PlaceCardList';
 import { useMapInfo } from '@/hooks/stores/promise/map/useMapStore';
 import { useLocationInfo, useLocationActions } from '@/hooks/stores/promise/useLocationStore';
-import { ROUTES, BUILD_ROUTES } from '@/constants/routes';
 import { PROMISE_LOCATION_HEADER_TEXT } from '@/constants/promise';
 import { MY_LOC_MARKER_ID } from '@/constants/map';
 import useDebounce from '@/hooks/useDebounce';
@@ -22,13 +20,11 @@ const SearchLocation = ({ onBack }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedPosition, setSelectedPosition] = useState(null);
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
-  const { promiseId } = useParams();
 
   const { isKakaoLoaded } = useMapInfo();
   const { allowMyLocation } = useLocationInfo();
   const { setMyLocation } = useLocationActions();
   const handleError = useHandleError();
-  const navigate = useNavigate();
 
   // 선택한 위치의 가까운 역 찾기
   useNearestSubwayStation(selectedPosition?.Ma, selectedPosition?.La);
@@ -57,10 +53,6 @@ const SearchLocation = ({ onBack }) => {
     // 주소 저장해 중간 위치 저장 후 장소 검색 슬라이드 닫기
     setSelectedPosition(place.position);
     onBack();
-
-    // 약속 생성, 참여 이동 페이지 다르게
-    if (promiseId) navigate(BUILD_ROUTES.PROMISE_SCHEDULE(promiseId));
-    else navigate(ROUTES.PROMISE_CREATE_SCHEDULE);
   };
 
   // Places 서비스 초기화
