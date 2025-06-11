@@ -19,7 +19,7 @@ const Navbar = () => {
         <Home />
       </NavButton>
 
-      <AddButton onClick={() => navigate('/promise/create-info')}>+</AddButton>
+      <AddButton onClick={() => navigate(ROUTES.PROMISE_CREATE_INFO)}>+</AddButton>
 
       <NavButton active={location.pathname === ROUTES.USER} onClick={() => navigate(ROUTES.USER)}>
         <User />
