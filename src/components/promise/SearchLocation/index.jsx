@@ -27,7 +27,10 @@ const SearchLocation = ({ onBack }) => {
   const handleError = useHandleError();
 
   // 선택한 위치의 가까운 역 찾기
-  useNearestSubwayStation(selectedPosition?.Ma, selectedPosition?.La);
+  const { setUseMyLocToSearchNearStation } = useNearestSubwayStation(
+    selectedPosition?.Ma,
+    selectedPosition?.La,
+  );
 
   const handleMyLocationClick = () => {
     if (!allowMyLocation) {
@@ -42,6 +45,9 @@ const SearchLocation = ({ onBack }) => {
               position: { Ma: latitude, La: longitude },
               placeId: MY_LOC_MARKER_ID,
             });
+            // 내 위치 기반으로 가까운 역 검색
+            setUseMyLocToSearchNearStation(true);
+            onBack();
           },
           (error) => handleError(error),
         );
@@ -50,8 +56,9 @@ const SearchLocation = ({ onBack }) => {
   };
 
   const handleCardClick = (place) => {
-    // 주소 저장해 중간 위치 저장 후 장소 검색 슬라이드 닫기
+    // 선택한 장소로 가까운 지하철역 검색하게
     setSelectedPosition(place.position);
+    setUseMyLocToSearchNearStation(false);
     onBack();
   };
 
@@ -118,15 +125,16 @@ const SearchLocation = ({ onBack }) => {
           onCardClick={handleCardClick}
         />
       ) : (
-        <S.CurrLocationButton>
+        <S.CurrLocationButton onClick={handleMyLocationClick}>
           <S.LocationIcon />
-          <span onClick={handleMyLocationClick}>현위치 불러오기</span>
+          <span>현위치 불러오기</span>
         </S.CurrLocationButton>
       )}
       {/* 위치 동의 모달 */}
       <LocationAgreementModal
         isOpen={isLocationModalOpen}
         onClose={() => setIsLocationModalOpen(false)}
+        onUse={onBack}
       />
     </S.Container>
   );

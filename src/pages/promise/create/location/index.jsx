@@ -27,9 +27,8 @@ const LocationPage = () => {
   const closeSearch = () => setIsSearchOpen(false);
 
   const handleNextBtn = () => {
-    if (nearestSubwayStation.name) {
-      navigate(ROUTES.PROMISE_CREATE_SCHEDULE);
-    }
+    if (!nearestSubwayStation?.name) return;
+    navigate(ROUTES.PROMISE_CREATE_SCHEDULE);
   };
 
   return (
@@ -41,7 +40,6 @@ const LocationPage = () => {
         onClick={openSearch}
         readOnly
         style={{ cursor: 'pointer' }}
-        value={nearestSubwayStation.name ?? ''}
       />
 
       <AnimatePresence>
@@ -58,7 +56,7 @@ const LocationPage = () => {
         )}
       </AnimatePresence>
       <S.BtnWrapper>
-        <Button onClick={handleNextBtn} disabled={!!nearestSubwayStation.name}>
+        <Button onClick={handleNextBtn} disabled={!nearestSubwayStation?.name}>
           다음
         </Button>
       </S.BtnWrapper>

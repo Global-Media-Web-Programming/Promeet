@@ -41,7 +41,6 @@ const JoinLocationPage = () => {
         placeholder="출발 위치를 입력해주세요"
         onClick={openSearch}
         readOnly
-        value={nearestSubwayStation?.name ?? ''}
         style={{ cursor: 'pointer' }}
       />
 
@@ -59,7 +58,7 @@ const JoinLocationPage = () => {
         )}
       </AnimatePresence>
       <S.BtnWrapper>
-        <Button onClick={handleNextBtn} disabled={!nearestSubwayStation.name}>
+        <Button onClick={handleNextBtn} disabled={!nearestSubwayStation?.name}>
           다음
         </Button>
       </S.BtnWrapper>
