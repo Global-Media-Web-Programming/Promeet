@@ -1,16 +1,12 @@
 import * as S from './style';
 import { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import Header from '@/components/promise/Header';
 import Input from '@/components/ui/Input';
 import SearchLocation from '@/components/promise/SearchLocation';
 import { PROMISE_JOIN_HEADER_TEXT } from '@/constants/promise';
-import { ROUTES, BUILD_ROUTES } from '@/constants/routes';
-import {
-  usePromiseDataActions,
-  usePromiseDataInfo,
-} from '@/hooks/stores/promise/usePromiseDataStore';
+import { ROUTES } from '@/constants/routes';
+import { usePromiseDataInfo } from '@/hooks/stores/promise/usePromiseDataStore';
 
 const slideVariants = {
   initial: { x: '100%' },
@@ -20,19 +16,11 @@ const slideVariants = {
 };
 
 const JoinLocationPage = () => {
-  const { promiseId } = useParams();
-  const navigate = useNavigate();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const { nearestSubwayStation } = usePromiseDataInfo();
-  const { setNearestSubwayStation } = usePromiseDataActions();
 
   const openSearch = () => setIsSearchOpen(true);
   const closeSearch = () => setIsSearchOpen(false);
-
-  const handleLocationSelect = (station) => {
-    setNearestSubwayStation(station);
-    navigate(BUILD_ROUTES.PROMISE_SCHEDULE(promiseId));
-  };
 
   return (
     <S.Container>
@@ -55,7 +43,7 @@ const JoinLocationPage = () => {
             exit="exit"
             transition={slideVariants.transition}
           >
-            <SearchLocation onBack={closeSearch} onSelect={handleLocationSelect} />
+            <SearchLocation onBack={closeSearch} />
           </S.Slide>
         )}
       </AnimatePresence>
