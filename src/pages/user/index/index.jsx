@@ -57,9 +57,6 @@ const UserPage = () => {
   const createdPromises = data?.promises?.create ?? [];
   const joinedPromises = data?.promises?.join ?? [];
 
-  // 약속 상세 정보가 필요하다면, 각 ID로 fetch하는 훅을 추가로 만들어 사용하세요.
-  // 여기서는 약속 ID 배열만 사용(실제 약속 상세 정보가 필요하면 추가 fetch 필요)
-
   // 오늘 또는 미래 약속만 남기는 필터 함수
   const isUpcoming = (p) => {
     const firstTime = p.fixedTime?.[0];
