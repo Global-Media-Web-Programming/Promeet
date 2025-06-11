@@ -7,25 +7,15 @@ export const Container = styled.div`
 `;
 
 export const BgMain = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-
   width: 60%;
   height: 100%;
   border-radius: 16px;
-
   background: #40b59f;
 `;
 
 export const LightEffect = styled.div`
-  position: absolute;
-  top: -34.82px;
-  left: -42.9px;
-
   width: 432.92px;
   height: 100%;
-
   background: rgb(185, 232, 255, 10%);
 `;
 

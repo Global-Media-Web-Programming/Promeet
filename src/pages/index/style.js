@@ -108,11 +108,9 @@ export const TodayCard = styled.div`
   position: relative;
 
   width: 300px;
-  min-width: 300px;
-  max-width: 300px;
+  height: 150px;
   border-radius: 16px;
 
-  opacity: ${({ active }) => (active ? 100% : 60%)};
   background: #ffffff;
   box-shadow: ${({ active }) => (active ? '0 4px 24px rgba(0,0,0,0.10)' : 'none')};
 `;

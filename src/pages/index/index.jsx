@@ -286,7 +286,11 @@ const HomePage = () => {
                 onMouseUp={handleDragEnd}
               >
                 {todayPromises.map((card, i) => (
-                  <S.TodayCard key={card.id} active={cardIdx === i}>
+                  <S.TodayCard
+                    key={card.id}
+                    style={{ opacity: cardIdx === i ? 1 : 0.6 }}
+                    active={cardIdx === i}
+                  >
                     <Card
                       title={card.title}
                       subtitle={`${card.fixedTime?.[0]?.date} ${card.fixedTime?.[0]?.startTime}`}
