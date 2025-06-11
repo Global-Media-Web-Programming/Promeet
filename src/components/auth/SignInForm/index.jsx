@@ -13,7 +13,6 @@ const SignInForm = () => {
     control,
     handleSubmit,
     trigger,
-    watch,
     formState: { isSubmitting, errors, dirtyFields },
     setError,
   } = useForm({
@@ -39,8 +38,6 @@ const SignInForm = () => {
     if (promiseId) signIn({ ...formData, promiseId });
     else signIn(formData);
   };
-
-  console.log(watch());
 
   return (
     <S.Container>

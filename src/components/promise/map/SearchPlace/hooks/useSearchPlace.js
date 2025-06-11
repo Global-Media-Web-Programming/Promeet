@@ -261,7 +261,6 @@ const useSearchPlace = (category) => {
   }, [isLikeList, mergedLikedPlaces, mergedNearbyPlaces, isLoading]);
 
   const handleNextBtnClick = () => {
-    console.log('handleNextBtnClick', selectedPlace);
     if (userType === 'create' && selectedPlace) {
       const place = {
         placeId: selectedPlace.placeId,
