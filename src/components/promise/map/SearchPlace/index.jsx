@@ -1,30 +1,67 @@
 import * as S from './style';
 import { useEffect, useState, useCallback, useMemo } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import PlaceCardList from '@/components/promise/place/PlaceCardList';
 import PlaceLikeToggle from '@/components/promise/place/PlaceLikeToggle';
 import MarkerManager from '../MarkerManager';
 import BottomSheet from '@/components/ui/BottomSheet';
+import Button from '@/components/ui/Button';
+import useFinalizePromise from '@/hooks/mutations/useFinalizePromise';
 import { useMapInfo } from '@/hooks/stores/promise/map/useMapStore';
 import { useUserInfo } from '@/hooks/stores/auth/useUserStore';
 import { useLocationInfo } from '@/hooks/stores/promise/useLocationStore';
-import { usePlaceLikeToggleInfo } from '@/hooks/stores/promise/usePlaceLikeToggleStore';
 import { usePromiseDataInfo } from '@/hooks/stores/promise/usePromiseDataStore';
+import { usePromiseDataFromServerInfo } from '@/hooks/stores/promise/usePromiseDataFromServerStore';
+import { usePlaceLikeToggleInfo } from '@/hooks/stores/promise/usePlaceLikeToggleStore';
 import { CATEGORY, CATEGORY_LABEL } from '@/constants/place';
 import { DEFAULT_SUBWAY_STATION } from '@/constants/promise';
+import { ROUTES } from '@/constants/routes';
 import { MAP_BS_ID } from '@/constants/map';
+
+const getDescText = (userType, canFix, isFinalizePending) => {
+  const descTexts = {
+    create: {
+      true: isFinalizePending ? '약속 장소를 선택해주세요' : '약속 확정 중',
+      false: '모든 사용자가 좋아요를 입력해야해요',
+    },
+    join: {
+      true: '하나 이상의 장소를 좋아요하세요',
+      false: '하나 이상의 장소를 좋아요하세요',
+    },
+  };
+  return descTexts[userType][canFix];
+};
+
+const getBtnText = (userType) => {
+  const btnTexts = {
+    create: {
+      true: '이 장소를 선택',
+    },
+    join: {
+      true: '약속 정보 보기',
+    },
+  };
+  return btnTexts[userType];
+};
 
 const SearchPlace = ({ category }) => {
   const { isKakaoLoaded } = useMapInfo();
-  const { myLocation, nearestSubwayStation } = useLocationInfo();
+  const { myLocation } = useLocationInfo();
   const [nearbyPlaces, setNearbyPlaces] = useState([]); // 주변 장소
   const [isLoading, setIsLoading] = useState(false);
   // 선택 탭 ('place' | 'like')
   const { selectedTab } = usePlaceLikeToggleInfo();
   const isLikeList = selectedTab === 'like';
 
-  const { userId } = useUserInfo();
-  const { likedPlaces, routes } = usePromiseDataInfo();
+  const { userId, userType } = useUserInfo();
+  const { selectedPlace } = usePromiseDataInfo();
+  const { promiseDataFromServer } = usePromiseDataFromServerInfo();
+  const { likedPlaces, routes, centerStation, canFix } = promiseDataFromServer;
+  const { mutate: finalizePromise, isPending: isFinalizePending } = useFinalizePromise();
+
+  const navigate = useNavigate();
+  const { promiseId } = useParams();
 
   // Places 서비스 초기화
   const ps = useMemo(() => {
@@ -44,7 +81,7 @@ const SearchPlace = ({ category }) => {
           phone: place.phone,
           address: place.road_address_name ?? place.address_name,
           link: place.place_url,
-          position: new window.kakao.maps.LatLng(place.x, place.y),
+          position: new window.kakao.maps.LatLng(place.y, place.x),
           // 기본값
           isLiked: false,
           likesCount: 0,
@@ -69,9 +106,9 @@ const SearchPlace = ({ category }) => {
     setNearbyPlaces([]);
 
     // 주변 장소 검색
-    const keyword = (nearestSubwayStation ?? DEFAULT_SUBWAY_STATION) + CATEGORY_LABEL[category];
+    const keyword = (centerStation.name ?? DEFAULT_SUBWAY_STATION) + CATEGORY_LABEL[category];
     ps.keywordSearch(keyword, handleSearchResults);
-  }, [category, ps, nearestSubwayStation, handleSearchResults]);
+  }, [category, ps, centerStation, handleSearchResults]);
 
   // 주변 장소에 좋아요 정보 추가
   const mergedNearbyPlaces = useMemo(() => {
@@ -113,6 +150,14 @@ const SearchPlace = ({ category }) => {
     return isLikeList ? mergedLikedPlaces : mergedNearbyPlaces;
   }, [isLikeList, mergedLikedPlaces, mergedNearbyPlaces, isLoading]);
 
+  const descText = getDescText(userType, canFix, isFinalizePending);
+  const btnText = getBtnText(userType);
+
+  const handleNextBtnClick = () => {
+    finalizePromise({ promiseId, selectedPlace });
+    navigate(ROUTES.PROMISE_SUMMARY);
+  };
+
   return (
     <>
       <MarkerManager markers={[...places, ...(myLocation ? [myLocation] : [])]} routes={routes} />
@@ -127,8 +172,10 @@ const SearchPlace = ({ category }) => {
         </S.ListContainer>
       </BottomSheet>
       <S.NextBtnContainer>
-        <S.Descriptrtion>원하는 장소를 선택해주세요</S.Descriptrtion>
-        <button>약속 정보 보기</button>
+        <S.Descriptrtion>{descText}</S.Descriptrtion>
+        <Button onClick={handleNextBtnClick} disabled={!canFix}>
+          {btnText}
+        </Button>
       </S.NextBtnContainer>
     </>
   );

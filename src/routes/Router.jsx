@@ -7,6 +7,7 @@ import {
   CreateOnlyWrapper,
   JoinOnlyWrapper,
   PromiseMemberWrapper,
+  PromiseCreateWrapper,
 } from './PageWrappers';
 
 //페이지
@@ -19,11 +20,12 @@ import DatePage from '../pages/promise/create/date';
 import LocationPage from '../pages/promise/create/location';
 import SchedulePage from '../pages/promise/create/schedule';
 
+import FinalizePage from '../pages/promise/[id]/finalize';
+
 import JoinPage from '../pages/promise/[id]/join';
 import JoinLocationPage from '../pages/promise/[id]/location';
 import JoinSchedulePage from '../pages/promise/[id]/schedule';
-import ResultPage from '../pages/promise/[id]/result';
-import FinalizePage from '../pages/promise/[id]/finalize';
+import JoinResultPage from '../pages/promise/[id]/result';
 
 import SummaryPage from '../pages/promise/[id]/summary';
 
@@ -55,21 +57,31 @@ const publicRoutes = [
 
 const privateRoutes = [
   // 약속 생성 관련
+  // 이전 단계 확인 필요한 페이지
   {
-    path: ROUTES.PROMISE_CREATE_INFO,
-    element: <InfoPage />,
-  },
-  {
-    path: ROUTES.PROMISE_CREATE_DATE,
-    element: <DatePage />,
-  },
-  {
-    path: ROUTES.PROMISE_CREATE_LOCATION,
-    element: <LocationPage />,
-  },
-  {
-    path: ROUTES.PROMISE_CREATE_SCHEDULE,
-    element: <SchedulePage />,
+    element: (
+      <PromiseCreateWrapper>
+        <Outlet />
+      </PromiseCreateWrapper>
+    ),
+    children: [
+      {
+        path: ROUTES.PROMISE_CREATE_INFO,
+        element: <InfoPage />,
+      },
+      {
+        path: ROUTES.PROMISE_CREATE_DATE,
+        element: <DatePage />,
+      },
+      {
+        path: ROUTES.PROMISE_CREATE_LOCATION,
+        element: <LocationPage />,
+      },
+      {
+        path: ROUTES.PROMISE_CREATE_SCHEDULE,
+        element: <SchedulePage />,
+      },
+    ],
   },
   {
     path: ROUTES.PROMISE_FINALIZE,
@@ -100,7 +112,7 @@ const privateRoutes = [
     path: ROUTES.PROMISE_RESULT,
     element: (
       <JoinOnlyWrapper>
-        <ResultPage />
+        <JoinResultPage />
       </JoinOnlyWrapper>
     ),
   },

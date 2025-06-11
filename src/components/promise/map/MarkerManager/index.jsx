@@ -1,5 +1,6 @@
 import './style.css';
 import { useEffect, useRef, useCallback } from 'react';
+import { useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { useMapInfo } from '@/hooks/stores/promise/map/useMapStore';
 import { useMarkerInfo, useMarkerActions } from '@/hooks/stores/promise/map/useMarkerStore';
@@ -8,6 +9,9 @@ import { CATEGORY, CATEGORY_MARKER_IMAGE, STATION_MARKER_IMAGE } from '@/constan
 import { MY_LOC_MARKER_IMG, MY_LOC_MARKER_ID, MAP_BS_ID, ROUTE_COLORS } from '@/constants/map';
 
 const MarkerManager = ({ markers, routes }) => {
+  const { pathname } = useLocation();
+  const isSummaryPage = pathname.endsWith('/summary');
+
   const { map } = useMapInfo();
   const { activeMarkerId } = useMarkerInfo();
   const { setActiveMarkerId, setSelectedOverlayId } = useMarkerActions();
@@ -51,9 +55,10 @@ const MarkerManager = ({ markers, routes }) => {
 
     // 1. 장소 마커 생성
     markers.forEach((markerData) => {
+      console.log(markerData);
       if (markerData.placeId === MY_LOC_MARKER_ID) return; // 내 위치 마커는 별도 처리
 
-      const position = new window.kakao.maps.LatLng(markerData.position.La, markerData.position.Ma);
+      const position = new window.kakao.maps.LatLng(markerData.position.Ma, markerData.position.La);
       const imageSrc = CATEGORY_MARKER_IMAGE[markerData.type];
       if (!imageSrc) return;
 
@@ -82,7 +87,7 @@ const MarkerManager = ({ markers, routes }) => {
         // polyline
         const path = userRoute.route.map(
           (station) =>
-            new window.kakao.maps.LatLng(station.station.position.La, station.station.position.Ma),
+            new window.kakao.maps.LatLng(station.station.position.Ma, station.station.position.La),
         );
 
         const polyline = new window.kakao.maps.Polyline({
@@ -111,8 +116,8 @@ const MarkerManager = ({ markers, routes }) => {
             </div>
           `,
           position: new window.kakao.maps.LatLng(
-            firstStation.position.La,
             firstStation.position.Ma,
+            firstStation.position.La,
           ),
           yAnchor: 1.05,
           map,
@@ -123,8 +128,8 @@ const MarkerManager = ({ markers, routes }) => {
         // 도착역
         const lastStation = userRoute.route[userRoute.route.length - 1].station;
         const stationPosition = new window.kakao.maps.LatLng(
-          lastStation.position.La,
           lastStation.position.Ma,
+          lastStation.position.La,
         );
 
         // 마커
@@ -230,8 +235,8 @@ const MarkerManager = ({ markers, routes }) => {
       return;
     }
 
-    const marker = markerMapRef.current.get(activeMarkerId); // 장소 마커와 매핑돼있는지
-    const markerData = markers.find((m) => m.placeId === activeMarkerId); // 마커 데이터
+    const marker = markerMapRef.current.get(activeMarkerId);
+    const markerData = markers.find((m) => m.placeId === activeMarkerId);
     if (!marker || !markerData) return;
 
     // 이전 오버레이 닫고
@@ -241,7 +246,7 @@ const MarkerManager = ({ markers, routes }) => {
 
     // 생성해 추가
     const container = document.createElement('div');
-    container.className = 'infoContainer';
+    container.className = `infoContainer ${isSummaryPage ? 'isSummaryPage' : ''}`;
     container.onclick = () => {
       setSelectedOverlayId(markerData.placeId);
       setActiveBottomSheet(MAP_BS_ID);
@@ -278,17 +283,44 @@ const MarkerManager = ({ markers, routes }) => {
       body.appendChild(address);
     }
 
+    // 요약 페이지에선 전번, 링크 추가
+    if (isSummaryPage) {
+      if (markerData.phone) {
+        const phone = document.createElement('div');
+        phone.className = 'ellipsis';
+        phone.textContent = markerData.phone;
+        body.appendChild(phone);
+      }
+
+      if (markerData.link) {
+        const link = document.createElement('a');
+        link.className = 'link ellipsis';
+        link.href = markerData.link;
+        link.target = '_blank';
+        link.textContent = markerData.link;
+        body.appendChild(link);
+      }
+    }
+
     container.appendChild(body);
 
     const overlay = new window.kakao.maps.CustomOverlay({
       content: container,
       position: marker.getPosition(),
-      yAnchor: 1.65,
+      yAnchor: isSummaryPage ? 1 : 1.65,
     });
 
     overlay.setMap(map);
     currentPlaceOverlayRef.current = overlay;
-  }, [map, markers, activeMarkerId, setActiveMarkerId, setActiveBottomSheet, setSelectedOverlayId]);
+  }, [
+    map,
+    markers,
+    activeMarkerId,
+    isSummaryPage,
+    setActiveMarkerId,
+    setSelectedOverlayId,
+    setActiveBottomSheet,
+  ]);
 
   return null;
 };
@@ -322,8 +354,8 @@ MarkerManager.propTypes = {
             address: PropTypes.string.isRequired,
             name: PropTypes.string.isRequired,
             position: PropTypes.shape({
-              La: PropTypes.number.isRequired,
               Ma: PropTypes.number.isRequired,
+              La: PropTypes.number.isRequired,
             }).isRequired,
           }).isRequired,
           duration: PropTypes.number.isRequired,

@@ -8,20 +8,35 @@ export const Overlay = styled.div`
   display: flex;
   align-items: flex-end;
   justify-content: center;
+`;
 
-  background: rgb(0, 0, 0, 30%);
+export const TopBar = styled.div`
+  position: fixed;
+  z-index: 1100;
+  top: 0;
+  right: 0;
+  left: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 16px 24px;
+
+  background: white;
 `;
 
 export const Slide = styled.div`
   position: relative;
 
   width: 100%;
-  max-width: 480px;
+  max-width: 375px;
   height: 420px;
   padding: 32px 24px 24px;
-  border-radius: 16px 16px 0 0;
+  border-radius: 20px 20px 0 0;
 
   background: #ffffff;
+  box-shadow: 0 18px 58px 0 rgb(0, 0, 0, 25%);
 
   animation: slideUp 0.3s ease;
 
@@ -36,18 +51,52 @@ export const Slide = styled.div`
   }
 `;
 
-export const CloseButton = styled.button`
-  cursor: pointer;
-
-  position: absolute;
-  top: 16px;
-  right: 20px;
-
+export const ScheduleInput = styled.input`
+  width: 100%;
   border: none;
 
-  font-size: 2rem;
+  font-family: Pretendard, sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  font-style: normal;
+  line-height: 20px;
 
   background: none;
+`;
+
+export const CloseButton = styled.button`
+  cursor: pointer;
+  border: none;
+  font-size: 2rem;
+  background: none;
+`;
+
+export const AddScheduleTitle = styled.p`
+  padding: 5px 162px 5px 32px;
+
+  font-family: Pretendard, sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  font-style: normal;
+  line-height: 20px;
+  color: #000000;
+`;
+
+export const SubmitButton = styled.button`
+  cursor: pointer;
+
+  padding: 5px 11px;
+  border: none;
+  border-radius: 26px;
+
+  font-family: Pretendard, sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  font-style: normal;
+  line-height: 20px;
+  color: white;
+
+  background: #40b59f;
 `;
 
 export const Divider = styled.div`

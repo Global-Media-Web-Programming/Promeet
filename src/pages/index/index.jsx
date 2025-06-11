@@ -5,7 +5,7 @@ import dayjs from 'dayjs';
 import DeferredLoader from '@/components/ui/DeferredLoader';
 import Button from '@/components/ui/Button';
 import Navbar from '@/layouts/Navbar';
-import useGetUserData from '@/hooks/queries/useGetUserData';
+import useGetMultiplePromiseData from '@/hooks/queries/useGetMultiplePromiseData';
 import { useUserInfo } from '@/hooks/stores/auth/useUserStore';
 import { ROUTES } from '@/constants/routes';
 import alarmIcon from '@/assets/img/icon/alarm.svg';
@@ -16,38 +16,24 @@ import AppointmentCard from '@/components/ui/ddaycard';
 const classifyPromises = (Promises) => {
   const today = dayjs().format('YYYY-MM-DD');
   const todayPromises = [];
-  const futurePromises = [];
 
   Promises.forEach((promise) => {
     if (!promise?.fixedTime || !promise?.fixedPlace) return;
 
     let isToday = false;
-    let isFuture = false;
 
     promise.fixedTime.forEach((slot) => {
       if (slot.date === today) isToday = true;
-      else if (dayjs(slot.date).isAfter(today)) isFuture = true;
     });
 
     // dday 계산 추가
-    const firstTime = promise.fixedTime[0];
-    const dday = dayjs(firstTime.date).diff(today, 'day');
+    // const firstTime = promise.fixedTime[0];
+    // const dday = dayjs(firstTime.date).diff(today, 'day'); // ❌ 사용하지 않으므로 삭제
 
     if (isToday) todayPromises.push({ ...promise, dday: 0 });
-    else if (isFuture) futurePromises.push({ ...promise, dday });
   });
 
-  futurePromises.sort((a, b) => {
-    const getEarliestTime = (p) =>
-      p.fixedTime
-        .filter((t) => dayjs(t.date).isAfter(today)) // 오늘 이후의 일정만
-        .map((t) => dayjs(`${t.date} ${t.startTime}`))
-        .sort((x, y) => x - y)[0]; // 시간순 정렬 후, 가장 빠른 시간 반환
-
-    return getEarliestTime(a) - getEarliestTime(b);
-  });
-
-  return { todayPromises, futurePromises };
+  return { todayPromises };
 };
 
 const HomePage = () => {
@@ -55,21 +41,26 @@ const HomePage = () => {
   const startX = React.useRef(null);
 
   const navigate = useNavigate();
-  const { userId, userName } = useUserInfo();
-  const { data, isPending: isGetUserDataPending } = useGetUserData(userId);
+  const { userId, userName, promises } = useUserInfo();
 
   // 실제 데이터로 대체
-  const createdPromiseIds = data?.promises?.create ?? [];
-  const joinedPromiseIds = data?.promises?.join ?? [];
+  const createIds = promises.create ?? []; // 생성한 약속 ids
+  const joinIds = promises.join ?? []; // 초대받은 약속 ids
 
-  const isLoading = isGetUserDataPending;
+  const createQueries = useGetMultiplePromiseData(createIds, userId);
+  const joinQueries = useGetMultiplePromiseData(joinIds, userId);
 
-  const _allPromises = [...createdPromiseIds, ...joinedPromiseIds];
-  const { todayPromises: _todayPromises, futurePromises: _futurePromises } =
-    classifyPromises(_allPromises);
+  const isLoading = createQueries.some((q) => q.isPending) || joinQueries.some((q) => q.isPending);
 
-  // 오늘 약속 데이터
-  const todayPromises = _todayPromises;
+  // falsy값 제거해 정상적으로 받은 데이터만 필터링
+  const createdPromises = createQueries.map((q) => q.data).filter(Boolean);
+  const joinedPromises = joinQueries.map((q) => q.data).filter(Boolean);
+
+  console.log('참여 요청받은 약속', joinIds, '생성한 약속', createIds);
+
+  const allPromises = [...createdPromises, ...joinedPromises]; // 생성 + 초대
+  const { todayPromises } = classifyPromises(allPromises);
+
   // 드래그 시작
   const handleDragStart = (e) => {
     startX.current = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
@@ -171,7 +162,7 @@ const HomePage = () => {
 
             {/* 내가 생성한 약속 리스트 */}
             <S.SectionTitle2>내가 생성한 약속</S.SectionTitle2>
-            {createdPromiseIds.filter((promise) => {
+            {createdPromises.filter((promise) => {
               const firstTime = promise.fixedTime?.[0];
               if (!firstTime) return false;
               const dday = dayjs(firstTime.date).diff(dayjs().format('YYYY-MM-DD'), 'day');
@@ -181,7 +172,7 @@ const HomePage = () => {
                 <S.EmptyPromiseText>아직 생성한 약속이 없어요!</S.EmptyPromiseText>
               </S.EmptyPromiseBox>
             ) : (
-              createdPromiseIds
+              createdPromises
                 .filter((promise) => {
                   const firstTime = promise.fixedTime?.[0];
                   if (!firstTime) return false;
@@ -217,7 +208,7 @@ const HomePage = () => {
 
             {/* 초대받은 약속 리스트 */}
             <S.SectionTitle2>초대받은 약속</S.SectionTitle2>
-            {joinedPromiseIds.filter((promise) => {
+            {joinedPromises.filter((promise) => {
               const firstTime = promise.fixedTime?.[0];
               if (!firstTime) return false;
               const dday = dayjs(firstTime.date).diff(dayjs().format('YYYY-MM-DD'), 'day');
@@ -227,7 +218,7 @@ const HomePage = () => {
                 <S.EmptyPromiseText>아직 초대 받은 약속이 없어요!</S.EmptyPromiseText>
               </S.EmptyPromiseBox>
             ) : (
-              joinedPromiseIds
+              joinedPromises
                 .filter((promise) => {
                   const firstTime = promise.fixedTime?.[0];
                   if (!firstTime) return false;

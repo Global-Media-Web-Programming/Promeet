@@ -1,120 +1,91 @@
 import { create } from 'zustand';
-import { devtools } from 'zustand/middleware';
+import { devtools, persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
+
+// 약속 생성시 사용할 데이터
+const initialState = {
+  name: '',
+  description: '',
+  memberCnt: 2,
+  availableTimes: [],
+  nearestSubwayStation: {
+    address: '',
+    name: '',
+    position: {
+      Ma: 0,
+      La: 0,
+    },
+  },
+  selectedPlace: null,
+};
 
 const promiseDataStore = create()(
   devtools(
-    immer((set) => ({
-      // 임시 데이터
-      routes: [
-        {
-          name: '김철수',
-          userId: 'sss1341',
-          route: [
-            {
-              station: {
-                order: 1,
-                type: 'normal',
-                address: '서울특별시 강남구 강남대로 지하396',
-                name: '강남역 2호선',
-                position: {
-                  La: 37.497175,
-                  Ma: 127.027926,
-                },
-              },
-              duration: 5,
-            },
-            {
-              station: {
-                order: 2,
-                type: 'normal',
-                address: '서울특별시 서초구 남부순환로 2196',
-                name: '서초역 2호선',
-                position: {
-                  La: 37.49191,
-                  Ma: 127.00798,
-                },
-              },
-              duration: 5,
-            },
-            {
-              station: {
-                order: 3,
-                type: 'normal',
-                address: '서울특별시 관악구 남부순환로 1820',
-                name: '서울대입구역 2호선',
-                position: {
-                  La: 37.481247,
-                  Ma: 126.952739,
-                },
-              },
-              duration: 6,
-            },
-          ],
+    persist(
+      immer((set, get) => ({
+        ...initialState,
+        actions: {
+          // 약속 정보 입력시 저장할 것들
+          setName: (name) =>
+            set((state) => {
+              state.name = name;
+            }),
+          setDescription: (description) =>
+            set((state) => {
+              state.description = description;
+            }),
+          setMemberCnt: (memberCnt) =>
+            set((state) => {
+              state.memberCnt = memberCnt;
+            }),
+          setAvailableTimes: (availableTimes) =>
+            set((state) => {
+              state.availableTimes = availableTimes;
+            }),
+          setNearestSubwayStation: (value) =>
+            set((state) => {
+              state.nearestSubwayStation = value;
+            }),
+          // 생성자가 선택하는 약속 장소
+          setSelectedPlace: (place) =>
+            set((state) => {
+              state.selectedPlace = place;
+            }),
+          // 특정 단계까지의 데이터가 있는지 체크
+          hasDataUntil: (step) => {
+            const state = get();
+            const InfoState = !!state.name && !!state.description;
+            switch (step) {
+              case 'date':
+                return InfoState;
+              case 'location':
+                return InfoState && !!state.availableTimes.length;
+              case 'schedule':
+                return (
+                  InfoState && !!state.availableTimes.length && !!state.nearestSubwayStation.name
+                );
+              default:
+                return false;
+            }
+          },
+          hasNearestSubwayStationData: () => !!get().nearestSubwayStation.name,
+
+          // 모든 데이터 초기화
+          resetPromiseData: () => set(initialState),
         },
-        {
-          name: '이영희',
-          userId: 'sss1342',
-          route: [
-            {
-              station: {
-                order: 1,
-                type: 'normal',
-                address: '서울특별시 구로구 경인로 572',
-                name: '구로디지털단지역 2호선',
-                position: {
-                  La: 37.485013,
-                  Ma: 126.901401,
-                },
-              },
-              duration: 4,
-            },
-            {
-              station: {
-                order: 2,
-                type: 'normal',
-                address: '서울특별시 관악구 봉천로 310',
-                name: '봉천역 2호선',
-                position: {
-                  La: 37.482416,
-                  Ma: 126.941829,
-                },
-              },
-              duration: 4,
-            },
-            {
-              station: {
-                order: 3,
-                type: 'normal',
-                address: '서울특별시 관악구 남부순환로 1820',
-                name: '서울대입구역 2호선',
-                position: {
-                  La: 37.481247,
-                  Ma: 126.952739,
-                },
-              },
-              duration: 6,
-            },
-          ],
-        },
-      ],
-      likedPlaces: [],
-      fixedPlace: null,
-      actions: {
-        setRoutes: (routes) =>
-          set((state) => {
-            state.routes = routes;
-          }),
-        setLikedPlaces: (places) =>
-          set((state) => {
-            state.likedPlaces = places;
-          }),
-        setFixedPlace: (place) =>
-          set((state) => {
-            state.fixedPlace = place;
-          }),
+      })),
+      {
+        name: 'promise-form-data',
+        partialize: (state) => ({
+          name: state.name,
+          description: state.description,
+          memberCnt: state.memberCnt,
+          availableTimes: state.availableTimes,
+          nearestSubwayStation: state.nearestSubwayStation,
+          selectedPlace: null,
+        }),
       },
-    })),
+    ),
   ),
 );
 

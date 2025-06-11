@@ -7,19 +7,19 @@ import useErrorHandler from '../useHandleError';
 import { BUILD_ROUTES } from '@/constants/routes';
 import { QUERY_KEY } from '@/constants/key';
 
-export const useFinalizePromise = () => {
+const useFinalizePromise = () => {
   const handleError = useErrorHandler();
   const navigate = useNavigate();
 
   const { userId } = useUserInfo();
 
   return useMutation({
-    mutationFn: ({ promiseId, place }) => patchFinalizePromise(userId, promiseId, place),
+    mutationFn: ({ promiseId, place }) => patchFinalizePromise(promiseId, userId, place),
     onSuccess: (_, { promiseId }) => {
       // 약속 상세 정보 캐시 무효화
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.promise, promiseId] });
       // 유저 정보 캐시 무효화 (약속 목록 포함)
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.user] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.user, userId] });
       // 약속 요약 페이지로 이동
       navigate(BUILD_ROUTES.PROMISE_SUMMARY(promiseId));
     },
@@ -28,3 +28,5 @@ export const useFinalizePromise = () => {
     },
   });
 };
+
+export default useFinalizePromise;
