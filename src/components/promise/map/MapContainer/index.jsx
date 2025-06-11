@@ -10,19 +10,29 @@ const MapContainer = ({ children, lat, lng }) => {
 
   // 지도 생성
   useEffect(() => {
-    if (!isKakaoLoaded || !mapRef.current) return;
+    if (!isKakaoLoaded || !mapRef.current) {
+      console.log('지도 초기화 조건 미충족:', { isKakaoLoaded, hasMapRef: !!mapRef.current });
+      return;
+    }
 
-    const options = {
-      center: new window.kakao.maps.LatLng(lat, lng),
-      level: 3,
-    };
+    try {
+      console.log('지도 생성 시도:', { lat, lng });
+      const options = {
+        center: new window.kakao.maps.LatLng(lat, lng),
+        level: 3,
+      };
 
-    const map = new window.kakao.maps.Map(mapRef.current, options);
-    setMap(map);
+      const map = new window.kakao.maps.Map(mapRef.current, options);
+      console.log('지도 생성 성공:', map);
+      setMap(map);
 
-    return () => {
-      setMap(null);
-    };
+      return () => {
+        console.log('지도 정리');
+        setMap(null);
+      };
+    } catch (error) {
+      console.error('지도 생성 실패:', error);
+    }
   }, [isKakaoLoaded, lat, lng, setMap]);
 
   return (

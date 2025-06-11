@@ -144,10 +144,10 @@ export const PromiseMemberWrapper = ({ children }) => {
   useEffect(() => {
     if (!isPending && promiseDataFromServer) {
       // 약속 멤버 체크 - 여기서 제출 체크도 됨
-      const isMember = promiseDataFromServer.members.some((member) => member.userId === userId);
-      if (!isMember) {
-        navigate(ROUTES.HOME);
-      }
+      // const isMember = promiseDataFromServer.members.some((member) => member.userId === userId);
+      // if (!isMember) {
+      //   navigate(ROUTES.HOME);
+      // }
     }
   }, [promiseDataFromServer, isPending, userId, promiseId, navigate]);
 
