@@ -182,7 +182,6 @@ export const PromiseCreateWrapper = ({ children }) => {
     // 이전 단계 데이터 체크
     const step = pathname.split('/').pop(); // 'date', 'location', 'schedule'
     const hasRequiredData = hasDataUntil(step);
-    console.log(step, '이전 단계 데이터', hasDataUntil(step));
 
     if (!hasRequiredData) {
       // 이전 단계로 리다이렉트
@@ -190,7 +189,6 @@ export const PromiseCreateWrapper = ({ children }) => {
       const currentStepIndex = steps.indexOf(step);
       const prevStep = steps[currentStepIndex - 1] ?? 'info';
 
-      console.log(prevStep);
       navigate(BUILD_ROUTES.PROMISE_CREATE(prevStep));
     }
   }, [pathname, hasDataUntil, navigate]);
