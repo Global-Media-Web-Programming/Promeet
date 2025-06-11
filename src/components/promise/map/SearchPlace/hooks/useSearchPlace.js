@@ -1,21 +1,22 @@
 import { useState, useCallback, useMemo, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useMapInfo } from '@/hooks/stores/promise/map/useMapStore';
 import { useUserInfo } from '@/hooks/stores/auth/useUserStore';
 import { useLocationInfo } from '@/hooks/stores/promise/useLocationStore';
 import { usePromiseDataInfo } from '@/hooks/stores/promise/usePromiseDataStore';
 import { usePromiseDataFromServerInfo } from '@/hooks/stores/promise/usePromiseDataFromServerStore';
 import { usePlaceLikeToggleInfo } from '@/hooks/stores/promise/usePlaceLikeToggleStore';
-import useFinalizePromise from '@/hooks/mutations/useFinalizePromise';
 import { CATEGORY_LABEL } from '@/constants/place';
 import { DEFAULT_SUBWAY_STATION } from '@/constants/promise';
 
 import useGetUserData from '@/hooks/queries/useGetUserData';
+import useFinalizePromise from '@/hooks/mutations/useFinalizePromise';
+import { BUILD_ROUTES } from '@/constants/routes';
 
 const getDescText = (userType, canFix, isFinalizePending) => {
   const descTexts = {
     create: {
-      true: isFinalizePending ? '약속 장소를 선택해주세요' : '약속 확정 중',
+      true: isFinalizePending ? '약속 확정 중' : '약속 장소를 선택해주세요',
       false: '모든 사용자가 좋아요를 입력해야해요',
     },
     join: {
@@ -139,8 +140,9 @@ const useSearchPlace = (category) => {
   const [routes, setRoutes] = useState([]);
   const { selectedTab } = usePlaceLikeToggleInfo();
   const isLikeList = selectedTab === 'like';
+  const navigate = useNavigate();
 
-  const { userId } = useUserInfo();
+  const { userId, promises } = useUserInfo();
   const { selectedPlace } = usePromiseDataInfo();
   const { promiseDataFromServer } = usePromiseDataFromServerInfo();
   const { likedPlaces, midpoint, members, canFix } = promiseDataFromServer;
@@ -148,8 +150,8 @@ const useSearchPlace = (category) => {
 
   const { promiseId } = useParams();
 
-  const { data } = useGetUserData(userId);
-  const isInvitedMember = data.promises.join.includes(promiseId);
+  const { isPending: isUserDataPending } = useGetUserData(userId);
+  const isInvitedMember = promises.join.includes(promiseId);
   const userType = isInvitedMember ? 'join' : 'create';
 
   // Places 서비스 초기화
@@ -247,7 +249,24 @@ const useSearchPlace = (category) => {
   }, [isLikeList, mergedLikedPlaces, mergedNearbyPlaces, isLoading]);
 
   const handleNextBtnClick = () => {
-    finalizePromise({ promiseId, selectedPlace });
+    console.log('handleNextBtnClick', selectedPlace);
+    if (userType === 'create' && selectedPlace) {
+      const place = {
+        placeId: selectedPlace.placeId,
+        type: selectedPlace.type,
+        name: selectedPlace.name,
+        position: {
+          Ma: selectedPlace.position.Ma,
+          La: selectedPlace.position.La,
+        },
+        address: selectedPlace.address,
+        phone: selectedPlace.phone,
+        link: selectedPlace.link,
+      };
+      finalizePromise({ promiseId, place });
+    } else if (userType === 'join') {
+      navigate(BUILD_ROUTES.PROMISE_SUMMARY(promiseId));
+    }
   };
 
   return {
@@ -257,9 +276,13 @@ const useSearchPlace = (category) => {
     routes,
     myLocation,
     isLoading,
+    likedPlaces,
     isLikeList,
     canFix,
+    userType,
     handleNextBtnClick,
+    userId,
+    isUserDataPending,
   };
 };
 

@@ -8,6 +8,7 @@ import Button from '@/components/ui/Button';
 import useSearchPlace from './hooks/useSearchPlace';
 import { CATEGORY } from '@/constants/place';
 import { MAP_BS_ID } from '@/constants/map';
+import { useMemo } from 'react';
 
 const SearchPlace = ({ category }) => {
   const {
@@ -16,13 +17,23 @@ const SearchPlace = ({ category }) => {
     places,
     // routes,
     myLocation,
+    likedPlaces,
     isLoading,
     isLikeList,
     canFix,
+    userType,
     handleNextBtnClick,
+    userId,
   } = useSearchPlace(category);
 
-  // 임시 데이터
+  // 사용자가 좋아요를 눌렀는지 확인
+  const hasLikedPlace = useMemo(() => {
+    if (!likedPlaces) return false;
+    return likedPlaces.some((place) => place.userIds.includes(userId));
+  }, [likedPlaces, userId]);
+
+  const btnDisabled = userType === 'create' ? !canFix : !hasLikedPlace; // 참여자는 좋아요를 눌러야 버튼 활성화
+
   const routes = [
     {
       name: '김여진',
@@ -33,7 +44,7 @@ const SearchPlace = ({ category }) => {
             order: 1,
             type: 'normal',
             name: '강남역 2호선',
-            position: { lat: 37.4979, lng: 127.0276 },
+            position: { Ma: 37.49808633653005, La: 127.02800140627488 },
           },
           duration: 5,
         },
@@ -42,7 +53,7 @@ const SearchPlace = ({ category }) => {
             order: 2,
             type: 'transfer',
             name: '고속터미널역 7호선',
-            position: { lat: 37.503, lng: 127.0048 },
+            position: { Ma: 37.50305602040624, La: 127.00475171542158 },
           },
           duration: 13,
         },
@@ -51,7 +62,7 @@ const SearchPlace = ({ category }) => {
             order: 3,
             type: 'normal',
             name: '숭실대입구역 7호선',
-            position: { lat: 37.4967, lng: 126.9538 },
+            position: { Ma: 37.496740225112, La: 126.953775818841 },
           },
           duration: 12,
         },
@@ -66,7 +77,7 @@ const SearchPlace = ({ category }) => {
             order: 1,
             type: 'normal',
             name: '홍대입구역 2호선',
-            position: { lat: 37.5572, lng: 126.9245 },
+            position: { Ma: 37.5571922937515, La: 126.92538116153932 },
           },
           duration: 6,
         },
@@ -75,7 +86,7 @@ const SearchPlace = ({ category }) => {
             order: 2,
             type: 'transfer',
             name: '대림역 7호선',
-            position: { lat: 37.4926, lng: 126.8955 },
+            position: { Ma: 37.4926259375097, La: 126.8955376612483 },
           },
           duration: 16,
         },
@@ -84,7 +95,7 @@ const SearchPlace = ({ category }) => {
             order: 3,
             type: 'normal',
             name: '숭실대입구역 7호선',
-            position: { lat: 37.4967, lng: 126.9538 },
+            position: { Ma: 37.496740225112, La: 126.953775818841 },
           },
           duration: 11,
         },
@@ -99,7 +110,7 @@ const SearchPlace = ({ category }) => {
             order: 1,
             type: 'normal',
             name: '서울역 1호선',
-            position: { lat: 37.5547, lng: 126.9706 },
+            position: { Ma: 37.5546701222641, La: 126.970606925739 },
           },
           duration: 7,
         },
@@ -108,7 +119,7 @@ const SearchPlace = ({ category }) => {
             order: 2,
             type: 'transfer',
             name: '노량진역 9호선',
-            position: { lat: 37.5133, lng: 126.9425 },
+            position: { Ma: 37.5132702665582, La: 126.942454734689 },
           },
           duration: 9,
         },
@@ -117,7 +128,7 @@ const SearchPlace = ({ category }) => {
             order: 3,
             type: 'transfer',
             name: '고속터미널역 7호선',
-            position: { lat: 37.503, lng: 127.0048 },
+            position: { Ma: 37.50305602040624, La: 127.00475171542158 },
           },
           duration: 8,
         },
@@ -126,7 +137,7 @@ const SearchPlace = ({ category }) => {
             order: 4,
             type: 'normal',
             name: '숭실대입구역 7호선',
-            position: { lat: 37.4967, lng: 126.9538 },
+            position: { Ma: 37.496740225112, La: 126.953775818841 },
           },
           duration: 12,
         },
@@ -149,7 +160,7 @@ const SearchPlace = ({ category }) => {
       </BottomSheet>
       <S.NextBtnContainer>
         <S.Descriptrtion>{descText}</S.Descriptrtion>
-        <Button onClick={handleNextBtnClick} disabled={!canFix}>
+        <Button onClick={handleNextBtnClick} disabled={btnDisabled}>
           {btnText}
         </Button>
       </S.NextBtnContainer>

@@ -83,7 +83,9 @@ const MarkerManager = ({ markers, routes }) => {
 
     // 2. 경로 마커 생성
     if (routes) {
-      console.log(routes);
+      // 도착역 (중간역)
+      const routeLength = routes[0].route.length;
+      const lastStation = routes[0].route[routeLength - 1].station;
       routes.forEach((userRoute, index) => {
         // polyline
         const path = userRoute.route.map(
@@ -128,7 +130,6 @@ const MarkerManager = ({ markers, routes }) => {
         markersRef.current.push(userOverlay);
 
         // 도착역 (중간역)
-        const lastStation = userRoute.route[userRoute.route.length - 1].station;
         const stationPosition = new window.kakao.maps.LatLng(
           lastStation.position.Ma,
           lastStation.position.La,

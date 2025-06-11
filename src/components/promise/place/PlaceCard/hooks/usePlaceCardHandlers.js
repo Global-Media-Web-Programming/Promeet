@@ -62,7 +62,7 @@ export default function usePlaceCardHandlers(place, $isRetrieved) {
 
   const handleCardClick = () => {
     setActiveBottomSheet(null);
-    map.panTo(new window.kakao.maps.LatLng(place.position.La, place.position.Ma));
+    map.panTo(new window.kakao.maps.LatLng(place.position.Ma, place.position.La));
     setActiveMarkerId(place.placeId);
   };
 
