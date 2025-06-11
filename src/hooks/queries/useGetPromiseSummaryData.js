@@ -7,7 +7,7 @@ const useGetPromiseSummaryData = (promiseId) => {
   const handleError = useErrorHandler();
 
   return useQuery({
-    queryKey: [QUERY_KEY.promise, promiseId],
+    queryKey: [QUERY_KEY.promiseSummary, promiseId],
     queryFn: async () => {
       try {
         const { data } = await getPromiseSummaryData(promiseId);

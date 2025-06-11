@@ -42,6 +42,7 @@ const JoinLocationPage = () => {
         onClick={openSearch}
         readOnly
         style={{ cursor: 'pointer' }}
+        value={nearestSubwayStation?.name ?? ''}
       />
 
       <AnimatePresence>

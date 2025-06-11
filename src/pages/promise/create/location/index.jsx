@@ -40,6 +40,7 @@ const LocationPage = () => {
         onClick={openSearch}
         readOnly
         style={{ cursor: 'pointer' }}
+        value={nearestSubwayStation?.name ?? ''}
       />
 
       <AnimatePresence>
