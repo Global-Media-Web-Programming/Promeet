@@ -55,6 +55,7 @@ const MarkerManager = ({ markers, routes }) => {
 
     // 1. 장소 마커 생성
     markers.forEach((markerData) => {
+      console.log(markerData);
       if (markerData.placeId === MY_LOC_MARKER_ID) return; // 내 위치 마커는 별도 처리
 
       const position = new window.kakao.maps.LatLng(markerData.position.Ma, markerData.position.La);
