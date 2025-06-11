@@ -37,6 +37,7 @@ const JoinSchedulePage = () => {
   }
 
   // 생성자가 설정한 날짜만 가져오기
+  console.log(promiseDataFromServer);
   const creator = promiseDataFromServer.members.find(
     (member) => member.userId === promiseDataFromServer.creatorId,
   );
