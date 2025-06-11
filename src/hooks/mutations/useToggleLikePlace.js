@@ -20,16 +20,12 @@ const useToggleLikePlace = () => {
     mutationFn: ({ promiseId, place, isLiked }) => {
       isLiked
         ? deletePlaceLike(promiseId, place.placeId, userId)
-        : postPlaceLike({
-            promiseId,
-            place,
-            userId,
-          });
+        : postPlaceLike(promiseId, place, userId);
     },
     onMutate: async ({ place, promiseId, isLiked }) => {
       // 1. 장소에 관련된 쿼리를 취소
       await queryClient.cancelQueries({
-        queryKey: [QUERY_KEY.promise, promiseId],
+        queryKey: [QUERY_KEY.promise, promiseId, userId],
       });
 
       // 2. 현재 좋아요 상태 저장

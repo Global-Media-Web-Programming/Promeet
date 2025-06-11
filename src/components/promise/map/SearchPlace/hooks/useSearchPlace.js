@@ -10,6 +10,8 @@ import useFinalizePromise from '@/hooks/mutations/useFinalizePromise';
 import { CATEGORY_LABEL } from '@/constants/place';
 import { DEFAULT_SUBWAY_STATION } from '@/constants/promise';
 
+import useGetUserData from '@/hooks/queries/useGetUserData';
+
 const getDescText = (userType, canFix, isFinalizePending) => {
   const descTexts = {
     create: {
@@ -26,12 +28,8 @@ const getDescText = (userType, canFix, isFinalizePending) => {
 
 const getBtnText = (userType) => {
   const btnTexts = {
-    create: {
-      true: '이 장소를 선택',
-    },
-    join: {
-      true: '약속 정보 보기',
-    },
+    create: '이 장소를 선택',
+    join: '약속 정보 보기',
   };
   return btnTexts[userType];
 };
@@ -142,13 +140,17 @@ const useSearchPlace = (category) => {
   const { selectedTab } = usePlaceLikeToggleInfo();
   const isLikeList = selectedTab === 'like';
 
-  const { userId, userType } = useUserInfo();
+  const { userId } = useUserInfo();
   const { selectedPlace } = usePromiseDataInfo();
   const { promiseDataFromServer } = usePromiseDataFromServerInfo();
   const { likedPlaces, midpoint, members, canFix } = promiseDataFromServer;
   const { mutate: finalizePromise, isPending: isFinalizePending } = useFinalizePromise();
 
   const { promiseId } = useParams();
+
+  const { data } = useGetUserData(userId);
+  const isInvitedMember = data.promises.join.includes(promiseId);
+  const userType = isInvitedMember ? 'join' : 'create';
 
   // Places 서비스 초기화
   const ps = useMemo(() => {
