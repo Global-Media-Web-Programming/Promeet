@@ -6,9 +6,7 @@ import DeferredLoader from '@/components/ui/DeferredLoader';
 import Button from '@/components/ui/Button';
 import Navbar from '@/layouts/Navbar';
 import useGetUserData from '@/hooks/queries/useGetUserData';
-// import useGetMultiplePromiseData from '@/hooks/queries/useGetMultiplePromiseData';
 import { useUserInfo } from '@/hooks/stores/auth/useUserStore';
-// import useLogout from '@/hooks/mutations/useLogout';
 import { ROUTES } from '@/constants/routes';
 import alarmIcon from '@/assets/img/icon/alarm.svg';
 import Card from '@/components/ui/card';
@@ -58,160 +56,15 @@ const HomePage = () => {
 
   const navigate = useNavigate();
   const { userId, userName } = useUserInfo();
+  const { data, isPending: isGetUserDataPending } = useGetUserData(userId);
 
-  const { isPending: isGetUserDataPending } = useGetUserData(userId);
+  // 실제 데이터로 대체
+  const createdPromiseIds = data?.promises?.create ?? [];
+  const joinedPromiseIds = data?.promises?.join ?? [];
 
-  // const createIds = promises.create ?? []; // 생성한 약속 ids
-  // const joinIds = promises.join ?? []; // 초대받은 약속 ids
-
-  // const createQueries = useGetMultiplePromiseData(createIds, userId);
-  // const joinQueries = useGetMultiplePromiseData(joinIds, userId);
-
-  // const { mutate: logout, isPending: isLogoutPending } = useLogout();
-  // const handleLogout = () => {
-  //   logout({ userId });
-  // };
-
-  // const isLoading =
-  //   isGetUserDataPending ||
-  //   createQueries.some((q) => q.isPending) ||
-  //   joinQueries.some((q) => q.isPending);
   const isLoading = isGetUserDataPending;
 
-  const _createdPromises = [
-    {
-      id: 'promise1',
-      title: '친구들과 저녁약속',
-      description: '오랜만에 모이는 회식자리!',
-      fixedTime: [
-        {
-          id: 'ft1',
-          date: '2025-06-12',
-          day: 'Sunday',
-          startTime: '18:00',
-          endTime: '20:00',
-        },
-      ],
-      fixedPlace: {
-        placeId: 'p1',
-        type: 'restaurant',
-        name: '상도 곱창',
-        position: { La: 37.49808, Ma: 127.028 },
-        address: '서울 동작구 상도로 232',
-        phone: '02-123-4567',
-        link: 'https://place1.com',
-      },
-      status: 'proposed',
-    },
-    {
-      id: 'promise2',
-      title: '스터디 모임',
-      description: '중간고사 대비 스터디',
-      fixedTime: [
-        {
-          id: 'ft2',
-          date: '2025-06-10',
-          day: 'Tuesday',
-          startTime: '10:00',
-          endTime: '12:00',
-        },
-        {
-          id: 'ft3',
-          date: '2025-06-12',
-          day: 'Thursday',
-          startTime: '14:00',
-          endTime: '16:00',
-        },
-      ],
-      fixedPlace: {
-        placeId: 'p2',
-        type: 'studyCafe',
-        name: '이디야 커피 상도점',
-        position: { La: 37.499, Ma: 127.029 },
-        address: '서울 동작구 상도로 100',
-        phone: '02-234-5678',
-        link: 'https://place2.com',
-      },
-      status: 'proposed',
-    },
-    {
-      id: 'promise5',
-      title: '스터디 모임 2',
-      description: '자료구조 스터디',
-      fixedTime: [
-        {
-          id: 'ft6',
-          date: dayjs().format('YYYY-MM-DD'),
-          day: dayjs().format('dddd'),
-          startTime: '10:00',
-          endTime: '12:00',
-        },
-      ],
-      fixedPlace: {
-        placeId: 'p5',
-        type: 'studyCafe',
-        name: '투썸플레이스 신림점',
-        position: { La: 37.5, Ma: 127.03 },
-        address: '서울 관악구 신림로 123',
-        phone: '02-555-5555',
-        link: 'https://place5.com',
-      },
-      status: 'proposed',
-    },
-  ];
-
-  const _joinedPromises = [
-    {
-      id: 'promise3',
-      title: '운동 약속',
-      description: 'PT 끝나고 다같이 저녁!',
-      fixedTime: [
-        {
-          id: 'ft4',
-          date: '2025-06-12',
-          day: 'Saturday',
-          startTime: '17:00',
-          endTime: '18:00',
-        },
-      ],
-      fixedPlace: {
-        placeId: 'p3',
-        type: 'activity',
-        name: '휘트니스 센터',
-        position: { La: 37.501, Ma: 127.032 },
-        address: '서울 서초구 반포대로 50',
-        phone: '02-345-6789',
-        link: 'https://gym.com',
-      },
-      status: 'invited',
-    },
-    {
-      id: 'promise4',
-      title: '가족 모임',
-      description: '외할머니 생신 기념 모임',
-      fixedTime: [
-        {
-          id: 'ft5',
-          date: '2025-06-16',
-          day: 'Monday',
-          startTime: '12:00',
-          endTime: '14:00',
-        },
-      ],
-      fixedPlace: {
-        placeId: 'p4',
-        type: 'restaurant',
-        name: '한정식 궁',
-        position: { La: 37.502, Ma: 127.033 },
-        address: '서울 강남구 논현로 120',
-        phone: '02-456-7890',
-        link: 'https://koreanfood.com',
-      },
-      status: 'invited',
-    },
-  ];
-
-  const _allPromises = [..._createdPromises, ..._joinedPromises];
+  const _allPromises = [...createdPromiseIds, ...joinedPromiseIds];
   const { todayPromises: _todayPromises, futurePromises: _futurePromises } =
     classifyPromises(_allPromises);
 
@@ -278,30 +131,39 @@ const HomePage = () => {
 
             <S.SectionTitle />
             <S.TodayCardWrapper>
-              <S.TodayCardScroller
-                cardIdx={cardIdx}
-                onTouchStart={handleDragStart}
-                onTouchEnd={handleDragEnd}
-                onMouseDown={handleDragStart}
-                onMouseUp={handleDragEnd}
-              >
-                {todayPromises.map((card, i) => (
-                  <S.TodayCard
-                    key={card.id}
-                    style={{ opacity: cardIdx === i ? 1 : 0.6 }}
-                    active={cardIdx === i}
-                  >
-                    <Card
-                      title={card.title}
-                      subtitle={`${card.fixedTime?.[0]?.date} ${card.fixedTime?.[0]?.startTime}`}
-                      dday={
-                        card.dday === 0 || card.dday === '0' ? 'D-DAY' : `D-${card.dday ?? '0'}`
-                      }
-                      avatars={card.avatars ?? []}
-                    />
-                  </S.TodayCard>
-                ))}
-              </S.TodayCardScroller>
+              {todayPromises.length === 0 ? (
+                <S.EmptyBox>
+                  <S.EmptyText>
+                    지금 바로,
+                    <br /> 약속을 잡아보세요
+                  </S.EmptyText>
+                </S.EmptyBox>
+              ) : (
+                <S.TodayCardScroller
+                  cardIdx={cardIdx}
+                  onTouchStart={handleDragStart}
+                  onTouchEnd={handleDragEnd}
+                  onMouseDown={handleDragStart}
+                  onMouseUp={handleDragEnd}
+                >
+                  {todayPromises.map((card, i) => (
+                    <S.TodayCard
+                      key={card.id}
+                      style={{ opacity: cardIdx === i ? 1 : 0.6 }}
+                      active={cardIdx === i}
+                    >
+                      <Card
+                        title={card.title}
+                        subtitle={`${card.fixedTime?.[0]?.date} ${card.fixedTime?.[0]?.startTime}`}
+                        dday={
+                          card.dday === 0 || card.dday === '0' ? 'D-DAY' : `D-${card.dday ?? '0'}`
+                        }
+                        avatars={card.avatars ?? []}
+                      />
+                    </S.TodayCard>
+                  ))}
+                </S.TodayCardScroller>
+              )}
             </S.TodayCardWrapper>
 
             {/* 다가오는 약속 리스트 */}
@@ -309,73 +171,95 @@ const HomePage = () => {
 
             {/* 내가 생성한 약속 리스트 */}
             <S.SectionTitle2>내가 생성한 약속</S.SectionTitle2>
-            {_createdPromises
-              .filter((promise) => {
-                const firstTime = promise.fixedTime?.[0];
-                if (!firstTime) return false;
-                const dday = dayjs(firstTime.date).diff(dayjs().format('YYYY-MM-DD'), 'day');
-                return dday >= 0;
-              })
-              .sort((a, b) => {
-                const ddayA = dayjs(a.fixedTime?.[0]?.date).diff(
-                  dayjs().format('YYYY-MM-DD'),
-                  'day',
-                );
-                const ddayB = dayjs(b.fixedTime?.[0]?.date).diff(
-                  dayjs().format('YYYY-MM-DD'),
-                  'day',
-                );
-                return ddayA - ddayB;
-              })
-              .map((promise) => (
-                <S.Appointment key={promise.id}>
-                  <div>
-                    <small>내가 생성함</small>
-                    <h4>{promise.title}</h4>
-                    <span>{promise.fixedTime?.[0]?.date}</span>
-                  </div>
-                  <AppointmentCard
-                    dday={getDday(promise.fixedTime?.[0]?.date)}
-                    label=""
-                    size={40}
-                  />
-                </S.Appointment>
-              ))}
+            {createdPromiseIds.filter((promise) => {
+              const firstTime = promise.fixedTime?.[0];
+              if (!firstTime) return false;
+              const dday = dayjs(firstTime.date).diff(dayjs().format('YYYY-MM-DD'), 'day');
+              return dday >= 0;
+            }).length === 0 ? (
+              <S.EmptyPromiseBox>
+                <S.EmptyPromiseText>아직 생성한 약속이 없어요!</S.EmptyPromiseText>
+              </S.EmptyPromiseBox>
+            ) : (
+              createdPromiseIds
+                .filter((promise) => {
+                  const firstTime = promise.fixedTime?.[0];
+                  if (!firstTime) return false;
+                  const dday = dayjs(firstTime.date).diff(dayjs().format('YYYY-MM-DD'), 'day');
+                  return dday >= 0;
+                })
+                .sort((a, b) => {
+                  const ddayA = dayjs(a.fixedTime?.[0]?.date).diff(
+                    dayjs().format('YYYY-MM-DD'),
+                    'day',
+                  );
+                  const ddayB = dayjs(b.fixedTime?.[0]?.date).diff(
+                    dayjs().format('YYYY-MM-DD'),
+                    'day',
+                  );
+                  return ddayA - ddayB;
+                })
+                .map((promise) => (
+                  <S.Appointment key={promise.id}>
+                    <div>
+                      <small>내가 생성함</small>
+                      <h4>{promise.title}</h4>
+                      <span>{promise.fixedTime?.[0]?.date}</span>
+                    </div>
+                    <AppointmentCard
+                      dday={getDday(promise.fixedTime?.[0]?.date)}
+                      label=""
+                      size={40}
+                    />
+                  </S.Appointment>
+                ))
+            )}
 
             {/* 초대받은 약속 리스트 */}
             <S.SectionTitle2>초대받은 약속</S.SectionTitle2>
-            {_joinedPromises
-              .filter((promise) => {
-                const firstTime = promise.fixedTime?.[0];
-                if (!firstTime) return false;
-                const dday = dayjs(firstTime.date).diff(dayjs().format('YYYY-MM-DD'), 'day');
-                return dday >= 0;
-              })
-              .sort((a, b) => {
-                const ddayA = dayjs(a.fixedTime?.[0]?.date).diff(
-                  dayjs().format('YYYY-MM-DD'),
-                  'day',
-                );
-                const ddayB = dayjs(b.fixedTime?.[0]?.date).diff(
-                  dayjs().format('YYYY-MM-DD'),
-                  'day',
-                );
-                return ddayA - ddayB;
-              })
-              .map((promise) => (
-                <S.Appointment key={promise.id}>
-                  <div>
-                    <small>초대받음</small>
-                    <h4>{promise.title}</h4>
-                    <span>{promise.fixedTime?.[0]?.date}</span>
-                  </div>
-                  <AppointmentCard
-                    dday={getDday(promise.fixedTime?.[0]?.date)}
-                    label=""
-                    size={40}
-                  />
-                </S.Appointment>
-              ))}
+            {joinedPromiseIds.filter((promise) => {
+              const firstTime = promise.fixedTime?.[0];
+              if (!firstTime) return false;
+              const dday = dayjs(firstTime.date).diff(dayjs().format('YYYY-MM-DD'), 'day');
+              return dday >= 0;
+            }).length === 0 ? (
+              <S.EmptyPromiseBox>
+                <S.EmptyPromiseText>아직 초대 받은 약속이 없어요!</S.EmptyPromiseText>
+              </S.EmptyPromiseBox>
+            ) : (
+              joinedPromiseIds
+                .filter((promise) => {
+                  const firstTime = promise.fixedTime?.[0];
+                  if (!firstTime) return false;
+                  const dday = dayjs(firstTime.date).diff(dayjs().format('YYYY-MM-DD'), 'day');
+                  return dday >= 0;
+                })
+                .sort((a, b) => {
+                  const ddayA = dayjs(a.fixedTime?.[0]?.date).diff(
+                    dayjs().format('YYYY-MM-DD'),
+                    'day',
+                  );
+                  const ddayB = dayjs(b.fixedTime?.[0]?.date).diff(
+                    dayjs().format('YYYY-MM-DD'),
+                    'day',
+                  );
+                  return ddayA - ddayB;
+                })
+                .map((promise) => (
+                  <S.Appointment key={promise.id}>
+                    <div>
+                      <small>초대받음</small>
+                      <h4>{promise.title}</h4>
+                      <span>{promise.fixedTime?.[0]?.date}</span>
+                    </div>
+                    <AppointmentCard
+                      dday={getDday(promise.fixedTime?.[0]?.date)}
+                      label=""
+                      size={40}
+                    />
+                  </S.Appointment>
+                ))
+            )}
           </S.Container>
           <Navbar />
         </>

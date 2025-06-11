@@ -246,3 +246,46 @@ export const DdayCircle = styled.div`
   line-height: 12px;
   color: var(--text-blue, #002055);
 `;
+
+export const EmptyBox = styled.div`
+  display: flex;
+
+  width: 300px;
+  height: 150px;
+  padding: 20px;
+  border-radius: 16px;
+
+  background: #40b59f;
+`;
+
+export const EmptyText = styled.div`
+  width: 100%;
+  padding: 10px 0;
+
+  font-family: 'Pretendard Variable', sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 32px;
+  color: white;
+`;
+
+export const EmptyPromiseBox = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin: 0 24px 6px;
+  padding: 8px 16px;
+  border: 1.5px solid #eff4fe;
+  border-radius: 16px;
+
+  background-color: white;
+`;
+
+export const EmptyPromiseText = styled.p`
+  font-family: 'Pretendard Variable', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 14px;
+  color: var(--text-grey, #848a94);
+`;
