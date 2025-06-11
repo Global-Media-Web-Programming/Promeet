@@ -75,7 +75,6 @@ export const JoinOnlyWrapper = ({ children }) => {
   const { hasNearestSubwayStationData } = usePromiseDataActions();
 
   useEffect(() => {
-    console.log('JoinOnlyWrapper', isUserDataPending, isPromiseDataPending);
     if (!isUserDataPending && !isPromiseDataPending) {
       // 초대받은 사람 체크
       const isInvitedMember = promises.join.includes(promiseId);

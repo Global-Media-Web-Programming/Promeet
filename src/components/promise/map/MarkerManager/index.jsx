@@ -57,7 +57,9 @@ const MarkerManager = ({ markers, routes }) => {
     markers.forEach((markerData) => {
       if (markerData.placeId === MY_LOC_MARKER_ID) return; // 내 위치 마커는 별도 처리
 
-      const position = new window.kakao.maps.LatLng(markerData.position.Ma, markerData.position.La);
+      const position = pathname.endsWith('/summary')
+        ? new window.kakao.maps.LatLng(markerData.position.La, markerData.position.Ma)
+        : new window.kakao.maps.LatLng(markerData.position.Ma, markerData.position.La);
       const imageSrc = CATEGORY_MARKER_IMAGE[markerData.type];
       if (!imageSrc) return;
 
