@@ -26,7 +26,7 @@ const TimeSelectModal = ({
   // 스로틀용 ref
   const lastHourWheelTime = useRef(0);
   const lastMinuteWheelTime = useRef(0);
-  const throttleMs = 70; // 200ms마다 한 번만 반응
+  const throttleMs = 70; // 70ms마다 한 번만 반응
 
   // 모달이 열릴 때마다 초기값 동기화
   useEffect(() => {
