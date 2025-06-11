@@ -2,7 +2,160 @@ import styled from 'styled-components';
 import { theme } from '@/styles/theme';
 import LogoSvg from '@/assets/img/logo.svg?react';
 
-// 로그인 전
+export const Container = styled.section`
+  display: flex;
+  flex-direction: column;
+
+  max-width: 430px;
+  margin: 0 auto;
+  padding-bottom: 90px;
+
+  font-family: Pretendard, sans-serif;
+  color: #333333;
+`;
+
+export const Header = styled.h1`
+  padding: 24px;
+  font-size: 24px;
+  font-weight: 700;
+  white-space: pre-line;
+`;
+
+export const HeaderRow = styled.div`
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  margin-top: 30px;
+`;
+
+export const TopRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 18px;
+  color: var(--text-blue, #002055);
+  text-align: center;
+`;
+
+export const AlarmIcon = styled.img`
+  cursor: pointer;
+
+  position: absolute;
+  right: 16px;
+
+  width: 32px;
+  height: 32px;
+`;
+
+export const Greeting = styled.div`
+  margin-top: 24px;
+
+  font-size: 25px;
+  font-weight: 700;
+  line-height: 36px;
+  color: var(--text-black, rgb(41, 41, 41));
+`;
+
+export const SectionTitle = styled.div`
+  margin: 24px 24px 12px;
+
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 18px;
+  color: var(--text-blue, #002055);
+`;
+
+export const SectionTitle2 = styled.div`
+  margin: 24px 24px 12px;
+
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 18px;
+  color: var(--text-blue, #002055);
+`;
+
+export const TodayCardWrapper = styled.div`
+  touch-action: pan-y;
+
+  position: relative;
+
+  overflow: hidden;
+
+  width: 360px;
+  height: 180px;
+  margin: 0.5px;
+`;
+
+export const TodayCardScroller = styled.div`
+  transform: ${({ cardIdx }) => `translateX(-${cardIdx * 316}px)`};
+
+  display: flex;
+  gap: 16px;
+
+  height: 100%;
+
+  transition: transform 0.3s;
+`;
+
+export const TodayCard = styled.div`
+  position: relative;
+
+  width: 300px;
+  min-width: 300px;
+  max-width: 300px;
+  border-radius: 16px;
+
+  opacity: ${({ active }) => (active ? 100% : 60%)};
+  background: #ffffff;
+  box-shadow: ${({ active }) => (active ? '0 4px 24px rgba(0,0,0,0.10)' : 'none')};
+`;
+
+export const Appointment = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin: 0 24px 6px;
+  padding: 8px 16px;
+  border: 1.5px solid #eff4fe;
+  border-radius: 16px;
+
+  background-color: white;
+
+  small {
+    font-family: 'Pretendard Variable', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 12px;
+    color: var(--text-grey, #848a94);
+  }
+
+  h4 {
+    margin: 4px 0;
+
+    font-family: 'Pretendard Variable', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 14px;
+    color: var(--text-blue, #002055);
+  }
+
+  span {
+    font-family: 'Pretendard Variable', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 12px;
+    color: var(--text-grey, #848a94);
+  }
+`;
+
 export const EnterContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -36,50 +189,7 @@ export const EnterText = styled.h2`
 `;
 
 // 로그인 후
-export const Container = styled.section`
-  display: flex;
-  flex-direction: column;
-
-  max-width: 430px;
-  margin: 0 auto;
-
-  /* nav에 내용 가려지지 않게 아래 padding 줌 */
-  padding-bottom: var(--nav-height);
-  padding-bottom: 90px;
-
-  font-family: Pretendard, sans-serif;
-  color: #333333;
-`;
-
-export const Header = styled.h1`
-  padding: 24px;
-  font-size: 24px;
-  font-weight: 700;
-  white-space: pre-line;
-`;
-
-export const TopRow = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  font-size: 20px;
-  font-weight: 500;
-  line-height: 18px;
-  color: var(--text-blue, #002055);
-  text-align: center;
-`;
-
-export const Greeting = styled.div`
-  margin-top: 20px;
-
-  font-size: 25px;
-  font-weight: 700;
-  line-height: 36px;
-  color: var(--text-black, rgb(41, 41, 41));
-`;
-
-export const Card = styled.div`
+export const FixedCard = styled.div`
   position: relative;
 
   padding: 16px;
@@ -87,8 +197,7 @@ export const Card = styled.div`
 
   color: white;
 
-  background-color: #6dbbae;
-
+  background: #40b59f; /* ← 여기! */
   h3 {
     margin-bottom: 4px;
 
@@ -130,60 +239,6 @@ export const Dday = styled.div`
   font-weight: 400;
   line-height: 12px;
   color: white;
-`;
-
-export const SectionTitle = styled.div`
-  margin: 24px 24px 12px;
-
-  font-size: 19px;
-  font-weight: 600;
-  line-height: 18px;
-  color: var(--text-blue, #002055);
-`;
-export const SectionTitle2 = styled.div`
-  margin: 24px 24px 12px;
-
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 18px;
-  color: var(--text-blue, #002055);
-`;
-export const Appointment = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  margin: 0 24px 12px;
-  padding: 16px;
-  border-radius: 16px;
-
-  background-color: white;
-
-  small {
-    font-family: 'Pretendard Variable', sans-serif;
-    font-size: 12px;
-    font-weight: 400;
-    line-height: 12px;
-    color: var(--text-grey, #848a94);
-  }
-
-  h4 {
-    margin: 4px 0;
-
-    font-family: 'Pretendard Variable', sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 14px;
-    color: var(--text-blue, #002055);
-  }
-
-  span {
-    font-family: 'Pretendard Variable', sans-serif;
-    font-size: 12px;
-    font-weight: 400;
-    line-height: 12px;
-    color: var(--text-grey, #848a94);
-  }
 `;
 
 export const DdayCircle = styled.div`

@@ -7,6 +7,8 @@ export const BottomBar = styled.nav`
   left: 0;
 
   display: flex;
+  flex-direction: row;
+  gap: 16px;
   align-items: center;
   justify-content: center;
 
