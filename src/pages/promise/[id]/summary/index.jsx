@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Header from '@/components/promise/Header';
 import { usePromiseDataFromServerInfo } from '@/hooks/stores/promise/usePromiseDataFromServerStore';
 import { PROMISE_JOIN_HEADER_TEXT } from '@/constants/promise';
-import { BUILD_ROUTES, ROUTES } from '@/constants/routes';
+import { BUILD_ROUTES } from '@/constants/routes';
 import copyToClipboard from '@/utils/copyToClipBoard';
 import toast from '@/utils/toast';
 
@@ -51,7 +51,7 @@ const SummaryPage = () => {
   return (
     <>
       <S.Container>
-        <Header text={PROMISE_JOIN_HEADER_TEXT} navigateUrl={ROUTES.HOME} />
+        <Header text={PROMISE_JOIN_HEADER_TEXT} />
         <S.InfoConainer>
           <S.Name>{promiseDataFromServer.title}</S.Name>
           <S.Description>{promiseDataFromServer.description}</S.Description>

@@ -58,6 +58,7 @@ const SearchLocation = ({ onBack }) => {
     setSelectedPosition(place.position);
     onBack();
 
+    // 약속 생성, 참여 이동 페이지 다르게
     if (promiseId) navigate(BUILD_ROUTES.PROMISE_SCHEDULE(promiseId));
     else navigate(ROUTES.PROMISE_CREATE_SCHEDULE);
   };
