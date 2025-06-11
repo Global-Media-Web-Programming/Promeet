@@ -28,7 +28,12 @@ const AppointmentCard = ({ dday, label, left, top, size = 80 }) => {
   return (
     <S.CircleCard style={style}>
       <S.CircleProgressWrapper $size={size}>
-        <svg width={size} height={size} viewBox="0 0 100 100" style={{ marginTop: '10px' }}>
+        <svg
+          width={size}
+          height={size}
+          viewBox="0 0 100 100"
+          style={{ marginTop: '10px', rotate: '-90deg' }}
+        >
           <circle cx="50" cy="50" r="45" fill="none" stroke={circleBg} strokeWidth="10" />
           <circle
             cx="50"
