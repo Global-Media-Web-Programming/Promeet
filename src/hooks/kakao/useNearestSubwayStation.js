@@ -9,7 +9,6 @@ const useNearestSubwayStation = (lat, lng) => {
   useEffect(() => {
     if (!window.kakao || !window.kakao.maps || !lat || !lng) return;
 
-    console.log(lat, lng);
     const ps = new window.kakao.maps.services.Places();
     const location = new window.kakao.maps.LatLng(lat, lng);
 

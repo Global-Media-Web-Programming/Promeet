@@ -5,7 +5,6 @@ import { CATEGORY } from '@/constants/place';
 
 // 최종 약속 위치 표시하는 맵
 const FinalPlaceMap = ({ place }) => {
-  console.log('place in FinalPlaceMap', place);
   return (
     <MapContainer lat={Number(place.position.Ma)} lng={Number(place.position.La)}>
       <MarkerManager markers={[place]} />

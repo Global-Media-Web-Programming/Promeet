@@ -15,7 +15,6 @@ const DatePage = () => {
 
   const handleDateRangeChange = (range) => {
     setSelectedRange(range);
-    console.log('selectedRange:', range);
   };
 
   const handleSaveDates = () => {

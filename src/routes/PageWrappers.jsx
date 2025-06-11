@@ -133,7 +133,7 @@ JoinOnlyWrapper.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-// 약속에 포함된 사람이면 접근 가능
+// 약속에 포함된 사람, 약속 확정 가능이면 접근 가능
 export const PromiseMemberWrapper = ({ children }) => {
   const { userId } = useUserInfo();
   const navigate = useNavigate();
@@ -143,11 +143,13 @@ export const PromiseMemberWrapper = ({ children }) => {
 
   useEffect(() => {
     if (!isPending && promiseDataFromServer) {
-      // 약속 멤버 체크 - 여기서 제출 체크도 됨
-      // const isMember = promiseDataFromServer.members.some((member) => member.userId === userId);
-      // if (!isMember) {
-      //   navigate(ROUTES.HOME);
-      // }
+      // 약속 멤버 체크
+      const isMember = promiseDataFromServer.members.some((member) => member.userId === userId);
+
+      // 멤버가 아니거나 확정 불가능한 경우 홈으로 이동
+      if (!isMember || !promiseDataFromServer.canFix) {
+        navigate(ROUTES.HOME);
+      }
     }
   }, [promiseDataFromServer, isPending, userId, promiseId, navigate]);
 

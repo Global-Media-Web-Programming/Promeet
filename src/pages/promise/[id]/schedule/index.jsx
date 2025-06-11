@@ -37,14 +37,14 @@ const JoinSchedulePage = () => {
   }
 
   // 생성자가 설정한 날짜만 가져오기
-  console.log(promiseDataFromServer);
   const creator = promiseDataFromServer.members.find(
     (member) => member.userId === promiseDataFromServer.creatorId,
   );
 
   // 날짜만 추출해서 새로운 배열 생성
   const availableTimes =
-    creator?.availableTimes.map(({ date, day }) => ({
+    creator?.availableTimes.map(({ id, date, day }) => ({
+      id,
       date,
       day,
       timeRanges: [],
