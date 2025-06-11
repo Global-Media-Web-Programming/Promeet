@@ -8,153 +8,7 @@ import { useUserInfo } from '@/hooks/stores/auth/useUserStore';
 import useLogout from '@/hooks/mutations/useLogout';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '@/constants/routes';
-
-const FixedScheduleButton = () => {
-  const navigate = useNavigate();
-  return (
-    <S.FixedButton onClick={() => navigate(ROUTES.ENTER_SCHEDULE)}>
-      <S.FixedButtonTitle>고정 일정</S.FixedButtonTitle>
-      <S.FixedButtonDesc>
-        매주 반복되는 일정을 설정하여
-        <br />
-        편리하게 약속을 잡으세요.
-      </S.FixedButtonDesc>
-    </S.FixedButton>
-  );
-};
-
-const _createdPromises = [
-  {
-    id: 'promise1',
-    title: '친구들과 저녁약속',
-    description: '오랜만에 모이는 회식자리!',
-    fixedTime: [
-      {
-        id: 'ft1',
-        date: '2025-06-12',
-        day: 'Sunday',
-        startTime: '18:00',
-        endTime: '20:00',
-      },
-    ],
-    fixedPlace: {
-      placeId: 'p1',
-      type: 'restaurant',
-      name: '상도 곱창',
-      position: { La: 37.49808, Ma: 127.028 },
-      address: '서울 동작구 상도로 232',
-      phone: '02-123-4567',
-      link: 'https://place1.com',
-    },
-    status: 'proposed',
-  },
-  {
-    id: 'promise2',
-    title: '스터디 모임',
-    description: '중간고사 대비 스터디',
-    fixedTime: [
-      {
-        id: 'ft2',
-        date: '2025-06-10',
-        day: 'Tuesday',
-        startTime: '10:00',
-        endTime: '12:00',
-      },
-      {
-        id: 'ft3',
-        date: '2025-06-12',
-        day: 'Thursday',
-        startTime: '14:00',
-        endTime: '16:00',
-      },
-    ],
-    fixedPlace: {
-      placeId: 'p2',
-      type: 'studyCafe',
-      name: '이디야 커피 상도점',
-      position: { La: 37.499, Ma: 127.029 },
-      address: '서울 동작구 상도로 100',
-      phone: '02-234-5678',
-      link: 'https://place2.com',
-    },
-    status: 'proposed',
-  },
-  {
-    id: 'promise5',
-    title: '스터디 모임 2',
-    description: '자료구조 스터디',
-    fixedTime: [
-      {
-        id: 'ft6',
-        date: dayjs().format('YYYY-MM-DD'),
-        day: dayjs().format('dddd'),
-        startTime: '10:00',
-        endTime: '12:00',
-      },
-    ],
-    fixedPlace: {
-      placeId: 'p5',
-      type: 'studyCafe',
-      name: '투썸플레이스 신림점',
-      position: { La: 37.5, Ma: 127.03 },
-      address: '서울 관악구 신림로 123',
-      phone: '02-555-5555',
-      link: 'https://place5.com',
-    },
-    status: 'proposed',
-  },
-];
-
-const _joinedPromises = [
-  {
-    id: 'promise3',
-    title: '운동 약속',
-    description: 'PT 끝나고 다같이 저녁!',
-    fixedTime: [
-      {
-        id: 'ft4',
-        date: '2025-06-12',
-        day: 'Saturday',
-        startTime: '17:00',
-        endTime: '18:00',
-      },
-    ],
-    fixedPlace: {
-      placeId: 'p3',
-      type: 'activity',
-      name: '휘트니스 센터',
-      position: { La: 37.501, Ma: 127.032 },
-      address: '서울 서초구 반포대로 50',
-      phone: '02-345-6789',
-      link: 'https://gym.com',
-    },
-    status: 'invited',
-  },
-  {
-    id: 'promise4',
-    title: '가족 모임',
-    description: '외할머니 생신 기념 모임',
-    fixedTime: [
-      {
-        id: 'ft5',
-        date: '2025-06-16',
-        day: 'Monday',
-        startTime: '12:00',
-        endTime: '14:00',
-      },
-    ],
-    fixedPlace: {
-      placeId: 'p4',
-      type: 'restaurant',
-      name: '한정식 궁',
-      position: { La: 37.502, Ma: 127.033 },
-      address: '서울 강남구 논현로 120',
-      phone: '02-456-7890',
-      link: 'https://koreanfood.com',
-    },
-    status: 'invited',
-  },
-];
+import useGetUserData from '@/hooks/queries/useGetUserData';
 
 // D-day 계산 함수
 function getDday(dateStr) {
@@ -171,16 +25,40 @@ function getDday(dateStr) {
 function getPastAppointments(promises) {
   const today = dayjs().startOf('day');
   return promises
-    .filter((p) => p.fixedTime.some((t) => dayjs(t.date).isBefore(today)))
+    .filter((p) => p.fixedTime?.some((t) => dayjs(t.date).isBefore(today)))
     .map((p) => ({
       label: p.title,
-      dday: '완료', // 지난 약속은 "완료"로 표시
+      dday: '완료',
     }));
 }
+
+const FixedScheduleButton = () => {
+  const navigate = useNavigate();
+  return (
+    <S.FixedButton onClick={() => navigate(ROUTES.ENTER_SCHEDULE)}>
+      <S.FixedButtonTitle>고정 일정</S.FixedButtonTitle>
+      <S.FixedButtonDesc>
+        매주 반복되는 일정을 설정하여
+        <br />
+        편리하게 약속을 잡으세요.
+      </S.FixedButtonDesc>
+    </S.FixedButton>
+  );
+};
 
 const UserPage = () => {
   const { userId, userName } = useUserInfo();
   const { mutate: logout } = useLogout();
+
+  // 서버에서 사용자 데이터 받아오기
+  const { data, isPending } = useGetUserData(userId);
+
+  // 실제 데이터로 대체
+  const createdPromises = data?.promises?.create ?? [];
+  const joinedPromises = data?.promises?.join ?? [];
+
+  // 약속 상세 정보가 필요하다면, 각 ID로 fetch하는 훅을 추가로 만들어 사용하세요.
+  // 여기서는 약속 ID 배열만 사용(실제 약속 상세 정보가 필요하면 추가 fetch 필요)
 
   // 오늘 또는 미래 약속만 남기는 필터 함수
   const isUpcoming = (p) => {
@@ -191,28 +69,30 @@ const UserPage = () => {
   };
 
   // 다가오는 약속: 오늘 또는 미래만
-  const upcomingAppointments = _createdPromises.filter(isUpcoming).map((p) => ({
+  const upcomingAppointments = createdPromises.filter(isUpcoming).map((p) => ({
     label: p.title,
     dday: getDday(p.fixedTime[0]?.date),
   }));
 
   // 초대된 약속: 오늘 또는 미래만
-  const invitedAppointments = _joinedPromises.filter(isUpcoming).map((p) => ({
+  const invitedAppointments = joinedPromises.filter(isUpcoming).map((p) => ({
     label: p.title,
     dday: '수락',
   }));
 
   // 제안한 약속: 오늘 또는 미래만
-  const proposedAppointments = _createdPromises.filter(isUpcoming).map((p) => ({
+  const proposedAppointments = createdPromises.filter(isUpcoming).map((p) => ({
     label: p.title,
     dday: '제안',
   }));
 
   // 지난 약속
   const pastAppointments = [
-    ...getPastAppointments(_createdPromises),
-    ...getPastAppointments(_joinedPromises),
+    ...getPastAppointments(createdPromises),
+    ...getPastAppointments(joinedPromises),
   ];
+
+  if (isPending) return <div>로딩중...</div>;
 
   return (
     <>
@@ -233,29 +113,47 @@ const UserPage = () => {
 
           <S.SectionTitle>다가오는 약속</S.SectionTitle>
           <S.CardList>
-            {upcomingAppointments.map((item, index) => (
-              <S.CardWrapper key={index}>
-                <AppointmentCard {...item} />
+            {upcomingAppointments.length === 0 ? (
+              <S.CardWrapper>
+                <div style={{ color: '#aaa', fontSize: 14 }}>다가오는 약속이 없습니다.</div>
               </S.CardWrapper>
-            ))}
+            ) : (
+              upcomingAppointments.map((item, index) => (
+                <S.CardWrapper key={index}>
+                  <AppointmentCard {...item} />
+                </S.CardWrapper>
+              ))
+            )}
           </S.CardList>
 
           <S.SectionTitle>초대된 약속</S.SectionTitle>
           <S.CardList>
-            {invitedAppointments.map((item, index) => (
-              <S.CardWrapper key={index}>
-                <AppointmentCard {...item} />
+            {invitedAppointments.length === 0 ? (
+              <S.CardWrapper>
+                <div style={{ color: '#aaa', fontSize: 14 }}>초대된 약속이 없습니다.</div>
               </S.CardWrapper>
-            ))}
+            ) : (
+              invitedAppointments.map((item, index) => (
+                <S.CardWrapper key={index}>
+                  <AppointmentCard {...item} />
+                </S.CardWrapper>
+              ))
+            )}
           </S.CardList>
 
           <S.SectionTitle>제안한 약속</S.SectionTitle>
           <S.CardList>
-            {proposedAppointments.map((item, index) => (
-              <S.CardWrapper key={index}>
-                <AppointmentCard {...item} />
+            {proposedAppointments.length === 0 ? (
+              <S.CardWrapper>
+                <div style={{ color: '#aaa', fontSize: 14 }}>제안한 약속이 없습니다.</div>
               </S.CardWrapper>
-            ))}
+            ) : (
+              proposedAppointments.map((item, index) => (
+                <S.CardWrapper key={index}>
+                  <AppointmentCard {...item} />
+                </S.CardWrapper>
+              ))
+            )}
           </S.CardList>
 
           <S.SectionTitle>지난 약속</S.SectionTitle>
