@@ -6,7 +6,7 @@ export const Container = styled.section`
   display: flex;
   flex-direction: column;
 
-  max-width: 430px;
+  width: 100%;
   margin: 0 auto;
   padding-bottom: 90px;
 
@@ -88,7 +88,7 @@ export const TodayCardWrapper = styled.div`
 
   overflow: hidden;
 
-  width: 360px;
+  width: 100%;
   height: 180px;
   margin: 0.5px;
 `;
@@ -116,6 +116,8 @@ export const TodayCard = styled.div`
 `;
 
 export const Appointment = styled.div`
+  cursor: pointer;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -125,6 +127,7 @@ export const Appointment = styled.div`
   border: 1.5px solid #eff4fe;
   border-radius: 16px;
 
+  background-color: red;
   background-color: white;
 
   small {
@@ -250,7 +253,7 @@ export const DdayCircle = styled.div`
 export const EmptyBox = styled.div`
   display: flex;
 
-  width: 300px;
+  width: 100%;
   height: 150px;
   padding: 20px;
   border-radius: 16px;
