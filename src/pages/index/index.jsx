@@ -245,7 +245,7 @@ const HomePage = () => {
                 })
                 .map((promise) => (
                   <S.Appointment
-                    key={promise.id}
+                    key={promise.promiseId}
                     onClick={() => handleAppointmentClick(promise.promiseId)}
                   >
                     <div>
