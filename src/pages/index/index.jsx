@@ -135,7 +135,7 @@ const HomePage = () => {
                 </S.EmptyBox>
               ) : (
                 <S.TodayCardScroller
-                  cardIdx={cardIdx}
+                  $cardIdx={cardIdx}
                   onTouchStart={handleDragStart}
                   onTouchEnd={handleDragEnd}
                   onMouseDown={handleDragStart}
@@ -145,7 +145,7 @@ const HomePage = () => {
                     <S.TodayCard
                       key={card.promiseId}
                       style={{ opacity: cardIdx === i ? 1 : 0.6 }}
-                      active={cardIdx === i}
+                      $active={cardIdx === i}
                     >
                       <Card
                         title={card.title}

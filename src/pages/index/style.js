@@ -94,7 +94,7 @@ export const TodayCardWrapper = styled.div`
 `;
 
 export const TodayCardScroller = styled.div`
-  transform: ${({ cardIdx }) => `translateX(-${cardIdx * 316}px)`};
+  transform: ${({ $cardIdx }) => `translateX(-${$cardIdx * 316}px)`};
 
   display: flex;
   gap: 16px;
@@ -112,7 +112,7 @@ export const TodayCard = styled.div`
   border-radius: 16px;
 
   background: #ffffff;
-  box-shadow: ${({ active }) => (active ? '0 4px 24px rgba(0,0,0,0.10)' : 'none')};
+  box-shadow: ${({ $active }) => ($active ? '0 4px 24px rgba(0,0,0,0.10)' : 'none')};
 `;
 
 export const Appointment = styled.div`
